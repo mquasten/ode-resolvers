@@ -23,5 +23,4 @@ public interface OdeResolver {
 	 *         OdeResultImpl
 	 */
 	List<OdeResult> solve(final double[] y0, final double start, final double stop, final int steps);
-
 }
