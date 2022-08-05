@@ -11,7 +11,7 @@ public class OdeStringUtil {
 
 	public double invokeFunction(final Invocable invocable, final double[] y, double x) {
 		try {
-			return (Double) invocable.invokeFunction("f", y, x);
+			return ((Number) invocable.invokeFunction("f", y, x)).doubleValue();
 		} catch (final NoSuchMethodException | ScriptException e) {
 			throw new IllegalStateException("Unable to invoke function.", e);
 		}
