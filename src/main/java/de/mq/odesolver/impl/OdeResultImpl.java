@@ -25,21 +25,17 @@ class OdeResultImpl implements OdeResult {
 
 	@Override
 	public final double yDerivative(final int n) {
+		derivativeGuard(n);
 		return y[n];
 	}
 
-	@Override
-	public final double errorEstimaion() {
-		return errorEstimaion;
-	}
-
-	public final static double[] doubleArray(final double value) {
-		return new double[] { value };
-
-	}
-
-	public final static double[] doubleArray(final double value1, final double value2) {
-		return new double[] { value1, value2 };
+	private void derivativeGuard(final int n) {
+		if (n < 0) {
+			throw new IllegalArgumentException("Derivative must be >= 0.");
+		}
+		if (n >= y.length) {
+			throw new IllegalArgumentException(String.format("Derivative must be < %d", y.length));
+		}
 	}
 
 	@Override
@@ -50,6 +46,20 @@ class OdeResultImpl implements OdeResult {
 	@Override
 	public int order() {
 		return y.length;
+	}
+
+	@Override
+	public final double errorEstimaion() {
+		return errorEstimaion;
+	}
+
+	final static double[] doubleArray(final double value) {
+		return new double[] { value };
+
+	}
+
+	final static double[] doubleArray(final double value1, final double value2) {
+		return new double[] { value1, value2 };
 	}
 
 }
