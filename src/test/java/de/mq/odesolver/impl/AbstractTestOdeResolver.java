@@ -1,6 +1,6 @@
-package de.mq.ode.impl;
+package de.mq.odesolver.impl;
 
-import static de.mq.ode.impl.OdeResultImpl.doubleArray;
+import static de.mq.odesolver.impl.OdeResultImpl.doubleArray;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
@@ -12,8 +12,8 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.ValueSource;
 
-import de.mq.ode.OdeResolver;
-import de.mq.ode.OdeResult;
+import de.mq.odesolver.OdeResolver;
+import de.mq.odesolver.OdeResult;
 
 abstract class AbstractTestOdeResolver {
 

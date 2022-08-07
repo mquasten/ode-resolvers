@@ -1,6 +1,6 @@
-package de.mq.ode.impl;
+package de.mq.odesolver.impl;
 
-import static de.mq.ode.impl.OdeResultImpl.doubleArray;
+import static de.mq.odesolver.impl.OdeResultImpl.doubleArray;
 
 import java.util.Map;
 import java.util.function.BiFunction;
@@ -8,8 +8,8 @@ import java.util.function.Function;
 
 import javax.script.Invocable;
 
-import de.mq.ode.OdeResult;
-import de.mq.ode.OdeResultCalculator;
+import de.mq.odesolver.OdeResult;
+import de.mq.odesolver.OdeResultCalculator;
 
 class RungeKutta4CalculatorImpl implements OdeResultCalculator {
 

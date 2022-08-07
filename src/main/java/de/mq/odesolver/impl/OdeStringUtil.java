@@ -1,4 +1,4 @@
-package de.mq.ode.impl;
+package de.mq.odesolver.impl;
 
 import javax.script.Compilable;
 import javax.script.CompiledScript;

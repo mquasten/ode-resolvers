@@ -1,12 +1,12 @@
-package de.mq.ode.impl;
+package de.mq.odesolver.impl;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.IntStream;
 
-import de.mq.ode.OdeResolver;
-import de.mq.ode.OdeResult;
-import de.mq.ode.OdeResultCalculator;
+import de.mq.odesolver.OdeResolver;
+import de.mq.odesolver.OdeResult;
+import de.mq.odesolver.OdeResultCalculator;
 
 class OdeResolverImpl implements OdeResolver {
 

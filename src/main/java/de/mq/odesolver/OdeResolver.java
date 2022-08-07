@@ -1,4 +1,4 @@
-package de.mq.ode;
+package de.mq.odesolver;
 
 import java.util.List;
 

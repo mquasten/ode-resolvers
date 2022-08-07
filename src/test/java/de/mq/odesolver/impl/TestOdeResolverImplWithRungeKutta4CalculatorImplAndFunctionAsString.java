@@ -1,6 +1,6 @@
-package de.mq.ode.impl;
+package de.mq.odesolver.impl;
 
-import de.mq.ode.OdeResolver;
+import de.mq.odesolver.OdeResolver;
 
 public class TestOdeResolverImplWithRungeKutta4CalculatorImplAndFunctionAsString extends AbstractTestOdeResolver {
 

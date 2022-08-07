@@ -5,13 +5,13 @@
         http://maven.apache.org/xsd/maven-4.0.0.xsd">
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>mq.test</groupId>
-	<artifactId>rungekutta</artifactId>
+	<artifactId>odesolver</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
 	<packaging>jar</packaging>
 	<properties>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-		<maven.compiler.source>17</maven.compiler.source>
-		<maven.compiler.target>17</maven.compiler.target>
+		<maven.compiler.source>18</maven.compiler.source>
+		<maven.compiler.target>18</maven.compiler.target>
 		<junit-jupiter-version>5.9.0</junit-jupiter-version>
 		<nashorn-core-version>15.4</nashorn-core-version>
 		<surefire-plugin-version>3.0.0-M7</surefire-plugin-version>

@@ -1,6 +1,6 @@
-package de.mq.ode.impl;
+package de.mq.odesolver.impl;
 
-import de.mq.ode.OdeResult;
+import de.mq.odesolver.OdeResult;
 
 class OdeResultImpl implements OdeResult {
 

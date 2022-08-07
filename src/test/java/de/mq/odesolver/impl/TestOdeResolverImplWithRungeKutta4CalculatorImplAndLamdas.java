@@ -1,6 +1,7 @@
-package de.mq.ode.impl;
+package de.mq.odesolver.impl;
 
-import de.mq.ode.OdeResolver;
+import de.mq.odesolver.OdeResolver;
+
 
 class TestOdeResolverImplWithRungeKutta4CalculatorImplAndLamdas extends AbstractTestOdeResolver {
 
