@@ -7,7 +7,7 @@ class TestOdeResolverImplWithRungeKutta4CalculatorImplAndLamdas extends Abstract
 
 	@Override
 	OdeResolver newOdeResolver(final TestDgl testDgl) {
-		return new OdeResolverImpl(new RungeKutta4CalculatorImpl(testDgl.odeFunction()));
+		return new OdeSolverImpl(new RungeKutta4CalculatorImpl(testDgl.odeFunction()));
 	}
 
 }

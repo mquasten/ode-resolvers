@@ -1,5 +1,7 @@
 package de.mq.odesolver.impl;
 
+import java.util.Arrays;
+
 import de.mq.odesolver.OdeResult;
 
 class OdeResultImpl implements OdeResult {
@@ -51,6 +53,21 @@ class OdeResultImpl implements OdeResult {
 	@Override
 	public final double errorEstimaion() {
 		return errorEstimaion;
+	}
+
+	@Override
+	public int hashCode() {
+		return Arrays.hashCode(y) + Double.hashCode(x);
+	}
+
+	@Override
+	public boolean equals(final Object obj) {
+		if (!(obj instanceof OdeResult)) {
+			return false;
+		}
+
+		final OdeResult other = (OdeResult) obj;
+		return Arrays.equals(y, other.yDerivatives()) && x == other.x();
 	}
 
 	final static double[] doubleArray(final double value) {

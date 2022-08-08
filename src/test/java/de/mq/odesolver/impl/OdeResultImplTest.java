@@ -2,8 +2,11 @@ package de.mq.odesolver.impl;
 
 import static org.junit.jupiter.api.Assertions.assertArrayEquals;
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
+import java.util.Arrays;
 import java.util.stream.IntStream;
 
 import org.junit.jupiter.api.Test;
@@ -63,6 +66,23 @@ class OdeResultImplTest {
 	@Test
 	void doubleArray2Values() {
 		assertArrayEquals(y, OdeResultImpl.doubleArray(y[0], y[1]));
+	}
+
+	@Test
+	void hash() {
+		assertEquals(Arrays.hashCode(y) + Double.hashCode(x), new OdeResultImpl(y, x).hashCode());
+	}
+
+	@SuppressWarnings("unlikely-arg-type")
+	@Test
+	void equals() {
+		OdeResult first = new OdeResultImpl(y, x);
+		assertTrue(first.equals(first));
+		assertTrue(first.equals(new OdeResultImpl(y, x)));
+		assertFalse(first.equals(new OdeResultImpl(y, x + x)));
+		assertFalse(first.equals(new OdeResultImpl(new double[] { y[0] }, x)));
+		assertFalse(first.equals(new OdeResultImpl(new double[] { y[0] }, x + x)));
+		assertFalse(first.equals(""));
 	}
 
 }

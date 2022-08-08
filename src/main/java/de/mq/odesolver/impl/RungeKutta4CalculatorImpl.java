@@ -18,7 +18,7 @@ class RungeKutta4CalculatorImpl implements OdeResultCalculator {
 			(odeResult, stepSize) -> calculateSecondOrderOde(odeResult, stepSize));
 
 	private final Function<OdeResult, Double> firstOrderOdeFunction;
-	private final OdeStringUtil odeStringUtil = new OdeStringUtil();
+	private final OdeFunctionUtil odeStringUtil = new OdeFunctionUtil();
 
 	RungeKutta4CalculatorImpl(final Function<OdeResult, Double> firstOrderOdeFunction) {
 

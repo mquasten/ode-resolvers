@@ -8,11 +8,11 @@ import de.mq.odesolver.OdeResolver;
 import de.mq.odesolver.OdeResult;
 import de.mq.odesolver.OdeResultCalculator;
 
-class OdeResolverImpl implements OdeResolver {
+class OdeSolverImpl implements OdeResolver {
 
 	private final OdeResultCalculator odeResultCalculator;
 
-	OdeResolverImpl(final OdeResultCalculator odeResultCalculator) {
+	OdeSolverImpl(final OdeResultCalculator odeResultCalculator) {
 		this.odeResultCalculator = odeResultCalculator;
 	}
 

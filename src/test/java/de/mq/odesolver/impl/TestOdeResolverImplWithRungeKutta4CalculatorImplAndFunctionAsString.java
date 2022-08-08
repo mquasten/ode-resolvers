@@ -6,6 +6,6 @@ public class TestOdeResolverImplWithRungeKutta4CalculatorImplAndFunctionAsString
 
 	@Override
 	OdeResolver newOdeResolver(final TestDgl testDgl) {
-		return new OdeResolverImpl(new RungeKutta4CalculatorImpl(testDgl.functionAsString()));
+		return new OdeSolverImpl(new RungeKutta4CalculatorImpl(testDgl.functionAsString()));
 	}
 }
