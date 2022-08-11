@@ -62,16 +62,19 @@ class EulerCalculatorImplTest {
 	final void calculateforSecondOrderOdeString() {
 		//https://keisan.casio.com/exec/system/1548304004
 		// leider ist es wohl zu schwer auch die 1. Ableitung auszugeben!!!
+		// daher mit Excel kontrolliert
 
 		final OdeResultCalculator odeResultCalculator = new EulerCalculatorImpl("-2*y[1]+3*y[0]");
 
 		final double[] y1 = odeResultCalculator.calculate(new OdeResultImpl(new double[] { 0, 4 }, 0), 0.1);
 		assertEquals(2, y1.length);
 		assertEquals(0.4, y1[0]);
+		assertEquals(3.2, y1[1]);
 		
 		final double[] y2 = odeResultCalculator.calculate(new OdeResultImpl(y1, 0.1), 0.1);
 		assertEquals(2, y2.length);
 		assertEquals(0.72, y2[0], maxTol);
+		assertEquals(2.68, y2[1]);
 	}
 
 }

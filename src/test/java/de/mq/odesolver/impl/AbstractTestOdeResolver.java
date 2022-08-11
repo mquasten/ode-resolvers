@@ -24,7 +24,7 @@ import de.mq.odesolver.OdeResult;
 
 abstract class AbstractTestOdeResolver {
 	
-	final Map<MaxTol,Double> tolerances= new HashMap<>();
+	final Map<TestProperties,Double> properties= new HashMap<>();
 	final Map<Result,double[]> expectedResults= new HashMap<>();
 	
 
@@ -54,14 +54,16 @@ abstract class AbstractTestOdeResolver {
 
 	}
 	
-	enum MaxTol {
-		ExamplePapulaFirstOrder,
-		StepSize,
-		SqrtYPlusYStart1,
-		SqrtYPlusYStart0,
-		ErrorEstimaions,
-		ExamplePapulaSecondOrder,
-		ExamplePapulaSecondOrderErrorEstimate
+	enum TestProperties {
+		MaxTolExamplePapulaFirstOrder,
+		MaxTolStepSize,
+		MaxTolSqrtYPlusYStart1,
+		MaxTolSqrtYPlusYStart0,
+		MaxTolErrorEstimaions,
+		MaxTolExamplePapulaSecondOrder,
+		MaxTolExamplePapulaSecondOrderErrorEstimate,
+		EndExamplePapulaFirstOrder,
+		StepsExamplePapulaFirstOrder;
 	}
 	
 	enum Result {
@@ -73,14 +75,15 @@ abstract class AbstractTestOdeResolver {
 
 	@BeforeEach
 	void setProperties() {
-		tolerances.put(MaxTol.ExamplePapulaFirstOrder, 1e-6);
-		tolerances.put(MaxTol.StepSize, 1e-12);
-		tolerances.put(MaxTol.SqrtYPlusYStart1, 1e-8);
-		tolerances.put(MaxTol.SqrtYPlusYStart0, 1e-9);
-		tolerances.put(MaxTol.ErrorEstimaions, 2e-4);
-		tolerances.put(MaxTol.ExamplePapulaSecondOrder,  1e-6);
-		tolerances.put(MaxTol.ExamplePapulaSecondOrderErrorEstimate,  3e-2);
-		
+		properties.put(TestProperties.MaxTolExamplePapulaFirstOrder, 1e-6);
+		properties.put(TestProperties.MaxTolStepSize, 1e-12);
+		properties.put(TestProperties.MaxTolSqrtYPlusYStart1, 1e-8);
+		properties.put(TestProperties.MaxTolSqrtYPlusYStart0, 1e-9);
+		properties.put(TestProperties.MaxTolErrorEstimaions, 2e-4);
+		properties.put(TestProperties.MaxTolExamplePapulaSecondOrder,  1e-6);
+		properties.put(TestProperties.MaxTolExamplePapulaSecondOrderErrorEstimate,  3e-2);
+		properties.put(TestProperties.EndExamplePapulaFirstOrder,0.3) ;
+		properties.put(TestProperties.StepsExamplePapulaFirstOrder,3d) ;
 		
 		
 		expectedResults.put(Result.ExamplePapulaFirstOrder, new double[] { 0, -0.005171, -0.021403, -0.049859 });
@@ -94,12 +97,16 @@ abstract class AbstractTestOdeResolver {
 	@Test
 	void solveExamplePapula1() {
 		// Seite 238 Papula Formelsammlung
-		final double maxTol = tolerances.get(MaxTol.ExamplePapulaFirstOrder);
+		final double maxTol = properties.get(TestProperties.MaxTolExamplePapulaFirstOrder);
 		final double[] expected = expectedResults.get(Result.ExamplePapulaFirstOrder);
 
+		
+		System.out.println(getClass());
 		// y' = y - x;
 		final OdeResolver odeResolver = newOdeResolver(TestDgl.DGL01);
-		final List<OdeResult> results = odeResolver.solve(doubleArray(0), 0, 0.3, 3);
+		
+		
+		final List<OdeResult> results = odeResolver.solve(doubleArray(0), 0, properties.get(TestProperties.EndExamplePapulaFirstOrder), properties.get(TestProperties.StepsExamplePapulaFirstOrder).intValue());
 		assertEquals(expected.length, results.size());
 		IntStream.range(0, expected.length).boxed()
 				.forEach(n -> assertEquals( expected[n] , results.get(n).yDerivative(0) , maxTol));
@@ -107,7 +114,7 @@ abstract class AbstractTestOdeResolver {
 
 	@Test
 	void solveStepSize() {
-		final double maxTol = tolerances.get(MaxTol.StepSize);
+		final double maxTol = properties.get(TestProperties.MaxTolStepSize);
 		// y' = 0
 		final OdeResolver odeResolver = newOdeResolver(TestDgl.DGL02);
 		final double[] y0 = { 10 };
@@ -127,7 +134,7 @@ abstract class AbstractTestOdeResolver {
 
 	@Test
 	void solveSqrtYPlusYStart1() {
-		final double maxTol = tolerances.get(MaxTol.SqrtYPlusYStart1);
+		final double maxTol = properties.get(TestProperties.MaxTolSqrtYPlusYStart1);
 		final int maxSteps = 1000;
 		final double start = 0;
 		final double stop = 1;
@@ -169,7 +176,7 @@ abstract class AbstractTestOdeResolver {
 			final double c = (Math.sqrt(y0) + 1) / Math.exp(start / 2);
 			final Function<Double, Double> f = x -> Math.pow(c * Math.exp(x / 2) - 1, 2) / Math.exp(start / 2);
 			IntStream.range(0, results.size()).boxed()
-					.forEach(n -> assertEquals(f.apply(results.get(n).x()), results.get(n).yDerivative(0), tolerances.get(MaxTol.SqrtYPlusYStart0)));
+					.forEach(n -> assertEquals(f.apply(results.get(n).x()), results.get(n).yDerivative(0), properties.get(TestProperties.MaxTolSqrtYPlusYStart0)));
 		}
 	}
 
@@ -180,7 +187,7 @@ abstract class AbstractTestOdeResolver {
 		final List<OdeResult> results = odeResolver.solve(doubleArray(0), 0, 1, 1000);
 
 		assertEquals(0, results.get(0).errorEstimaion());
-		IntStream.range(1, results.size()).boxed().forEach(n -> assertTrue(results.get(n).errorEstimaion() < tolerances.get(MaxTol.ErrorEstimaions)));
+		IntStream.range(1, results.size()).boxed().forEach(n -> assertTrue(results.get(n).errorEstimaion() < properties.get(TestProperties.MaxTolErrorEstimaions)));
 	}
 
 	@Test
@@ -190,7 +197,7 @@ abstract class AbstractTestOdeResolver {
 		final double[] expectedY = expectedResults.get(Result.ExamplePapulaSecondOrderY);
 
 		final double[] expectedY1 = expectedResults.get(Result.ExamplePapulaSecondOrderDerivative);
-		final double maxTol = tolerances.get(MaxTol.ExamplePapulaSecondOrder);
+		final double maxTol = properties.get(TestProperties.MaxTolExamplePapulaSecondOrder);
 		final double y0[] = doubleArray(0, 4);
 		final OdeResolver odeResolver = newOdeResolver(TestDgl.DGL04);
 		final List<OdeResult> results = odeResolver.solve(y0, 0, 0.2, 2);
@@ -200,7 +207,7 @@ abstract class AbstractTestOdeResolver {
 				.forEach(n -> assertEquals(expectedY1[n], results.get(n).yDerivative(1), maxTol));
 		IntStream.range(0, expectedY.length).boxed().forEach(n -> assertEquals(n * 0.1, results.get(n).x()));
 		IntStream.range(1, expectedY.length).boxed()
-				.forEach(n -> assertTrue(Math.abs(results.get(n).errorEstimaion()) < tolerances.get(MaxTol.ExamplePapulaSecondOrderErrorEstimate)));
+				.forEach(n -> assertTrue(Math.abs(results.get(n).errorEstimaion()) < properties.get(TestProperties.MaxTolExamplePapulaSecondOrderErrorEstimate)));
 		assertEquals(0, results.get(0).errorEstimaion());
 		assertEquals(y0[0], results.get(0).yDerivative(0));
 		assertEquals(y0[1], results.get(0).yDerivative(1));
@@ -209,7 +216,7 @@ abstract class AbstractTestOdeResolver {
 	@Test
 	void solveExamplePapula2CompareGeneralSolution() {
 		final double y0[] = doubleArray(0, 4);
-		final double maxTol = tolerances.get(MaxTol.ExamplePapulaSecondOrder);
+		final double maxTol = properties.get(TestProperties.MaxTolExamplePapulaSecondOrder);
 		final OdeResolver odeResolver = newOdeResolver(TestDgl.DGL04);
 		final List<OdeResult> results = odeResolver.solve(y0, 0, 1, 1000);
 

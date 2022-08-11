@@ -8,11 +8,11 @@ class TestOdeResolverImplWithRungeKutta2CalculatorImplAndLamdas extends Abstract
 	
 	@BeforeEach
 	void init() {
-		tolerances.put(AbstractTestOdeResolver.MaxTol.ExamplePapulaSecondOrderErrorEstimate, 1e-1);
-		tolerances.put(AbstractTestOdeResolver.MaxTol.ErrorEstimaions, 6e-4);
-		tolerances.put(AbstractTestOdeResolver.MaxTol.ExamplePapulaSecondOrder, 2e-6);
-		tolerances.put(AbstractTestOdeResolver.MaxTol.SqrtYPlusYStart0, 6e-6);
-		tolerances.put(AbstractTestOdeResolver.MaxTol.SqrtYPlusYStart1, 3e-6);
+		properties.put(AbstractTestOdeResolver.TestProperties.MaxTolExamplePapulaSecondOrderErrorEstimate, 1e-1);
+		properties.put(AbstractTestOdeResolver.TestProperties.MaxTolErrorEstimaions, 6e-4);
+		properties.put(AbstractTestOdeResolver.TestProperties.MaxTolExamplePapulaSecondOrder, 2e-6);
+		properties.put(AbstractTestOdeResolver.TestProperties.MaxTolSqrtYPlusYStart0, 6e-6);
+		properties.put(AbstractTestOdeResolver.TestProperties.MaxTolSqrtYPlusYStart1, 3e-6);
 		
 		expectedResults.put(AbstractTestOdeResolver.Result.ExamplePapulaFirstOrder, new double[] {0, -0.005, -0.021025, -0.049233});
 		expectedResults.put( AbstractTestOdeResolver.Result.ExamplePapulaSecondOrderY, new double[] {0,0.36000, 0.66600	});
