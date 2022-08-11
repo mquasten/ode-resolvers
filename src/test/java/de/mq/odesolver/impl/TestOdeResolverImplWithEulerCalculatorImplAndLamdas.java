@@ -8,9 +8,6 @@ class TestOdeResolverImplWithEulerCalculatorImplAndLamdas extends AbstractTestOd
 	
 	@BeforeEach
 	void init() {
-		/*tolerances.put(AbstractTestOdeResolver.MaxTol.ExamplePapulaSecondOrderErrorEstimate, 1e-1);
-		tolerances.put(AbstractTestOdeResolver.MaxTol.ExamplePapulaSecondOrder, 2e-6);
-		 */
 		properties.put(AbstractTestOdeResolver.TestProperties.EndExamplePapulaFirstOrder, 0.2d);
 		properties.put(AbstractTestOdeResolver.TestProperties.StepsExamplePapulaFirstOrder, 4d);
 		properties.put(AbstractTestOdeResolver.TestProperties.MaxTolErrorEstimaions, 2e-3);
