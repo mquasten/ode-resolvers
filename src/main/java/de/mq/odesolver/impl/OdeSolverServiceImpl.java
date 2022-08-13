@@ -23,7 +23,7 @@ class OdeSolverServiceImpl implements OdeSolverService {
 					.newInstance(function);
 			return new OdeSolverImpl(odeResultCalculator);
 		} catch (Exception exception) {
-			throw new IllegalStateException(exception);
+			throw new IllegalStateException(exception.getCause());
 		}
 
 	}

@@ -20,12 +20,12 @@ class OdeFunctionUtil {
 	double invokeFunction(final Invocable invocable, final double[] y, double x) {
 		try {
 			final double result = ((Number) invocable.invokeFunction("f", y, x)).doubleValue();
-
 			resultGuard(x, result);
-
 			return result;
 		} catch (final NoSuchMethodException | ScriptException e) {
 			throw new IllegalStateException("Unable to invoke function.", e);
+		} catch (final ClassCastException castException) {
+			throw new IllegalStateException("Function do not return a Number.");
 		}
 
 	}
