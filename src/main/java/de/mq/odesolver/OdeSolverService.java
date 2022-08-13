@@ -3,7 +3,7 @@ package de.mq.odesolver;
 import java.util.List;
 
 
-public interface OdeResolverService {
+public interface OdeSolverService {
 	
 	enum Algorithm {
 		EulerPolygonal,

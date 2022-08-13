@@ -4,11 +4,11 @@ import java.util.List;
 import java.util.Map;
 
 import de.mq.odesolver.OdeResolver;
-import de.mq.odesolver.OdeResolverService;
+import de.mq.odesolver.OdeSolverService;
 import de.mq.odesolver.OdeResult;
 import de.mq.odesolver.OdeResultCalculator;
 
-class OdeResolverServiceImpl implements OdeResolverService {
+class OdeSolverServiceImpl implements OdeSolverService {
 
 	static final double DELTA = 1e-3;
 	private final Map<Algorithm, Class<? extends OdeResultCalculator>> solvers = Map.of(Algorithm.EulerPolygonal,

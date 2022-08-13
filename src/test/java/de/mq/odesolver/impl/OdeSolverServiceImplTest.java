@@ -9,14 +9,14 @@ import java.util.Arrays;
 import org.junit.jupiter.api.Test;
 
 import de.mq.odesolver.OdeResolver;
-import de.mq.odesolver.OdeResolverService;
-import de.mq.odesolver.OdeResolverService.Algorithm;
+import de.mq.odesolver.OdeSolverService;
+import de.mq.odesolver.OdeSolverService.Algorithm;
 
-class OdeResolverServiceImplTest {
+class OdeSolverServiceImplTest {
 
 	private static final String ODE_STING_COMPILE_ERROR = "y[0] x";
 	private static final String ODE_STRING = "y[0]-x";
-	final OdeResolverService odeResolverService = new OdeResolverServiceImpl();
+	final OdeSolverService odeResolverService = new OdeSolverServiceImpl();
 
 	@Test
 	void odeResolver() {
