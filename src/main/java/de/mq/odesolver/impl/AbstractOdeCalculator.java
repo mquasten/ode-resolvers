@@ -44,6 +44,7 @@ public abstract class AbstractOdeCalculator implements OdeResultCalculator {
 
 	}
 	
+
 	
 	abstract double quality(); 
 	abstract double[] calculateFirstOrderOde(final OdeResult last, final double stepSize);
