@@ -4,6 +4,7 @@ import java.util.List;
 import java.util.Map;
 
 import de.mq.odesolver.OdeResolver;
+import de.mq.odesolver.OdeResolverService;
 import de.mq.odesolver.OdeResult;
 import de.mq.odesolver.OdeResultCalculator;
 

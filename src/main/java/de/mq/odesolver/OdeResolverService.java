@@ -1,12 +1,9 @@
-package de.mq.odesolver.impl;
+package de.mq.odesolver;
 
 import java.util.List;
 
-import de.mq.odesolver.OdeResolver;
-import de.mq.odesolver.OdeResult;
 
-
-interface OdeResolverService {
+public interface OdeResolverService {
 	
 	enum Algorithm {
 		EulerPolygonal,

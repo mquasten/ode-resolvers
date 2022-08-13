@@ -9,7 +9,8 @@ import java.util.Arrays;
 import org.junit.jupiter.api.Test;
 
 import de.mq.odesolver.OdeResolver;
-import de.mq.odesolver.impl.OdeResolverService.Algorithm;
+import de.mq.odesolver.OdeResolverService;
+import de.mq.odesolver.OdeResolverService.Algorithm;
 
 class OdeResolverServiceImplTest {
 
