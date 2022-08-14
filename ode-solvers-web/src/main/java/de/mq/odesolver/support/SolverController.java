@@ -1,5 +1,6 @@
 package de.mq.odesolver.support;
 
+import java.util.List;
 import java.util.Optional;
 
 import javax.validation.Valid;
@@ -15,6 +16,8 @@ import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
+import de.mq.odesolver.OdeResult;
+import de.mq.odesolver.OdeSolver;
 import de.mq.odesolver.OdeSolverService;
 
 @Controller
@@ -53,6 +56,11 @@ class SolverController {
 		if (validate != null) {
 			return "solve";
 		}
+		
+		
+		final OdeSolver odeSolver = odeSolverService.odeResolver(ode.algorithm(), ode.getOde());
+		final List<OdeResult> results = odeSolver.solve(ode.y(), ode.start(), ode.stop(),ode.steps() );
+		System.out.println("Results: " + results.size());
 
 		return "solve";
 	}
@@ -74,7 +82,7 @@ class SolverController {
 
 		try {
 		
-			odeSolverService.validateRightSide(ode.getOde(), ode.startOdeResult());
+			odeSolverService.validateRightSide(ode.getOde(),ode.y(), ode.start());
 			return Optional.empty();
 		} catch (final Exception exception) {
 			System.out.println("Error:" + exception.getMessage());

@@ -4,7 +4,7 @@ import java.util.Map;
 
 import javax.script.Invocable;
 
-import de.mq.odesolver.OdeResolver;
+import de.mq.odesolver.OdeSolver;
 import de.mq.odesolver.OdeResult;
 import de.mq.odesolver.OdeResultCalculator;
 import de.mq.odesolver.OdeSolverService;
@@ -22,7 +22,7 @@ class OdeSolverServiceImpl implements OdeSolverService {
 	}
 	
 	@Override
-	public final OdeResolver odeResolver(final Algorithm algorithm, final String function) {
+	public final OdeSolver odeResolver(final Algorithm algorithm, final String function) {
 
 		try {
 			final OdeResultCalculator odeResultCalculator = solvers.get(algorithm).getDeclaredConstructor(String.class)
@@ -37,9 +37,9 @@ class OdeSolverServiceImpl implements OdeSolverService {
 	
 
 	@Override
-	public final double validateRightSide(final String function, final OdeResult start) {
+	public final double validateRightSide(final String function, final double y0[], final double x0) {
 		final Invocable invocable= odeFunctionUtil.prepareFunction(function);
-		return odeFunctionUtil.invokeFunction(invocable, start.yDerivatives(), start.x());
+		return odeFunctionUtil.invokeFunction(invocable, y0, x0);
 	}
 
 }

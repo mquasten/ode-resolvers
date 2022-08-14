@@ -3,7 +3,6 @@ package de.mq.odesolver.support;
 import javax.validation.constraints.NotBlank;
 import org.springframework.util.StringUtils;
 
-import de.mq.odesolver.OdeResult;
 import de.mq.odesolver.OdeSolverService.Algorithm;
 
 public class Ode {
@@ -106,16 +105,17 @@ public class Ode {
 		}
 	}
 
-	OdeResult startOdeResult() {
-		return new OdeResultImpl(y(), start());
-	}
 
 	double start() {
-		return Double.valueOf(start);
+		return Double.valueOf(StringUtils.trimWhitespace(start));
 	}
 
 	double stop() {
-		return Double.valueOf(stop);
+		return Double.valueOf(StringUtils.trimWhitespace(stop));
+	}
+	
+	int steps() {
+		return Integer.parseInt(StringUtils.trimWhitespace(steps));
 	}
 
 	Algorithm algorithm() {

@@ -15,7 +15,7 @@ import java.util.stream.IntStream;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
 
-import de.mq.odesolver.OdeResolver;
+import de.mq.odesolver.OdeSolver;
 import de.mq.odesolver.OdeResult;
 import de.mq.odesolver.OdeResultCalculator;
 
@@ -23,7 +23,7 @@ public class OdeSolverImplTest {
 
 	private final OdeResultCalculator odeResultCalculator = Mockito.mock(OdeResultCalculator.class);
 
-	private final OdeResolver odeSolver = new OdeSolverImpl(odeResultCalculator);
+	private final OdeSolver odeSolver = new OdeSolverImpl(odeResultCalculator);
 
 	@Test
 	void solve() {

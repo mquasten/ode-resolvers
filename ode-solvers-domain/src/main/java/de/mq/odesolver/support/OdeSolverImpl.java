@@ -4,11 +4,11 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.IntStream;
 
-import de.mq.odesolver.OdeResolver;
+import de.mq.odesolver.OdeSolver;
 import de.mq.odesolver.OdeResult;
 import de.mq.odesolver.OdeResultCalculator;
 
-class OdeSolverImpl implements OdeResolver {
+class OdeSolverImpl implements OdeSolver {
 
 	private final OdeResultCalculator odeResultCalculator;
 

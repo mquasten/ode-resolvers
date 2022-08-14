@@ -2,7 +2,7 @@ package de.mq.odesolver.support;
 
 import org.junit.jupiter.api.BeforeEach;
 
-import de.mq.odesolver.OdeResolver;
+import de.mq.odesolver.OdeSolver;
 
 class OdeResolverImplWithRungeKutta2CalculatorImplAndLamdasTest extends AbstractTestOdeResolver {
 	
@@ -20,7 +20,7 @@ class OdeResolverImplWithRungeKutta2CalculatorImplAndLamdasTest extends Abstract
 	}
 
 	@Override
-	OdeResolver newOdeResolver(TestDgl testDgl) {
+	OdeSolver newOdeResolver(TestDgl testDgl) {
 		return new OdeSolverImpl(new RungeKutta2CalculatorImpl(testDgl.odeFunction()));
 	}
 

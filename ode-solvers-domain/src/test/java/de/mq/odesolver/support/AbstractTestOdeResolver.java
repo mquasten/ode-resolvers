@@ -15,7 +15,7 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.ValueSource;
 
-import de.mq.odesolver.OdeResolver;
+import de.mq.odesolver.OdeSolver;
 import de.mq.odesolver.OdeResult;
 
 
@@ -100,7 +100,7 @@ abstract class AbstractTestOdeResolver {
 		
 		System.out.println(getClass());
 		// y' = y - x;
-		final OdeResolver odeResolver = newOdeResolver(TestDgl.DGL01);
+		final OdeSolver odeResolver = newOdeResolver(TestDgl.DGL01);
 		
 		
 		final List<OdeResult> results = odeResolver.solve(doubleArray(0), 0, properties.get(TestProperties.EndExamplePapulaFirstOrder), properties.get(TestProperties.StepsExamplePapulaFirstOrder).intValue());
@@ -113,7 +113,7 @@ abstract class AbstractTestOdeResolver {
 	void solveStepSize() {
 		final double maxTol = properties.get(TestProperties.MaxTolStepSize);
 		// y' = 0
-		final OdeResolver odeResolver = newOdeResolver(TestDgl.DGL02);
+		final OdeSolver odeResolver = newOdeResolver(TestDgl.DGL02);
 		final double[] y0 = { 10 };
 		final double start = 1;
 		final double stop = 2;
@@ -137,7 +137,7 @@ abstract class AbstractTestOdeResolver {
 		final double stop = 1;
 		final double[] y0 = { 1 };
 		// y'= sqrt(y) + y
-		final OdeResolver odeResolver = newOdeResolver(TestDgl.DGL03);
+		final OdeSolver odeResolver = newOdeResolver(TestDgl.DGL03);
 
 		final List<OdeResult> results = odeResolver.solve(y0, start, stop, maxSteps);
 		assertEquals(maxSteps + 1, results.size());
@@ -161,7 +161,7 @@ abstract class AbstractTestOdeResolver {
 		final double stop = 1;
 		// y'= sqrt(y) + y
 		// Satz Picard-Lindeloef, y(0)=0: rechte Seite nicht lokal lipschitzstetig
-		final OdeResolver odeResolver = newOdeResolver(TestDgl.DGL03);
+		final OdeSolver odeResolver = newOdeResolver(TestDgl.DGL03);
 		final List<OdeResult> results = odeResolver.solve(doubleArray(y0), start, stop, maxSteps);
 		// allgemeine L�sung: y=(c*exp(x/2)-1)^2, c>=1 und y=0, f�r y(0)=0 nicht
 		// eindeutig
@@ -179,7 +179,7 @@ abstract class AbstractTestOdeResolver {
 
 	@Test
 	void errorEstimaions() {
-		final OdeResolver odeResolver = newOdeResolver(TestDgl.DGL01);
+		final OdeSolver odeResolver = newOdeResolver(TestDgl.DGL01);
 
 		final List<OdeResult> results = odeResolver.solve(doubleArray(0), 0, 1, 1000);
 
@@ -196,7 +196,7 @@ abstract class AbstractTestOdeResolver {
 		final double[] expectedY1 = expectedResults.get(Result.ExamplePapulaSecondOrderDerivative);
 		final double maxTol = properties.get(TestProperties.MaxTolExamplePapulaSecondOrder);
 		final double y0[] = doubleArray(0, 4);
-		final OdeResolver odeResolver = newOdeResolver(TestDgl.DGL04);
+		final OdeSolver odeResolver = newOdeResolver(TestDgl.DGL04);
 		final List<OdeResult> results = odeResolver.solve(y0, 0, 0.2, 2);
 		IntStream.range(0, expectedY.length).boxed()
 				.forEach(n -> assertEquals(expectedY[n], results.get(n).yDerivative(0), maxTol));
@@ -214,7 +214,7 @@ abstract class AbstractTestOdeResolver {
 	void solveExamplePapula2CompareGeneralSolution() {
 		final double y0[] = doubleArray(0, 4);
 		final double maxTol = properties.get(TestProperties.MaxTolExamplePapulaSecondOrder);
-		final OdeResolver odeResolver = newOdeResolver(TestDgl.DGL04);
+		final OdeSolver odeResolver = newOdeResolver(TestDgl.DGL04);
 		final List<OdeResult> results = odeResolver.solve(y0, 0, 1, 1000);
 
 		final Function<Double, Double> y = x -> Math.exp(x) - Math.exp(-3 * x);
@@ -227,6 +227,6 @@ abstract class AbstractTestOdeResolver {
 				.forEach(n -> assertEquals(dy.apply(results.get(n).x()), results.get(n).yDerivative(1), maxTol));
 	}
 
-	abstract OdeResolver newOdeResolver(TestDgl testDgl);
+	abstract OdeSolver newOdeResolver(TestDgl testDgl);
 
 }

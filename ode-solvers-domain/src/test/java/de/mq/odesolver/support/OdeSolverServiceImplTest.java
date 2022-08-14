@@ -12,6 +12,7 @@ import de.mq.odesolver.OdeSolverService.Algorithm;
 
 class OdeSolverServiceImplTest {
 
+	private static final double[] Y = OdeResultImpl.doubleArray(1);
 	private static final String ODE_STING_COMPILE_ERROR = "y[0] x";
 	private static final String ODE_STRING = "y[0]-x";
 	final OdeSolverService odeResolverService = new OdeSolverServiceImpl(new OdeFunctionUtil());
@@ -29,18 +30,14 @@ class OdeSolverServiceImplTest {
 	}
 	
 
-	private OdeResultImpl newOdeResult() {
-		return new OdeResultImpl(OdeResultImpl.doubleArray(1), 0);
-	}	
-	
 	@Test
 	void validate() {
-		odeResolverService.validateRightSide(ODE_STRING, newOdeResult());
+		odeResolverService.validateRightSide(ODE_STRING, Y, 0);
 	}
 	
 	@Test
 	void validateInvalid() {
-		assertThrows(IllegalArgumentException.class, ()->odeResolverService.validateRightSide( "y[0]/x", newOdeResult()));
+		assertThrows(IllegalArgumentException.class, ()->odeResolverService.validateRightSide( "y[0]/x", Y, 0));
 	}
 
 }

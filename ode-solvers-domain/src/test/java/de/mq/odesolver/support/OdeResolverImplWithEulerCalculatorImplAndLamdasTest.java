@@ -2,7 +2,7 @@ package de.mq.odesolver.support;
 
 import org.junit.jupiter.api.BeforeEach;
 
-import de.mq.odesolver.OdeResolver;
+import de.mq.odesolver.OdeSolver;
 
 class OdeResolverImplWithEulerCalculatorImplAndLamdasTest extends AbstractTestOdeResolver {
 	
@@ -22,7 +22,7 @@ class OdeResolverImplWithEulerCalculatorImplAndLamdasTest extends AbstractTestOd
 	}
 
 	@Override
-	OdeResolver newOdeResolver(TestDgl testDgl) {
+	OdeSolver newOdeResolver(TestDgl testDgl) {
 		return new OdeSolverImpl(new EulerCalculatorImpl(testDgl.odeFunction()));
 	}
 

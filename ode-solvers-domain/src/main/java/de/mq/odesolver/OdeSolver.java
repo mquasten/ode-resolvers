@@ -8,7 +8,7 @@ import java.util.List;
  * @author mq
  *
  */
-public interface OdeResolver {
+public interface OdeSolver {
 
 	/**
 	 * Loest die DGL numerisch. Unterstuetzt werden DGL'n 1. und 2. Ordnung.
