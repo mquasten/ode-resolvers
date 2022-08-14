@@ -1,12 +1,13 @@
 package de.mq.odesolver.impl;
 
-import java.util.List;
 import java.util.Map;
 
+import javax.script.Invocable;
+
 import de.mq.odesolver.OdeResolver;
-import de.mq.odesolver.OdeSolverService;
 import de.mq.odesolver.OdeResult;
 import de.mq.odesolver.OdeResultCalculator;
+import de.mq.odesolver.OdeSolverService;
 
 class OdeSolverServiceImpl implements OdeSolverService {
 
@@ -15,6 +16,11 @@ class OdeSolverServiceImpl implements OdeSolverService {
 			EulerCalculatorImpl.class, Algorithm.RungeKutta2ndOrder, RungeKutta2CalculatorImpl.class,
 			Algorithm.RungeKutta4ndOrder, RungeKutta4CalculatorImpl.class);
 
+	private final OdeFunctionUtil odeFunctionUtil;
+	OdeSolverServiceImpl(final OdeFunctionUtil odeFunctionUtil) {
+		this.odeFunctionUtil=odeFunctionUtil;
+	}
+	
 	@Override
 	public final OdeResolver odeResolver(final Algorithm algorithm, final String function) {
 
@@ -28,15 +34,12 @@ class OdeSolverServiceImpl implements OdeSolverService {
 
 	}
 
-	@Override
-	public final List<OdeResult> solve(final OdeResolver odeResolver, final OdeResult start, final double end,
-			final int steps) {
-		return odeResolver.solve(start.yDerivatives(), start.x(), end, steps);
-	}
+	
 
 	@Override
-	public void validate(final OdeResolver odeResolver, final OdeResult start) {
-		odeResolver.solve(start.yDerivatives(), start.x(), start.x() + DELTA, 2);
+	public final double validateRightSide(final String function, final OdeResult start) {
+		final Invocable invocable= odeFunctionUtil.prepareFunction(function);
+		return odeFunctionUtil.invokeFunction(invocable, start.yDerivatives(), start.x());
 	}
 
 }
