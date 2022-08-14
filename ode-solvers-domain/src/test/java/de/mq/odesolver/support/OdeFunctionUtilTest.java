@@ -51,5 +51,12 @@ class OdeFunctionUtilTest {
 		assertThrows(IllegalStateException.class,
 				() -> odeFunctionUtil.invokeFunction(invocable, new double[] { 0 }, 1));
 	}
+	
+	@Test
+	void invokeFunctionReturnNull() {
+		final Invocable invocable = odeFunctionUtil.prepareFunction("y[1]");
+		
+		assertThrows(IllegalArgumentException.class, ()->odeFunctionUtil.invokeFunction(invocable, new double[] { 0 }, 1));
+	}
 
 }
