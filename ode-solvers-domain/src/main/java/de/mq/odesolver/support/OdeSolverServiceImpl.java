@@ -4,9 +4,8 @@ import java.util.Map;
 
 import javax.script.Invocable;
 
-import de.mq.odesolver.OdeSolver;
-import de.mq.odesolver.OdeResult;
 import de.mq.odesolver.OdeResultCalculator;
+import de.mq.odesolver.OdeSolver;
 import de.mq.odesolver.OdeSolverService;
 
 class OdeSolverServiceImpl implements OdeSolverService {
@@ -33,8 +32,6 @@ class OdeSolverServiceImpl implements OdeSolverService {
 		}
 
 	}
-
-	
 
 	@Override
 	public final double validateRightSide(final String function, final double y0[], final double x0) {
