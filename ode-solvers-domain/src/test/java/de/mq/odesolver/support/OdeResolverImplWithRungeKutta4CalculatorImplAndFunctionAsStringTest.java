@@ -1,8 +1,8 @@
-package de.mq.odesolver.impl;
+package de.mq.odesolver.support;
 
 import de.mq.odesolver.OdeResolver;
 
-public class TestOdeResolverImplWithRungeKutta4CalculatorImplAndFunctionAsString extends AbstractTestOdeResolver {
+public class OdeResolverImplWithRungeKutta4CalculatorImplAndFunctionAsStringTest extends AbstractTestOdeResolver {
 
 	@Override
 	OdeResolver newOdeResolver(final TestDgl testDgl) {

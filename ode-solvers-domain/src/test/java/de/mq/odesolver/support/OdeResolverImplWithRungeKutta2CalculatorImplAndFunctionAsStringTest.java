@@ -1,8 +1,8 @@
-package de.mq.odesolver.impl;
+package de.mq.odesolver.support;
 
 import de.mq.odesolver.OdeResolver;
 
-public class TestOdeResolverImplWithRungeKutta2CalculatorImplAndFunctionAsString extends TestOdeResolverImplWithRungeKutta2CalculatorImplAndLamdas {
+public class OdeResolverImplWithRungeKutta2CalculatorImplAndFunctionAsStringTest extends OdeResolverImplWithRungeKutta2CalculatorImplAndLamdasTest {
 	
 	
 	@Override

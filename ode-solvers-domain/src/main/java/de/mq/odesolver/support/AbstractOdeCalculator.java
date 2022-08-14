@@ -1,4 +1,4 @@
-package de.mq.odesolver.impl;
+package de.mq.odesolver.support;
 
 import java.util.Map;
 import java.util.function.BiFunction;

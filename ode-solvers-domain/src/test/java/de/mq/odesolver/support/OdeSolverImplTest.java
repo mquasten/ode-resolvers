@@ -1,6 +1,6 @@
-package de.mq.odesolver.impl;
+package de.mq.odesolver.support;
 
-import static de.mq.odesolver.impl.OdeResultImpl.doubleArray;
+import static de.mq.odesolver.support.OdeResultImpl.doubleArray;
 import static org.junit.jupiter.api.Assertions.assertArrayEquals;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.ArgumentMatchers.any;

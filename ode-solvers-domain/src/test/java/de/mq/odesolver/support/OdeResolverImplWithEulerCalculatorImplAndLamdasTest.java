@@ -1,10 +1,10 @@
-package de.mq.odesolver.impl;
+package de.mq.odesolver.support;
 
 import org.junit.jupiter.api.BeforeEach;
 
 import de.mq.odesolver.OdeResolver;
 
-class TestOdeResolverImplWithEulerCalculatorImplAndLamdas extends AbstractTestOdeResolver {
+class OdeResolverImplWithEulerCalculatorImplAndLamdasTest extends AbstractTestOdeResolver {
 	
 	@BeforeEach
 	void init() {

@@ -1,9 +1,10 @@
-package de.mq.odesolver.impl;
+package de.mq.odesolver.support;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
 import org.junit.jupiter.api.Test;
+
 import de.mq.odesolver.OdeResultCalculator;
 
 class RungeKutta4CalculatorImplTest {

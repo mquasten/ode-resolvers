@@ -1,4 +1,4 @@
-package de.mq.odesolver.impl;
+package de.mq.odesolver.support;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
