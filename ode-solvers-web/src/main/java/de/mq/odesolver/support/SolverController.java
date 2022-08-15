@@ -1,7 +1,7 @@
 package de.mq.odesolver.support;
 
 import java.util.List;
-import java.util.Optional;
+
 
 import javax.validation.Valid;
 
@@ -15,6 +15,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.servlet.ModelAndView;
 
 import de.mq.odesolver.OdeResult;
 import de.mq.odesolver.OdeSolver;
@@ -24,10 +25,13 @@ import de.mq.odesolver.OdeSolverService;
 class SolverController {
 
 	private final OdeSolverService odeSolverService;
+	private final ResultsExcelView resultsExcelView;
 
+	
 	@Autowired
-	SolverController(final OdeSolverService odeSolverService) {
+	SolverController(final OdeSolverService odeSolverService, final ResultsExcelView resultsExcelView) {
 		this.odeSolverService = odeSolverService;
+		this.resultsExcelView=resultsExcelView;
 	}
 
 	@GetMapping("/solve")
@@ -43,51 +47,60 @@ class SolverController {
 	// Die Reihenfolge der Parameter ist wichtig, sonst funktioniert Beanvalidation
 	// nicht (Errorpage wird angezeigt) !!!
 	@PostMapping(value = "/solve")
-	public String greetingSubmit(@RequestParam(name = "validate", required = false) String validate,
-			@ModelAttribute("ode") @Valid Ode ode, BindingResult bindingResult, Model model) {
-
-		if (bindingResult.hasErrors()) {
-			System.out.println("*** Validation Errors ***");
-			return "solve";
+	public ModelAndView solveSubmit(@RequestParam(name = "command") final String command,
+			@ModelAttribute("ode") @Valid final Ode ode, final BindingResult bindingResult, final Model model) {
+	
+		if (bindingResult.hasFieldErrors()) {
+			return new ModelAndView("solve");
 		}
 
-		validate(ode).ifPresent(message -> bindingResult.addError(message));
+		if ( ! validate(ode, bindingResult) ) {
+			return new ModelAndView("solve");
+		}
 
-		if (validate != null) {
-			return "solve";
+		if(command.equals("valueTable")) {
+		   calculate(ode, model, bindingResult);
+		    return new ModelAndView(resultsExcelView);
 		}
 		
-		
-		final OdeSolver odeSolver = odeSolverService.odeResolver(ode.algorithm(), ode.getOde());
-		final List<OdeResult> results = odeSolver.solve(ode.y(), ode.start(), ode.stop(),ode.steps() );
-		System.out.println("Results: " + results.size());
-
-		return "solve";
+		return new ModelAndView("solve");
 	}
 
-	private Optional<ObjectError> validate(final Ode ode) {
+	private  void  calculate(final Ode ode, final Model model, final BindingResult bindingResult) {
+		try {
+		final OdeSolver odeSolver = odeSolverService.odeResolver(ode.algorithm(), ode.getOde());
+		final List<OdeResult> results = odeSolver.solve(ode.y(), ode.start(), ode.stop(),ode.steps() );
+		  model.addAttribute("results", results );
+		} catch(final Exception exception) {
+			bindingResult.addError(new ObjectError("ode", exception.getMessage()));
+		}
+		
+		
+	}
+
+	private boolean  validate(final Ode ode, final BindingResult bindingResult) {
 
 		if (ode.getOrder() == 2 && !StringUtils.hasText(ode.getyDerivative())) {
-			return Optional.of(new ObjectError("ode", "DGL 2. Ordung: y'(0) ist Mußfeld."));
+			bindingResult.addError(new ObjectError("ode", "DGL 2. Ordung: y'(0) ist Mußfeld."));
 		}
 
 		if (ode.getOrder() == 1 && StringUtils.hasText(ode.getyDerivative())) {
-			return Optional.of(new ObjectError("ode", "DGL 1. Ordung: y'(0) muß leer sein."));
-
+			bindingResult.addError(new ObjectError("ode", "DGL 1. Ordung: y'(0) muß leer sein."));
+            
 		}
 		
 		if(ode.start() >= ode.stop()) {
-			return Optional.of(new ObjectError("ode", "Start muß < stop sein."));
+			bindingResult.addError(new ObjectError("ode", "Start muß < stop sein."));
 		}
-
+		
 		try {
 		
 			odeSolverService.validateRightSide(ode.getOde(),ode.y(), ode.start());
-			return Optional.empty();
 		} catch (final Exception exception) {
-			System.out.println("Error:" + exception.getMessage());
-			return Optional.of(new ObjectError("ode", exception.getMessage()));
+			bindingResult.addError(new ObjectError("ode", exception.getMessage()));
 		}
+		
+		return ! bindingResult.hasGlobalErrors();
 	}
 
 }

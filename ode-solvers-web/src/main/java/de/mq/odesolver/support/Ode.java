@@ -1,5 +1,6 @@
 package de.mq.odesolver.support;
 
+import javax.validation.constraints.Max;
 import javax.validation.constraints.NotBlank;
 import org.springframework.util.StringUtils;
 
@@ -30,6 +31,7 @@ public class Ode {
 	private String stop;
 
 	@NaturalNumberConstraint
+	@Max(1048574)
 	private String steps;
 
 	public String getSolver() {

@@ -13,5 +13,6 @@ class OdeSolverConfiguration {
 	OdeSolverService odeSolverService () {
 		return new OdeSolverServiceImpl(new OdeFunctionUtil());
 	}
-
+	
+	
 }

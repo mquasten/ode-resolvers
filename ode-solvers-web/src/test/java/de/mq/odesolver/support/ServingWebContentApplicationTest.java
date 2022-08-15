@@ -54,5 +54,6 @@ public class ServingWebContentApplicationTest {
 		mockMvc.perform(get("/solve").param("name", "Greg"))
 				.andExpect(content().string(containsString("Hello, Greg!")));
 	}
+
 	
 }
