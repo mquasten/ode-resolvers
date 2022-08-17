@@ -1,7 +1,7 @@
+
 package de.mq.odesolver.support;
-
 import java.util.List;
-
+import java.util.Map;
 
 import javax.validation.Valid;
 
@@ -22,57 +22,74 @@ import de.mq.odesolver.OdeSolver;
 import de.mq.odesolver.OdeSolverService;
 
 @Controller
-class SolverController {
+class  SolveController  {
 
 	private final OdeSolverService odeSolverService;
-	private final ResultsExcelView resultsExcelView;
+
+	private final ModelAndView solveModelAndView= new ModelAndView("solve");
 
 	
+	private final Map<String, ModelAndView> commands;
+			
 	@Autowired
-	SolverController(final OdeSolverService odeSolverService, final ResultsExcelView resultsExcelView) {
+	SolveController(final OdeSolverService odeSolverService, final ResultsExcelView resultsExcelView, final ResultsGraphView resultsGraphView) {
 		this.odeSolverService = odeSolverService;
-		this.resultsExcelView=resultsExcelView;
+		this.commands=Map.of("valueTable", new ModelAndView(resultsExcelView), "graph", new ModelAndView(resultsGraphView ));
 	}
+		
 
 	@GetMapping("/solve")
-	public String solve(@RequestParam(name = "name", required = false, defaultValue = "World") String name,
-			Model model) {
-		model.addAttribute("name", name);
+	public ModelAndView solve(final Model model) {
+		
 		model.addAttribute("ode", new Ode());
-		return "solve";
+		
+		return solveModelAndView;
 	}
-
-	// https://spring.io/guides/gs/handling-form-submission/
-	// https://www.codejava.net/frameworks/spring-boot/spring-boot-thymeleaf-form-handling-tutorial
+	
+	
 	// Die Reihenfolge der Parameter ist wichtig, sonst funktioniert Beanvalidation
 	// nicht (Errorpage wird angezeigt) !!!
 	@PostMapping(value = "/solve")
 	public ModelAndView solveSubmit(@RequestParam(name = "command") final String command,
 			@ModelAttribute("ode") @Valid final Ode ode, final BindingResult bindingResult, final Model model) {
 	
+		
 		if (bindingResult.hasFieldErrors()) {
-			return new ModelAndView("solve");
+			return solveModelAndView;
 		}
 
 		if ( ! validate(ode, bindingResult) ) {
-			return new ModelAndView("solve");
+			return solveModelAndView;
 		}
 
-		if(command.equals("valueTable")) {
-		   calculate(ode, model, bindingResult);
-		    return new ModelAndView(resultsExcelView);
+		if(! commands.containsKey(command)) {
+			return solveModelAndView;
+		}
+
+		if(! calculate(ode, model, bindingResult)) {
+			return solveModelAndView;
 		}
 		
-		return new ModelAndView("solve");
+		
+		return commands.get(command);
+		
+		
 	}
 
-	private  void  calculate(final Ode ode, final Model model, final BindingResult bindingResult) {
+
+	
+
+	private  boolean  calculate(final Ode ode, final Model model, final BindingResult bindingResult) {
 		try {
 		final OdeSolver odeSolver = odeSolverService.odeResolver(ode.algorithm(), ode.getOde());
 		final List<OdeResult> results = odeSolver.solve(ode.y(), ode.start(), ode.stop(),ode.steps() );
-		  model.addAttribute("results", results );
+		  
+		model.addAttribute("results",results);
+		model.addAttribute("resultsTitle", ode.odeBeautified());
+		  return true;
 		} catch(final Exception exception) {
 			bindingResult.addError(new ObjectError("ode", exception.getMessage()));
+			 return false;
 		}
 		
 		
@@ -80,6 +97,7 @@ class SolverController {
 
 	private boolean  validate(final Ode ode, final BindingResult bindingResult) {
 
+		
 		if (ode.getOrder() == 2 && !StringUtils.hasText(ode.getyDerivative())) {
 			bindingResult.addError(new ObjectError("ode", "DGL 2. Ordung: y'(0) ist Mußfeld."));
 		}
@@ -103,4 +121,5 @@ class SolverController {
 		return ! bindingResult.hasGlobalErrors();
 	}
 
+	
 }

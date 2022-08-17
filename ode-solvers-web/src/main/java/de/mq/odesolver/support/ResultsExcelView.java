@@ -15,16 +15,19 @@ import org.springframework.web.servlet.view.document.AbstractXlsxView;
 
 import de.mq.odesolver.OdeResult;
 
+
 @Component()
-public class ResultsExcelView extends AbstractXlsxView {
+class ResultsExcelView extends AbstractXlsxView {
 
 	@Override
 	protected void buildExcelDocument(final Map<String, Object> model, final Workbook workbook,
 			final HttpServletRequest request, final HttpServletResponse response) throws Exception {
+
 		@SuppressWarnings("unchecked")
 		final List<OdeResult> results = (List<OdeResult>) model.get("results");
+		final String title =  (String) model.get("resultsTitle");
 		response.setHeader("Content-Disposition", "attachment; filename=odeSolverResults.xls");
-		final Sheet sheet = workbook.createSheet("Numerische Lösung der DGL");
+		final Sheet sheet = workbook.createSheet(title);
 		sheet.setFitToPage(true);
 
 		final Row header = sheet.createRow(0);
@@ -39,7 +42,7 @@ public class ResultsExcelView extends AbstractXlsxView {
 		}
 
 		IntStream.range(0, results.size()).forEach(i -> writeRow(results, sheet, i));
-		
+
 		model.remove("results");
 
 	}

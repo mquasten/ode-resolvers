@@ -1,13 +1,22 @@
 package de.mq.odesolver.support;
 
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.List;
+
+import javax.validation.Valid;
 import javax.validation.constraints.Max;
 import javax.validation.constraints.NotBlank;
 import org.springframework.util.StringUtils;
 
+import de.mq.odesolver.OdeResult;
 import de.mq.odesolver.OdeSolverService.Algorithm;
 
+@Valid
 public class Ode {
 
+	private final String REGEX_Y_DERIVATIVE = "y\\[\\s*%s\\s*\\]";;
+	
 	private Integer order;
 
 	@NotBlank
@@ -33,6 +42,8 @@ public class Ode {
 	@NaturalNumberConstraint
 	@Max(1048574)
 	private String steps;
+	
+	private List<OdeResult> results = new ArrayList<>();
 
 	public String getSolver() {
 		return solver;
@@ -98,7 +109,7 @@ public class Ode {
 		this.order = order;
 	}
 
-	double[] y() {
+	final double[] y() {
 		if (order == 1) {
 			return OdeResultImpl.doubleArray(Double.parseDouble(StringUtils.trimWhitespace(y)));
 		} else {
@@ -108,20 +119,37 @@ public class Ode {
 	}
 
 
-	double start() {
+	final double start() {
 		return Double.valueOf(StringUtils.trimWhitespace(start));
 	}
 
-	double stop() {
+	final double stop() {
 		return Double.valueOf(StringUtils.trimWhitespace(stop));
 	}
 	
-	int steps() {
+	final int steps() {
 		return Integer.parseInt(StringUtils.trimWhitespace(steps));
 	}
 
-	Algorithm algorithm() {
+	final Algorithm algorithm() {
 		return Algorithm.valueOf(solver);
+	}
+	
+	final void assign(final Collection<OdeResult> results) {
+		this.results.clear();
+		this.results.addAll(results);
+	}
+	
+	final List<OdeResult> results() {
+		return results;
+		
+	}
+	final String odeBeautified() {
+		final String prefix = order  == 1 ? "y'=" : "y''=";
+
+		return  prefix
+				+ ode.replaceAll(String.format(REGEX_Y_DERIVATIVE, 0), "y").replaceAll(String.format(REGEX_Y_DERIVATIVE, 1), "y'");
+		
 	}
 
 }

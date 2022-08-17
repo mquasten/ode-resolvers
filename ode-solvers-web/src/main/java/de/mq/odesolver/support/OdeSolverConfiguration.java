@@ -1,5 +1,6 @@
 package de.mq.odesolver.support;
 
+
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
@@ -13,6 +14,5 @@ class OdeSolverConfiguration {
 	OdeSolverService odeSolverService () {
 		return new OdeSolverServiceImpl(new OdeFunctionUtil());
 	}
-	
 	
 }
