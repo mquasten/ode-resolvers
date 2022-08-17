@@ -8,7 +8,6 @@ import javax.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.util.StringUtils;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.ObjectError;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -92,19 +91,14 @@ class  SolveController  {
 			 return false;
 		}
 		
-		
+	
 	}
 
 	private boolean  validate(final Ode ode, final BindingResult bindingResult) {
 
 		
-		if (ode.getOrder() == 2 && !StringUtils.hasText(ode.getyDerivative())) {
-			bindingResult.addError(new ObjectError("ode", "DGL 2. Ordung: y'(0) ist Mußfeld."));
-		}
-
-		if (ode.getOrder() == 1 && StringUtils.hasText(ode.getyDerivative())) {
-			bindingResult.addError(new ObjectError("ode", "DGL 1. Ordung: y'(0) muß leer sein."));
-            
+		if ( ode.y().length != ode.getOrder() ) {
+			bindingResult.addError(new ObjectError("ode", "falsche Anzahl Startwerte."));
 		}
 		
 		if(ode.start() >= ode.stop()) {

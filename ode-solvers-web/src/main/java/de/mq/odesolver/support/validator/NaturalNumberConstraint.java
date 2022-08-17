@@ -1,4 +1,4 @@
-package de.mq.odesolver.support;
+package de.mq.odesolver.support.validator;
 
 import java.lang.annotation.Documented;
 import java.lang.annotation.ElementType;
@@ -10,11 +10,11 @@ import javax.validation.Constraint;
 import javax.validation.Payload;
 
 @Documented
-@Constraint(validatedBy = DoubleValidator.class)
+@Constraint(validatedBy = NaturalNumberValidator.class)
 @Target( { ElementType.METHOD, ElementType.FIELD })
 @Retention(RetentionPolicy.RUNTIME)
-public @interface DoubleConstraint {
-    String message() default "keine reelle Zahl";
+public @interface NaturalNumberConstraint {
+    String message() default "keine Zahl > 0";
     Class<?>[] groups() default {};
     Class<? extends Payload>[] payload() default {};
 }

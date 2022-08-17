@@ -1,16 +1,22 @@
 package de.mq.odesolver.support;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
 
 import javax.validation.Valid;
 import javax.validation.constraints.Max;
 import javax.validation.constraints.NotBlank;
+
 import org.springframework.util.StringUtils;
 
 import de.mq.odesolver.OdeResult;
 import de.mq.odesolver.OdeSolverService.Algorithm;
+import de.mq.odesolver.support.validator.DoubleArrayConstraint;
+import de.mq.odesolver.support.validator.DoubleArrayValidator;
+import de.mq.odesolver.support.validator.DoubleConstraint;
+import de.mq.odesolver.support.validator.NaturalNumberConstraint;
 
 @Valid
 public class Ode {
@@ -24,12 +30,11 @@ public class Ode {
 
 	private String solver;
 
-	@DoubleConstraint
+	@DoubleArrayConstraint
 	@NotBlank
 	private String y;
 
-	@DoubleConstraint
-	private String yDerivative;
+	
 
 	@DoubleConstraint
 	@NotBlank
@@ -93,13 +98,6 @@ public class Ode {
 		this.y = y;
 	}
 
-	public String getyDerivative() {
-		return yDerivative;
-	}
-
-	public void setyDerivative(String yDerivative) {
-		this.yDerivative = yDerivative;
-	}
 
 	public Integer getOrder() {
 		return order;
@@ -110,12 +108,7 @@ public class Ode {
 	}
 
 	final double[] y() {
-		if (order == 1) {
-			return OdeResultImpl.doubleArray(Double.parseDouble(StringUtils.trimWhitespace(y)));
-		} else {
-			return OdeResultImpl.doubleArray(Double.parseDouble(StringUtils.trimWhitespace(y)),
-					Double.parseDouble(StringUtils.trimWhitespace(yDerivative)));
-		}
+		return Arrays.asList(y.split(DoubleArrayValidator.REGEX_SPLIT_DOUBLE_VECTOR)).stream().mapToDouble(Double::parseDouble).toArray();
 	}
 
 
@@ -151,5 +144,7 @@ public class Ode {
 				+ ode.replaceAll(String.format(REGEX_Y_DERIVATIVE, 0), "y").replaceAll(String.format(REGEX_Y_DERIVATIVE, 1), "y'");
 		
 	}
+
+
 
 }

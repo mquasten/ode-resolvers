@@ -4,9 +4,9 @@
 <meta charset="ISO-8859-1">
 <title>gew&ouml;hnliche DGL'n</title>
 <style>
-    .error {
-        color: red;
-    }
+.error {
+	color: red;
+}
 </style>
 </head>
 <body>
@@ -23,54 +23,55 @@
 
 					</select></td>
 				</tr>
-			
+
 				<tr>
 					<td><label>Algorithmus:</label></td>
 					<td><select th:field="*{solver}">
+							<option th:value="'RungeKutta4ndOrder'"
+								th:text="'Runge-Kutta 4. Ordnung'"></option>
+							<option th:value="'RungeKutta2ndOrder'"
+								th:text="'Runge-Kutta 2. Ordnung'"></option>
 							<option th:value="'EulerPolygonal'" th:text="'Euler Polygonzug'"></option>
-							<option th:value="'RungeKutta2ndOrder'" th:text="'Runge-Kutta 2. Ordnung'"></option>
-							<option th:value="'RungeKutta4ndOrder'" th:text="'Runge-Kutta 4. Ordnung'"></option>
-
 					</select></td>
 				</tr>
-				
+
 				<tr>
 					<td><label>rechte Seite:</label></td>
 					<td><textarea id="ode" rows="3" cols="25" th:field="*{ode}"></textarea>
 					</td>
-					
-					<td th:if="${#fields.hasErrors('ode')}" th:errors="*{ode}" th:errorclass="error"></td>
+
+					<td th:if="${#fields.hasErrors('ode')}" th:errors="*{ode}"
+						th:errorclass="error"></td>
 				</tr>
-				
+
 				<tr>
-					<td><label>y(0):</label></td>
+					<td><label>Anfangswerte:</label></td>
 					<td><input type="text" th:field="*{y}" /></td>
-					<td th:if="${#fields.hasErrors('y')}" th:errors="*{y}" th:errorclass="error"></td>
+					<td th:if="${#fields.hasErrors('y')}" th:errors="*{y}"
+						th:errorclass="error"></td>
 				</tr>
-				<tr>
-					<td><label>y'(0):</label></td>
-					<td><input type="text" th:field="*{yDerivative}" /></td>
-					<td th:if="${#fields.hasErrors('yDerivative')}" th:errors="*{yDerivative}" th:errorclass="error"></td>
-				</tr>
-				
+
 				<tr>
 					<td><label>Start:</label></td>
 					<td><input type="text" th:field="*{start}" /></td>
-					<td th:if="${#fields.hasErrors('start')}" th:errors="*{start}" th:errorclass="error"></td>
+					<td th:if="${#fields.hasErrors('start')}" th:errors="*{start}"
+						th:errorclass="error"></td>
 				</tr>
 				<tr>
 					<td><label>Stop:</label></td>
 					<td><input type="text" th:field="*{stop}" /></td>
-						<td th:if="${#fields.hasErrors('stop')}" th:errors="*{stop}" th:errorclass="error"></td>
+					<td th:if="${#fields.hasErrors('stop')}" th:errors="*{stop}"
+						th:errorclass="error"></td>
 				</tr>
 
 				<tr>
 					<td><label>Schritte:</label></td>
 					<td><input type="text" th:field="*{steps}" /></td>
-					<td th:if="${#fields.hasErrors('steps')}" th:errors="*{steps}" th:errorclass="error"></td>
+					<td th:if="${#fields.hasErrors('steps')}" th:errors="*{steps}"
+						th:errorclass="error"></td>
 				</tr>
 
-				<tr> 
+				<tr>
 					<th colspan="2">
 						<div th:if="${#fields.hasErrors('global')}">
 							<p th:each="err : ${#fields.errors('global')}" th:text="${err}"
@@ -80,12 +81,12 @@
 
 					</th>
 				</tr>
-				
+
 				<tr>
 					<th colspan="2">
 						<button type="submit" name="command" value="validate">Validieren</button>
-						<button type="submit" name="command" value="valueTable" >Wertetabelle</button>
-						<button type="submit" name="command" value="graph" >Graph</button>
+						<button type="submit" name="command" value="valueTable">Wertetabelle</button>
+						<button type="submit" name="command" value="graph">Graph</button>
 					</th>
 				</tr>
 			</table>

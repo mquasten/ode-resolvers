@@ -1,4 +1,4 @@
-package de.mq.odesolver.support;
+package de.mq.odesolver.support.validator;
 
 import javax.validation.ConstraintValidator;
 import javax.validation.ConstraintValidatorContext;
