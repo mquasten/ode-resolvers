@@ -8,6 +8,9 @@ import javax.validation.ConstraintValidator;
 
 import org.junit.jupiter.api.Test;
 
+import de.mq.odesolver.validator.DoubleArrayConstraint;
+import de.mq.odesolver.validator.DoubleArrayValidator;
+
 class DoubleArrayValidatorTest {
 	
 	ConstraintValidator<DoubleArrayConstraint, String>  validator = new DoubleArrayValidator();
