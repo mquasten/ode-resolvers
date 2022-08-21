@@ -4,58 +4,70 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
 import javax.script.Invocable;
-
-import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.EnumSource;
 
 import de.mq.odesolver.solve.support.OdeFunctionUtil.Language;
 
 class OdeFunctionUtilTest {
 
-	private final OdeFunctionUtil odeFunctionUtil = new OdeFunctionUtil(Language.Nashorn);
-
-	@Test
-	void berechnehoechsteAbleitung() {
+	@ParameterizedTest
+	@EnumSource
+	void berechnehoechsteAbleitung(final Language language) {
+		final OdeFunctionUtil odeFunctionUtil = new OdeFunctionUtil(language);
 		final Invocable invocable = odeFunctionUtil.prepareFunction("y[1]+y[0]+x");
 
 		assertEquals(6, odeFunctionUtil.invokeFunction(invocable, new double[] { 1, 2 }, 3));
 	}
 
-	@Test
-	void prepareFunctionException() {
+	@ParameterizedTest
+	@EnumSource
+	void prepareFunctionException(final Language language) {
+		final OdeFunctionUtil odeFunctionUtil = new OdeFunctionUtil(language);
 		assertThrows(IllegalStateException.class, () -> odeFunctionUtil.prepareFunction("y'+y+x"));
 
 	}
 
-	@Test
-	void invokeFunctionException() {
+	@ParameterizedTest
+	@EnumSource
+	void invokeFunctionException(final Language language) {
+		final OdeFunctionUtil odeFunctionUtil = new OdeFunctionUtil(language);
 		final Invocable invocable = odeFunctionUtil.prepareFunction("y[1]+y[0]+t");
 		assertThrows(IllegalStateException.class,
 				() -> odeFunctionUtil.invokeFunction(invocable, new double[] { 1, 2 }, 3));
 	}
 
-	@Test
-	void invokeFunctionNaN() {
+	@ParameterizedTest
+	@EnumSource
+	void invokeFunctionNaN(final Language language) {
+		final OdeFunctionUtil odeFunctionUtil = new OdeFunctionUtil(language);
 		final Invocable invocable = odeFunctionUtil.prepareFunction("y[1]+y[0]+x");
 		assertThrows(IllegalStateException.class,
 				() -> odeFunctionUtil.invokeFunction(invocable, new double[] { 1 }, 3));
 	}
 
-	@Test
-	void invokeFunctionInvinit() {
+	@ParameterizedTest
+	@EnumSource
+	void invokeFunctionInvinit(final Language language) {
+		final OdeFunctionUtil odeFunctionUtil = new OdeFunctionUtil(language);
 		final Invocable invocable = odeFunctionUtil.prepareFunction("y[0]/x");
 		assertThrows(IllegalArgumentException.class,
 				() -> odeFunctionUtil.invokeFunction(invocable, new double[] { 1 }, 0));
 	}
 
-	@Test
-	void invokeFunctionReturnValueIsNotANumber() {
+	@ParameterizedTest
+	@EnumSource
+	void invokeFunctionReturnValueIsNotANumber(final Language language) {
+		final OdeFunctionUtil odeFunctionUtil = new OdeFunctionUtil(language);
 		final Invocable invocable = odeFunctionUtil.prepareFunction("y+ x");
 		assertThrows(IllegalStateException.class,
 				() -> odeFunctionUtil.invokeFunction(invocable, new double[] { 0 }, 1));
 	}
 
-	@Test
-	void invokeFunctionReturnNull() {
+	@ParameterizedTest
+	@EnumSource
+	void invokeFunctionReturnNull(final Language language) {
+		final OdeFunctionUtil odeFunctionUtil = new OdeFunctionUtil(language);
 		final Invocable invocable = odeFunctionUtil.prepareFunction("y[1]");
 
 		assertThrows(IllegalStateException.class,

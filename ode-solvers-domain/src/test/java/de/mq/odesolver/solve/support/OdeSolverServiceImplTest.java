@@ -4,7 +4,8 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 
 import java.util.Arrays;
 
-import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.EnumSource;
 
 import de.mq.odesolver.solve.OdeSolverService;
 import de.mq.odesolver.solve.OdeSolverService.Algorithm;
@@ -15,26 +16,33 @@ class OdeSolverServiceImplTest {
 	private static final double[] Y = OdeResultImpl.doubleArray(1);
 	private static final String ODE_STING_COMPILE_ERROR = "y[0] x";
 	private static final String ODE_STRING = "y[0]-x";
-	final OdeSolverService odeResolverService = new OdeSolverServiceImpl(new OdeFunctionUtil(Language.Nashorn));
 
-	@Test
-	void odeResolver() {
+	@ParameterizedTest
+	@EnumSource
+	void odeResolver(final Language language) {
+		final OdeSolverService odeResolverService = new OdeSolverServiceImpl(new OdeFunctionUtil(language));
 		Arrays.asList(Algorithm.values()).forEach(algorithm -> odeResolverService.odeResolver(algorithm, ODE_STRING));
 	}
 
-	@Test
-	void odeResolverException() {
+	@ParameterizedTest
+	@EnumSource
+	void odeResolverException(final Language language) {
+		final OdeSolverService odeResolverService = new OdeSolverServiceImpl(new OdeFunctionUtil(language));
 		assertThrows(IllegalStateException.class,
 				() -> odeResolverService.odeResolver(Algorithm.EulerPolygonal, ODE_STING_COMPILE_ERROR));
 	}
 
-	@Test
-	void validate() {
+	@ParameterizedTest
+	@EnumSource
+	void validate(final Language language) {
+		final OdeSolverService odeResolverService = new OdeSolverServiceImpl(new OdeFunctionUtil(language));
 		odeResolverService.validateRightSide(ODE_STRING, Y, 0);
 	}
 
-	@Test
-	void validateInvalid() {
+	@ParameterizedTest
+	@EnumSource
+	void validateInvalid(final Language language) {
+		final OdeSolverService odeResolverService = new OdeSolverServiceImpl(new OdeFunctionUtil(language));
 		assertThrows(IllegalArgumentException.class, () -> odeResolverService.validateRightSide("y[0]/x", Y, 0));
 	}
 
