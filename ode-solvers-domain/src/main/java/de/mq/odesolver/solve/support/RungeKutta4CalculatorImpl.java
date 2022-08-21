@@ -13,8 +13,8 @@ class RungeKutta4CalculatorImpl extends AbstractOdeCalculator {
 		super(firstOrderOdeFunction);
 	}
 
-	RungeKutta4CalculatorImpl(final String function) {
-		super(function);
+	RungeKutta4CalculatorImpl(final OdeFunctionUtil odeFunctionUtil, final String function) {
+		super(odeFunctionUtil, function);
 	}
 		
 

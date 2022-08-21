@@ -6,7 +6,9 @@ import java.util.stream.IntStream;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-
+import org.apache.poi.ss.usermodel.Cell;
+import org.apache.poi.ss.usermodel.CellStyle;
+import org.apache.poi.ss.usermodel.Font;
 import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.ss.usermodel.Sheet;
 import org.apache.poi.ss.usermodel.Workbook;
@@ -14,7 +16,6 @@ import org.springframework.stereotype.Component;
 import org.springframework.web.servlet.view.document.AbstractXlsxView;
 
 import de.mq.odesolver.solve.OdeResult;
-
 
 @Component()
 class ResultsExcelView extends AbstractXlsxView {
@@ -25,12 +26,24 @@ class ResultsExcelView extends AbstractXlsxView {
 
 		@SuppressWarnings("unchecked")
 		final List<OdeResult> results = (List<OdeResult>) model.get("results");
-		final String title =  (String) model.get("resultsTitle");
+		final String title =(String) model.get("resultsTitle");
+
 		response.setHeader("Content-Disposition", "attachment; filename=odeSolverResults.xls");
-		final Sheet sheet = workbook.createSheet(title);
+		final Sheet sheet = workbook.createSheet("Wertetabelle");
 		sheet.setFitToPage(true);
 
-		final Row header = sheet.createRow(0);
+		// font.setColor(HSSFColorPredefined.DARK_RED.getIndex());
+		// style.setFont(font);
+
+		final Row headlineRow = sheet.createRow(0);
+		final Cell headlineCell = headlineRow.createCell(0);
+		headlineCell.setCellValue(title);
+
+		final CellStyle cellStyle = boldCellStyle(workbook);
+
+		headlineCell.setCellStyle(cellStyle);
+
+		final Row header = sheet.createRow(1);
 		header.createCell(0).setCellValue("x");
 		header.createCell(1).setCellValue("y(x)");
 		if (results.size() == 0) {
@@ -47,8 +60,16 @@ class ResultsExcelView extends AbstractXlsxView {
 
 	}
 
+	private CellStyle boldCellStyle(final Workbook workbook) {
+		final Font font = workbook.createFont();
+		font.setBold(true);
+		final CellStyle cellStyle = workbook.createCellStyle();
+		cellStyle.setFont(font);
+		return cellStyle;
+	}
+
 	private void writeRow(final List<OdeResult> results, final Sheet sheet, final int i) {
-		final Row date = sheet.createRow(i + 1);
+		final Row date = sheet.createRow(i + 2);
 		final OdeResult odeResult = results.get(i);
 		date.createCell(0).setCellValue(odeResult.x());
 		IntStream.range(0, odeResult.yDerivatives().length)

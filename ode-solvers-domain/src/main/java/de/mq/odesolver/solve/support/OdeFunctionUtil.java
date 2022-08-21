@@ -16,10 +16,35 @@ import javax.script.ScriptException;
  *
  */
 class OdeFunctionUtil {
+	
+	enum Language {
+		Nashorn("function %s(y, x) {return %s}"),
+		JRuby("def %s(y, x) return %s  end");
+		Language(final String functionPattern){
+			this.functionPattern=functionPattern;
+		}
+		private final String functionPattern;
+		
+		final String functionPattern() {
+			return functionPattern;
+		}
+		
+		final String scriptEngine() {
+			return name().toLowerCase();
+		}
+		
+	}
+	
+	private final Language language;
+	OdeFunctionUtil(final Language language) {
+		this.language=language;
+	}
+	
+	private final String FUNCTION_NAME="f";
 
 	double invokeFunction(final Invocable invocable, final double[] y, double x) {
 		try {
-			final Number result = ((Number) invocable.invokeFunction("f", y, x));
+			final Number result = ((Number) invocable.invokeFunction(FUNCTION_NAME, y, x));
 			notNullGuard(x, result);
 			resultGuard(x, result.doubleValue());
 			return result.doubleValue();
@@ -33,13 +58,13 @@ class OdeFunctionUtil {
 
 	private void notNullGuard(double x, final Number result) {
 		if( result == null) {
-			throw new IllegalArgumentException(String.format("Function returns null for x=%e, may be wrong size y[]", x));
+			throw new IllegalStateException(String.format("Function returns null for x=%e, may be wrong size y[]", x));
 		}
 	}
 
 	private void resultGuard(final Double x, final double result) {
 		if (Double.isNaN(result)) {
-			throw new IllegalArgumentException(
+			throw new IllegalStateException(
 					String.format("Function returns NaN for x=%e, may be wrong size y[]", x));
 		}
 		if (Double.isInfinite(result)) {
@@ -56,11 +81,11 @@ class OdeFunctionUtil {
 	 * @return die compilierte Funktion
 	 */
 	Invocable prepareFunction(final String function) {
-		final ScriptEngine engine = new ScriptEngineManager().getEngineByName("nashorn");
+		
+		final ScriptEngine engine = new ScriptEngineManager().getEngineByName(language.scriptEngine());
 		final Compilable compilable = (Compilable) engine;
 		final Invocable invocable = (Invocable) engine;
-
-		final String statement = String.format("function f(y, x) {return %s}", function);
+		final String statement = String.format(language.functionPattern(), FUNCTION_NAME, function);
 		try {
 			final CompiledScript compiled = compilable.compile(statement);
 			compiled.eval();

@@ -16,16 +16,17 @@ class OdeSolverServiceImpl implements OdeSolverService {
 			Algorithm.RungeKutta4ndOrder, RungeKutta4CalculatorImpl.class);
 
 	private final OdeFunctionUtil odeFunctionUtil;
+
 	OdeSolverServiceImpl(final OdeFunctionUtil odeFunctionUtil) {
-		this.odeFunctionUtil=odeFunctionUtil;
+		this.odeFunctionUtil = odeFunctionUtil;
 	}
-	
+
 	@Override
 	public final OdeSolver odeResolver(final Algorithm algorithm, final String function) {
 
 		try {
-			final OdeResultCalculator odeResultCalculator = solvers.get(algorithm).getDeclaredConstructor(String.class)
-					.newInstance(function);
+			final OdeResultCalculator odeResultCalculator = solvers.get(algorithm)
+					.getDeclaredConstructor(OdeFunctionUtil.class, String.class).newInstance(odeFunctionUtil, function);
 			return new OdeSolverImpl(odeResultCalculator);
 		} catch (Exception exception) {
 			throw new IllegalStateException(exception.getCause());
@@ -35,7 +36,7 @@ class OdeSolverServiceImpl implements OdeSolverService {
 
 	@Override
 	public final double validateRightSide(final String function, final double y0[], final double x0) {
-		final Invocable invocable= odeFunctionUtil.prepareFunction(function);
+		final Invocable invocable = odeFunctionUtil.prepareFunction(function);
 		return odeFunctionUtil.invokeFunction(invocable, y0, x0);
 	}
 

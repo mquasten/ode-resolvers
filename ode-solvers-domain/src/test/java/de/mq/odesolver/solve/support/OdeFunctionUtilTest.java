@@ -7,9 +7,11 @@ import javax.script.Invocable;
 
 import org.junit.jupiter.api.Test;
 
+import de.mq.odesolver.solve.support.OdeFunctionUtil.Language;
+
 class OdeFunctionUtilTest {
 
-	private final OdeFunctionUtil odeFunctionUtil = new OdeFunctionUtil();
+	private final OdeFunctionUtil odeFunctionUtil = new OdeFunctionUtil(Language.Nashorn);
 
 	@Test
 	void berechnehoechsteAbleitung() {
@@ -34,7 +36,7 @@ class OdeFunctionUtilTest {
 	@Test
 	void invokeFunctionNaN() {
 		final Invocable invocable = odeFunctionUtil.prepareFunction("y[1]+y[0]+x");
-		assertThrows(IllegalArgumentException.class,
+		assertThrows(IllegalStateException.class,
 				() -> odeFunctionUtil.invokeFunction(invocable, new double[] { 1 }, 3));
 	}
 
@@ -51,12 +53,13 @@ class OdeFunctionUtilTest {
 		assertThrows(IllegalStateException.class,
 				() -> odeFunctionUtil.invokeFunction(invocable, new double[] { 0 }, 1));
 	}
-	
+
 	@Test
 	void invokeFunctionReturnNull() {
 		final Invocable invocable = odeFunctionUtil.prepareFunction("y[1]");
-		
-		assertThrows(IllegalArgumentException.class, ()->odeFunctionUtil.invokeFunction(invocable, new double[] { 0 }, 1));
+
+		assertThrows(IllegalStateException.class,
+				() -> odeFunctionUtil.invokeFunction(invocable, new double[] { 0 }, 1));
 	}
 
 }

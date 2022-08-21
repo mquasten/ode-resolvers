@@ -27,7 +27,7 @@ abstract class AbstractTestOdeResolver {
 
 	enum TestDgl {
 		DGL01(firstOderOdeArguments -> firstOderOdeArguments.yDerivative(0) - firstOderOdeArguments.x(), "y[0]-x"),
-		DGL02(firstOderOdeArguments -> 0d, "parseFloat(0)"),
+		DGL02(firstOderOdeArguments -> 0d, "0.0"),
 		DGL03(firstOderOdeArguments -> Math.sqrt(firstOderOdeArguments.yDerivative(0))
 				+ firstOderOdeArguments.yDerivative(0), "Math.sqrt(y[0])+y[0]"),
 		DGL04(firstOderOdeArguments -> 3 * firstOderOdeArguments.yDerivative(0)

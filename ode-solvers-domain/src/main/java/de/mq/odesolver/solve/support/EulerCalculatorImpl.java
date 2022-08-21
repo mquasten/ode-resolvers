@@ -10,8 +10,8 @@ class EulerCalculatorImpl extends AbstractOdeCalculator {
 		super(odeFunction);
 	}
 
-	EulerCalculatorImpl(final String odeFunction) {
-		super(odeFunction);
+	EulerCalculatorImpl(final OdeFunctionUtil odeFunctionUtil, final String odeFunction) {
+		super(odeFunctionUtil,odeFunction);
 	}
 
 	@Override

@@ -12,8 +12,8 @@ class RungeKutta2CalculatorImpl  extends AbstractOdeCalculator{
 		super(odeFunction);
 	}
 	
-	RungeKutta2CalculatorImpl(final String odeFunctionAsString) {
-		super(odeFunctionAsString);
+	RungeKutta2CalculatorImpl(final OdeFunctionUtil odeFunctionUtil, final String odeFunctionAsString) {
+		super(odeFunctionUtil, odeFunctionAsString);
 	}
 
 	@Override

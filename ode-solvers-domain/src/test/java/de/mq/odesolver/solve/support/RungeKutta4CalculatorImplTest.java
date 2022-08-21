@@ -6,6 +6,7 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 import org.junit.jupiter.api.Test;
 
 import de.mq.odesolver.solve.OdeResultCalculator;
+import de.mq.odesolver.solve.support.OdeFunctionUtil.Language;
 
 class RungeKutta4CalculatorImplTest {
 
@@ -25,7 +26,7 @@ class RungeKutta4CalculatorImplTest {
 	@Test
 	final void calculateforFirstOrderOdeString() {
 		// Papuala Seite 238
-		final OdeResultCalculator odeResultCalculator = new RungeKutta4CalculatorImpl("y[0]-x");
+		final OdeResultCalculator odeResultCalculator = new RungeKutta4CalculatorImpl(new OdeFunctionUtil(Language.Nashorn), "y[0]-x");
 		final double[] y = odeResultCalculator.calculate(new OdeResultImpl(new double[] { 0 }, 0), 0.1);
 		assertEquals(1, y.length);
 		assertEquals(0. - 0.005171, y[0], maxTol);
@@ -51,7 +52,7 @@ class RungeKutta4CalculatorImplTest {
 	@Test
 	final void calculateforSecondOrderOdeString() {
 		// Papula Seite 246
-		final OdeResultCalculator odeResultCalculator = new RungeKutta4CalculatorImpl("-2*y[1]+3*y[0]");
+		final OdeResultCalculator odeResultCalculator = new RungeKutta4CalculatorImpl(new OdeFunctionUtil(Language.Nashorn), "-2*y[1]+3*y[0]");
 
 		final double[] y = odeResultCalculator.calculate(new OdeResultImpl(new double[] { 0, 4 }, 0), 0.1);
 		assertEquals(2, y.length);

@@ -16,14 +16,14 @@ public abstract class AbstractOdeCalculator implements OdeResultCalculator {
 			(odeResult, stepSize) -> calculateSecondOrderOde(odeResult, stepSize));
 
 	final Function<OdeResult, Double> odeFunction;
-	private final OdeFunctionUtil odeStringUtil = new OdeFunctionUtil();
 
 	AbstractOdeCalculator(final Function<OdeResult, Double> odeFunction) {
 
 		this.odeFunction = odeFunction;
 	}
 
-	AbstractOdeCalculator(final String function) {
+	AbstractOdeCalculator(final OdeFunctionUtil odeStringUtil, final String function) {
+		//private final OdeFunctionUtil odeStringUtil = new OdeFunctionUtil();
 		final Invocable invocable = odeStringUtil.prepareFunction(function);
 		this.odeFunction = firstOrderOdeFunction -> (Double) odeStringUtil.invokeFunction(invocable,
 				firstOrderOdeFunction.yDerivatives(), firstOrderOdeFunction.x());

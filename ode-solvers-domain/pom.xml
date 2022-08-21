@@ -1,7 +1,4 @@
-<project
-	xmlns="http://maven.apache.org/POM/4.0.0"
-	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-    xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 
         http://maven.apache.org/xsd/maven-4.0.0.xsd">
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>mq.ode</groupId>
@@ -41,11 +38,18 @@
 			<version>${nashorn-core-version}</version>
 		</dependency>
 		<dependency>
-           <groupId>org.mockito</groupId>
-           <artifactId>mockito-core</artifactId>
-           <version>4.6.1</version>
-           <scope>test</scope>
-        </dependency>
+			<groupId>org.mockito</groupId>
+			<artifactId>mockito-core</artifactId>
+			<version>4.6.1</version>
+			<scope>test</scope>
+		</dependency>
+
+		<dependency>
+			<groupId>org.jruby</groupId>
+			<artifactId>jruby-complete</artifactId>
+			<version>9.3.7.0</version>
+		</dependency>
+
 	</dependencies>
 	<build>
 		<plugins>
@@ -56,4 +60,3 @@
 		</plugins>
 	</build>
 </project>
-
