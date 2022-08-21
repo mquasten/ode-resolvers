@@ -12,6 +12,7 @@ import org.apache.poi.ss.usermodel.Font;
 import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.ss.usermodel.Sheet;
 import org.apache.poi.ss.usermodel.Workbook;
+import org.apache.poi.ss.util.CellRangeAddress;
 import org.springframework.stereotype.Component;
 import org.springframework.web.servlet.view.document.AbstractXlsxView;
 
@@ -38,6 +39,7 @@ class ResultsExcelView extends AbstractXlsxView {
 		final Row headlineRow = sheet.createRow(0);
 		final Cell headlineCell = headlineRow.createCell(0);
 		headlineCell.setCellValue(title);
+		
 
 		final CellStyle cellStyle = boldCellStyle(workbook);
 
@@ -52,6 +54,9 @@ class ResultsExcelView extends AbstractXlsxView {
 
 		if (results.get(0).yDerivatives().length > 1) {
 			header.createCell(2).setCellValue("y'(x)");
+			sheet.addMergedRegion(new CellRangeAddress(0,0,0,2));
+		} else {
+			sheet.addMergedRegion(new CellRangeAddress(0,0,0,1));
 		}
 
 		IntStream.range(0, results.size()).forEach(i -> writeRow(results, sheet, i));
