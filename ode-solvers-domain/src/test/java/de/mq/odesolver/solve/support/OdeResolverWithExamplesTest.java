@@ -20,6 +20,7 @@ import de.mq.odesolver.solve.support.OdeFunctionUtil.Language;
 
 class OdeResolverWithExamplesTest {
 	
+
 	
 	private final Map<TestProperties, Double> rungeKutta4Properties = Map.of(
 			TestProperties.MaxTolExamplePapulaFirstOrder, 1e-6, 
@@ -30,7 +31,8 @@ class OdeResolverWithExamplesTest {
 			TestProperties.MaxTolExamplePapulaSecondOrder, 1e-6,
 			TestProperties.MaxTolExamplePapulaSecondOrderErrorEstimate, 3e-2, 
 			TestProperties.EndExamplePapulaFirstOrder,0.3, 
-			TestProperties.StepsExamplePapulaFirstOrder, 3d);
+			TestProperties.StepsExamplePapulaFirstOrder, 3d,
+			TestProperties.MaxTolMinMaxDerivateZero, 1e-11);
 	
 	
 	
@@ -43,7 +45,8 @@ class OdeResolverWithExamplesTest {
 			TestProperties.MaxTolExamplePapulaSecondOrder, 2e-6,
 			TestProperties.MaxTolExamplePapulaSecondOrderErrorEstimate, 1e-1,
 			TestProperties.EndExamplePapulaFirstOrder,0.3, 
-			TestProperties.StepsExamplePapulaFirstOrder, 3d);
+			TestProperties.StepsExamplePapulaFirstOrder, 3d,
+			TestProperties.MaxTolMinMaxDerivateZero, 8e-6);
 	
 	
 	
@@ -57,7 +60,10 @@ class OdeResolverWithExamplesTest {
 			TestProperties.MaxTolExamplePapulaSecondOrder, 3e-3,
 			TestProperties.MaxTolExamplePapulaSecondOrderErrorEstimate, 5e-1,
 			TestProperties.EndExamplePapulaFirstOrder, 0.2d,
-			TestProperties.StepsExamplePapulaFirstOrder, 4d);
+			TestProperties.StepsExamplePapulaFirstOrder, 4d,
+			
+			TestProperties.MaxTolMinMaxDerivateZero, 2e-2
+			);
 
 	
 	
@@ -100,12 +106,14 @@ class OdeResolverWithExamplesTest {
 	
 
 	enum TestDgl {
-		DGL01(firstOderOdeArguments -> firstOderOdeArguments.yDerivative(0) - firstOderOdeArguments.x(), "y[0]-x"),
-		DGL02(firstOderOdeArguments -> 0d, "0.0"),
-		DGL03(firstOderOdeArguments -> Math.sqrt(firstOderOdeArguments.yDerivative(0))
-				+ firstOderOdeArguments.yDerivative(0), "Math.sqrt(y[0])+y[0]"),
-		DGL04(firstOderOdeArguments -> 3 * firstOderOdeArguments.yDerivative(0)
-				- 2 * firstOderOdeArguments.yDerivative(1), "3*y[0]-2*y[1]");
+		DGL01(odeArguments -> odeArguments.yDerivative(0) - odeArguments.x(), "y[0]-x"),
+		DGL02(odeArguments -> 0d, "0.0"),
+		DGL03(odeArguments -> Math.sqrt(odeArguments.yDerivative(0))
+				+ odeArguments.yDerivative(0), "Math.sqrt(y[0])+y[0]"),
+		DGL04(odeArguments -> 3 * odeArguments.yDerivative(0)
+				- 2 * odeArguments.yDerivative(1), "3*y[0]-2*y[1]"),
+		
+		DGL05(odeArguments -> 4/odeArguments.x()*odeArguments.yDerivatives()[1] -6/Math.pow(odeArguments.x(), 2)*odeArguments.yDerivative(0)+Math.pow(odeArguments.x(), 2), "4/x*y[1]-6/(x*x)*y[0]+x*x");
 
 		private final Function<OdeResult, Double> odeFunction;
 		private String functionAsString;
@@ -128,7 +136,7 @@ class OdeResolverWithExamplesTest {
 	enum TestProperties {
 		MaxTolExamplePapulaFirstOrder, MaxTolStepSize, MaxTolSqrtYPlusYStart1, MaxTolSqrtYPlusYStart0,
 		MaxTolErrorEstimaions, MaxTolExamplePapulaSecondOrder, MaxTolExamplePapulaSecondOrderErrorEstimate,
-		EndExamplePapulaFirstOrder, StepsExamplePapulaFirstOrder;
+		EndExamplePapulaFirstOrder, StepsExamplePapulaFirstOrder, MaxTolMinMaxDerivateZero;
 	}
 
 	enum Result {
@@ -335,6 +343,52 @@ class OdeResolverWithExamplesTest {
 				.forEach(n -> assertEquals(y.apply(results.get(n).x()), results.get(n).yDerivative(0), maxTol));
 		IntStream.range(0, results.size()).boxed()
 				.forEach(n -> assertEquals(dy.apply(results.get(n).x()), results.get(n).yDerivative(1), maxTol));
+	}
+	
+	@ParameterizedTest()
+	@EnumSource()
+	void solveOwnExampleMinMax(final TestSolver solver) {	
+		// Man muss nicht immer etwas so langweiliges wie y(xs) und y'(xs) für die spezielle Lösung verwenden, lokale Minima und Maxima, Wendepunkte etc. gehen auch...
+		// Das Fundamentalsystem habe ich geziehlt geraten. DGL:  y''+a/x*y' + b/x^2*y +x^2 , Fundamentalsystem soll x^2 und x^3 sein. 
+		// dann kann man a, b bestimmen: a= -4, b=6
+		// mittels Variation der Konstanten erhält man die allgemeine Lösung: y=1/2*x^4 + k1*x^2 + k2*x^3= x^2*(1/2x^2 + k1 + k2*x)
+		// dann y'=0 xmax und xmin sind gegeben: man findet: k1=xmax*xmin k2=-2/3(xmax+xmin) 
+		// xs, ys, ys' sind die Startwerte 
+		// ys=1/2*xs^4 + xs^2*xman*xmin - 2/3*xs^3*(xmax+xmin)
+		// ys'=2*xs^3+2*xs*xmax*xmin - 2*xs^2*(xmax+xmin)
+		// y''<0 bzw. y''> 0 führt auf:
+		// Existenz lokales Minimum  xmax > 0: xmax < xmin, xmax < 0: xmax > xmin
+		// Existenz lokales Maximun xmin > 0 : xmin > xmax, xmin < 0: xmin < xmax
+		// Schöne Analysis-Übung ... 
+		checklocalMaxMin(solver, 2d,3d , doubleArray(19d/6,4), 1, 4);
+		checklocalMaxMin(solver, -2d,-3d , doubleArray(32d/3,-16), -4, 1);
+	}
+
+	private void checklocalMaxMin(final TestSolver solver, final double xMax, final double xMin, final double[] y0, final double start, final double stop ) {
+		final double tol = property(solver,TestProperties.MaxTolMinMaxDerivateZero);
+		final OdeSolver odeSolver = odeSolver(solver, TestDgl.DGL05);
+		final int steps = 3000;
+		final List<OdeResult> results = odeSolver.solve(y0, start, stop, steps);
+
+		
+		final OdeResult max =  filterByX(results, xMax, tol);
+		
+		assertEquals(xMax, max.x(), 1e-12);
+		assertEquals(0, max.yDerivative(1), tol);
+		assertTrue( TestDgl.DGL05.odeFunction.apply(max)< 0d );
+		assertTrue( Math.abs(TestDgl.DGL05.odeFunction.apply(max))> 1d );
+		
+		final OdeResult min =  filterByX(results, xMin, tol);
+		
+		assertEquals(xMin, min.x(), 1e-12);
+		assertEquals(0, min.yDerivative(1), tol);
+		assertTrue( TestDgl.DGL05.odeFunction.apply(min)> 0d );
+		assertTrue( Math.abs(TestDgl.DGL05.odeFunction.apply(min))> 1d );
+	}
+
+	private OdeResult filterByX(final List<OdeResult> results, final double x,  final double tol) {
+	
+		return results.stream().filter(odeResult-> odeResult.x()>=(x-1e-12)).findFirst().orElseThrow();
 	}
 
 	
