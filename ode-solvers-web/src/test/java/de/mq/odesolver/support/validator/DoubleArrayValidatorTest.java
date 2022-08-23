@@ -17,7 +17,7 @@ class DoubleArrayValidatorTest {
 	
 	@Test
 	final void empty() {
-		assertFalse(validator.isValid("", null));
+		assertTrue(validator.isValid("", null));
 	}
 	
 	@Test

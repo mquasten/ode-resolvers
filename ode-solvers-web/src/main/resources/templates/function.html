@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+<meta charset="ISO-8859-1">
+<title>gew&ouml;hnliche DGL'n</title>
+<style>
+.error {
+	color: red;
+}
+</style>
+</head>
+<body>
+	<div align="center">
+		<h1>spezielle L&ouml;sung berechnen</h1>
+		<form action="#" th:action="@{/function}" method="post"
+			th:object="${function}">
+			<table>
+
+				<tr>
+					<td><label>Funktion:</label></td>
+					<td><textarea rows="3" cols="25" th:field="*{function}"></textarea>
+					</td>
+
+					<td th:if="${#fields.hasErrors('function')}" th:errors="*{function}"
+						th:errorclass="error"></td>
+				</tr>
+				
+				<tr>
+					<td><label>k Vektor:</label></td>
+					<td><input type="text" th:field="*{k}" /></td>
+					<td th:if="${#fields.hasErrors('k')}" th:errors="*{k}"
+						th:errorclass="error"></td>
+				</tr>
+				
+				<tr>
+					<td><label>Start:</label></td>
+					<td><input type="text" th:field="*{start}" /></td>
+					<td th:if="${#fields.hasErrors('start')}" th:errors="*{start}"
+						th:errorclass="error"></td>
+				</tr>
+				<tr>
+					<td><label>Stop:</label></td>
+					<td><input type="text" th:field="*{stop}" /></td>
+					<td th:if="${#fields.hasErrors('stop')}" th:errors="*{stop}"
+						th:errorclass="error"></td>
+				</tr>
+
+				<tr>
+					<td><label>Schritte:</label></td>
+					<td><input type="text" th:field="*{steps}" /></td>
+					<td th:if="${#fields.hasErrors('steps')}" th:errors="*{steps}"
+						th:errorclass="error"></td>
+				</tr>
+				
+
+				<tr>
+					<th colspan="2">
+						<div th:if="${#fields.hasErrors('global')}">
+							<p th:each="err : ${#fields.errors('global')}" th:text="${err}"
+								class="error" />
+						</div>
+
+
+					</th>
+				</tr>
+
+				<tr>
+					<th colspan="2">
+						<button type="submit" name="command" value="validate">Validieren</button>
+						<button type="submit" name="command" value="valueTable">Wertetabelle</button>
+						<button type="submit" name="command" value="graph">Graph</button>
+					</th>
+				</tr>
+			</table>
+		</form>
+
+	</div>
+</body>
+</html>

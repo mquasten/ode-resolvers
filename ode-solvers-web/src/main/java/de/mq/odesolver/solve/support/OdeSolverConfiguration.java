@@ -15,7 +15,7 @@ class OdeSolverConfiguration {
 	
 	@Bean
 	OdeSolverService odeSolverService () {
-		return new OdeSolverServiceImpl(new OdeFunctionUtil(Language.JRuby));
+		return new OdeSolverServiceImpl(new OdeFunctionUtil(Language.Groovy));
 	}
 	
 }

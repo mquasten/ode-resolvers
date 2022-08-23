@@ -19,7 +19,7 @@ import org.springframework.web.servlet.view.document.AbstractXlsxView;
 import de.mq.odesolver.solve.OdeResult;
 
 @Component()
-class ResultsExcelView extends AbstractXlsxView {
+public class ResultsExcelView extends AbstractXlsxView {
 
 	@Override
 	protected void buildExcelDocument(final Map<String, Object> model, final Workbook workbook,
@@ -29,7 +29,7 @@ class ResultsExcelView extends AbstractXlsxView {
 		final List<OdeResult> results = (List<OdeResult>) model.get("results");
 		final String title =(String) model.get("resultsTitle");
 
-		response.setHeader("Content-Disposition", "attachment; filename=odeSolverResults.xls");
+		response.setHeader("Content-Disposition", "attachment; filename=Wertetabelle.xls");
 		final Sheet sheet = workbook.createSheet("Wertetabelle");
 		sheet.setFitToPage(true);
 
@@ -48,6 +48,10 @@ class ResultsExcelView extends AbstractXlsxView {
 		final Row header = sheet.createRow(1);
 		header.createCell(0).setCellValue("x");
 		header.createCell(1).setCellValue("y(x)");
+		
+		if( results == null) {
+			return;
+		}
 		if (results.size() == 0) {
 			return;
 		}

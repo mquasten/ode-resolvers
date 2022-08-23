@@ -20,12 +20,12 @@ import org.springframework.web.servlet.view.AbstractView;
 import de.mq.odesolver.solve.OdeResult;
 
 @Component
-class ResultsGraphView extends AbstractView {
+public class ResultsGraphView extends AbstractView {
 
 	@Override
 	protected void renderMergedOutputModel(final Map<String, Object> model, final HttpServletRequest request,
 			final HttpServletResponse response) throws Exception {
-		response.setHeader("Content-Disposition", "filename=odeSolverResults.png");
+		response.setHeader("Content-Disposition", "filename=Funktionsgraph.png");
 		@SuppressWarnings("unchecked")
 		final Collection<OdeResult> results = (Collection<OdeResult>) model.get("results");
 		final String ode =  (String) model.get("resultsTitle");
@@ -35,7 +35,7 @@ class ResultsGraphView extends AbstractView {
 		final XYDataset dataset = createDataset(results, ode);
 
 		// Create chart
-		final JFreeChart chart = ChartFactory.createXYLineChart("numerische Lösung der DGL", "x", "y", dataset,
+		final JFreeChart chart = ChartFactory.createXYLineChart("Funktionsgraph", "x", "y", dataset,
 				PlotOrientation.VERTICAL, true, true, false);
 
 		final ServletOutputStream os = response.getOutputStream();
@@ -46,8 +46,10 @@ class ResultsGraphView extends AbstractView {
 
 	private XYDataset createDataset(final Collection<OdeResult> results, final String title) {
 		final XYSeriesCollection dataset = new XYSeriesCollection();
-		final XYSeries series = new XYSeries(title);
-		results.forEach(or -> series.add(or.x(), or.yDerivative(0)));
+		final XYSeries series = new XYSeries(title==null? " " : title);
+		if( results != null) {
+		   results.forEach(or -> series.add(or.x(), or.yDerivative(0)));
+		}
 		dataset.addSeries(series);
 		return dataset;
 	}

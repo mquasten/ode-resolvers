@@ -19,7 +19,9 @@ class OdeFunctionUtil {
 	
 	enum Language {
 		Nashorn("function %s(y, x) {return %s}"),
-		JRuby("def %s(y, x) return %s  end");
+		Groovy("def %s(y, x) {return %s}");
+		
+		// "def factorial(n) { n == 1 ? 1 : n * factorial(n - 1) }";
 		Language(final String functionPattern){
 			this.functionPattern=functionPattern;
 		}

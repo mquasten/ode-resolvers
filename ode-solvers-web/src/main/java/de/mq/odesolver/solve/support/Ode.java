@@ -12,7 +12,7 @@ import de.mq.odesolver.solve.OdeSolverService.Algorithm;
  */
 class Ode {
 
-	private final String REGEX_Y_DERIVATIVE = "y\\[\\s*%s\\s*\\]";;
+	private final String REGEX_Y_DERIVATIVE = "y\\[\\s*%s\\s*\\]";
 
 	private final String ode;
 
@@ -52,29 +52,22 @@ class Ode {
 
 	final double[] y() {
 		return y;
-		// return
-		// Arrays.asList(y.split(DoubleArrayValidator.REGEX_SPLIT_DOUBLE_VECTOR)).stream().mapToDouble(Double::parseDouble).toArray();
 	}
 
 	final double start() {
 		return start;
-		// return Double.valueOf(StringUtils.trimWhitespace(start));
 	}
 
 	final double stop() {
 		return stop;
-
-		// return Double.valueOf(StringUtils.trimWhitespace(stop));
 	}
 
 	final int steps() {
 		return steps;
-		// return Integer.parseInt(StringUtils.trimWhitespace(steps));
 	}
 
 	final Algorithm algorithm() {
 		return algorithm;
-		// return Algorithm.valueOf(solver);
 	}
 
 	final String ode() {

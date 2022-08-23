@@ -1,6 +1,5 @@
-package de.mq.odesolver.solve.support;
+package de.mq.odesolver.function.support;
 
-import javax.validation.Valid;
 import javax.validation.constraints.Max;
 import javax.validation.constraints.NotBlank;
 
@@ -8,47 +7,39 @@ import de.mq.odesolver.validator.DoubleArrayConstraint;
 import de.mq.odesolver.validator.DoubleConstraint;
 import de.mq.odesolver.validator.NaturalNumberConstraint;
 
-@Valid
-public class OdeModel {
-	
-	private Integer order;
+public class FunctionModel {
 
 	@NotBlank
-	private String ode;
-
-	private String solver;
+	private String function;
 
 	@DoubleArrayConstraint
-	@NotBlank
-	private String y;
+	private String k;
 
 	@DoubleConstraint
 	@NotBlank
 	private String start;
-
 	@DoubleConstraint
 	@NotBlank
 	private String stop;
-
 	@NaturalNumberConstraint
+	
 	@Max(1048573)
 	private String steps;
 
-	
-	public String getSolver() {
-		return solver;
+	public String getFunction() {
+		return function;
 	}
 
-	public void setSolver(String solver) {
-		this.solver = solver;
+	public void setFunction(String function) {
+		this.function = function;
 	}
 
-	public String getOde() {
-		return ode;
+	public String getK() {
+		return k;
 	}
 
-	public void setOde(String ode) {
-		this.ode = ode;
+	public void setK(String k) {
+		this.k = k;
 	}
 
 	public String getStart() {
@@ -74,23 +65,5 @@ public class OdeModel {
 	public void setSteps(String steps) {
 		this.steps = steps;
 	}
-
-	public String getY() {
-		return y;
-	}
-
-	public void setY(String y) {
-		this.y = y;
-	}
-
-
-	public Integer getOrder() {
-		return order;
-	}
-
-	public void setOrder(Integer order) {
-		this.order = order;
-	}
-
 
 }

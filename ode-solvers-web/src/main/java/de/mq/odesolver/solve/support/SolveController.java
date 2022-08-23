@@ -6,6 +6,7 @@ import java.util.Map;
 import javax.validation.Valid;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.convert.converter.Converter;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -25,7 +26,7 @@ class  SolveController  {
 
 	private final OdeSolverService odeSolverService;
 	
-	private final OdeConverter odeConverter;
+	private final Converter<OdeModel, Ode> odeConverter;
 
 	private final ModelAndView solveModelAndView= new ModelAndView("solve");
 
@@ -33,7 +34,7 @@ class  SolveController  {
 	private final Map<String, ModelAndView> commands;
 			
 	@Autowired
-	SolveController(final OdeSolverService odeSolverService, final ResultsExcelView resultsExcelView, final ResultsGraphView resultsGraphView, final OdeConverter odeConverter) {
+	SolveController(final OdeSolverService odeSolverService, final ResultsExcelView resultsExcelView, final ResultsGraphView resultsGraphView, final Converter<OdeModel, Ode> odeConverter) {
 		this.odeSolverService = odeSolverService;
 		this.commands=Map.of("valueTable", new ModelAndView(resultsExcelView), "graph", new ModelAndView(resultsGraphView ));
 		this.odeConverter=odeConverter;

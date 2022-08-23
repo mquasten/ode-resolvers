@@ -18,7 +18,7 @@ public class DoubleArrayValidator implements ConstraintValidator<DoubleArrayCons
 	public boolean isValid(final String value, final ConstraintValidatorContext cxt) {
 
 		if (!StringUtils.hasText(value)) {
-			return false;
+			return true;
 		}
 
 		final String values[] = value.split(REGEX_SPLIT_DOUBLE_VECTOR);
