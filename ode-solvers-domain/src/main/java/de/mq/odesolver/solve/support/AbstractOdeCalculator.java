@@ -8,6 +8,8 @@ import javax.script.Invocable;
 
 import de.mq.odesolver.solve.OdeResult;
 import de.mq.odesolver.solve.OdeResultCalculator;
+import de.mq.odesolver.support.OdeFunctionUtil;
+
 
 public abstract class AbstractOdeCalculator implements OdeResultCalculator {
 

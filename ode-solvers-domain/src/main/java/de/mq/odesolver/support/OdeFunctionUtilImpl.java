@@ -1,4 +1,6 @@
-package de.mq.odesolver.solve.support;
+package de.mq.odesolver.support;
+
+import java.util.Map;
 
 import javax.script.Compilable;
 import javax.script.CompiledScript;
@@ -15,38 +17,29 @@ import javax.script.ScriptException;
  * @author mq
  *
  */
-class OdeFunctionUtil {
+class OdeFunctionUtilImpl implements OdeFunctionUtil {
+
+	private final Map<Language, String> functionPatterns = Map.of(Language.Nashorn, "function %s(%s, x) {return %s}", Language.Groovy, "def %s(%s, x) {return %s}");
 	
-	enum Language {
-		Nashorn("function %s(y, x) {return %s}"),
-		Groovy("def %s(y, x) {return %s}");
-		
-		// "def factorial(n) { n == 1 ? 1 : n * factorial(n - 1) }";
-		Language(final String functionPattern){
-			this.functionPattern=functionPattern;
-		}
-		private final String functionPattern;
-		
-		final String functionPattern() {
-			return functionPattern;
-		}
-		
-		final String scriptEngine() {
-			return name().toLowerCase();
-		}
-		
-	}
 	
 	private final Language language;
-	OdeFunctionUtil(final Language language) {
+	
+	private final String vectorName; 
+	OdeFunctionUtilImpl(final Language language) {
+		this(language,"y");
+	}
+	
+	OdeFunctionUtilImpl(final Language language, final String vectorName) {
 		this.language=language;
+		this.vectorName=vectorName;
 	}
 	
 	private final String FUNCTION_NAME="f";
 
-	double invokeFunction(final Invocable invocable, final double[] y, double x) {
+	@Override
+	public double invokeFunction(final Invocable invocable, final double[] vector, double x) {
 		try {
-			final Number result = ((Number) invocable.invokeFunction(FUNCTION_NAME, y, x));
+			final Number result = ((Number) invocable.invokeFunction(FUNCTION_NAME, vector, x));
 			notNullGuard(x, result);
 			resultGuard(x, result.doubleValue());
 			return result.doubleValue();
@@ -82,12 +75,13 @@ class OdeFunctionUtil {
 	 *                 Ableitung, d.h. y y[1]: die 1. Ableitung, d.h. y'
 	 * @return die compilierte Funktion
 	 */
-	Invocable prepareFunction(final String function) {
+	@Override
+	public Invocable prepareFunction(final String function) {
 		
-		final ScriptEngine engine = new ScriptEngineManager().getEngineByName(language.scriptEngine());
+		final ScriptEngine engine = new ScriptEngineManager().getEngineByName(language.name().toLowerCase());
 		final Compilable compilable = (Compilable) engine;
 		final Invocable invocable = (Invocable) engine;
-		final String statement = String.format(language.functionPattern(), FUNCTION_NAME, function);
+		final String statement = String.format(functionPatterns.get(language), FUNCTION_NAME,vectorName ,function);
 		try {
 			final CompiledScript compiled = compilable.compile(statement);
 			compiled.eval();
@@ -97,5 +91,7 @@ class OdeFunctionUtil {
 		}
 
 	}
+
+	
 
 }

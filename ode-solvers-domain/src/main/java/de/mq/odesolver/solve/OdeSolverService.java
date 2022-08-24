@@ -9,7 +9,7 @@ public interface OdeSolverService {
 		RungeKutta4ndOrder;
 	}
 	
-	OdeSolver odeResolver(final Algorithm algorithm, final String function);
+	OdeSolver odeSolver(final Algorithm algorithm, final String function);
 	
 	double validateRightSide(final String function, final double y0[], final double x0 );
 

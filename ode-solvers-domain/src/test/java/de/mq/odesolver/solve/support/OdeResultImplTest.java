@@ -13,7 +13,6 @@ import org.junit.jupiter.api.Test;
 
 import de.mq.odesolver.solve.OdeResult;
 
-
 class OdeResultImplTest {
 
 	private final double[] y = new double[] { 1d, 2d };

@@ -16,30 +16,31 @@ import org.apache.poi.ss.util.CellRangeAddress;
 import org.springframework.stereotype.Component;
 import org.springframework.web.servlet.view.document.AbstractXlsxView;
 
-import de.mq.odesolver.solve.OdeResult;
+import de.mq.odesolver.Result;
 
 @Component()
 public class ResultsExcelView extends AbstractXlsxView {
+
+	private static final int MAX_CELL_HEADLINE = 10;
 
 	@Override
 	protected void buildExcelDocument(final Map<String, Object> model, final Workbook workbook,
 			final HttpServletRequest request, final HttpServletResponse response) throws Exception {
 
 		@SuppressWarnings("unchecked")
-		final List<OdeResult> results = (List<OdeResult>) model.get("results");
+		final List<Result> results = (List<Result>) model.get("results");
 		final String title =(String) model.get("resultsTitle");
 
 		response.setHeader("Content-Disposition", "attachment; filename=Wertetabelle.xls");
 		final Sheet sheet = workbook.createSheet("Wertetabelle");
 		sheet.setFitToPage(true);
 
-		// font.setColor(HSSFColorPredefined.DARK_RED.getIndex());
-		// style.setFont(font);
-
 		final Row headlineRow = sheet.createRow(0);
 		final Cell headlineCell = headlineRow.createCell(0);
 		headlineCell.setCellValue(title);
+		headlineRow.createCell(10).setBlank();
 		
+		sheet.addMergedRegion(new CellRangeAddress(0,0,0,MAX_CELL_HEADLINE));
 
 		final CellStyle cellStyle = boldCellStyle(workbook);
 
@@ -58,9 +59,6 @@ public class ResultsExcelView extends AbstractXlsxView {
 
 		if (results.get(0).yDerivatives().length > 1) {
 			header.createCell(2).setCellValue("y'(x)");
-			sheet.addMergedRegion(new CellRangeAddress(0,0,0,2));
-		} else {
-			sheet.addMergedRegion(new CellRangeAddress(0,0,0,1));
 		}
 
 		IntStream.range(0, results.size()).forEach(i -> writeRow(results, sheet, i));
@@ -77,9 +75,9 @@ public class ResultsExcelView extends AbstractXlsxView {
 		return cellStyle;
 	}
 
-	private void writeRow(final List<OdeResult> results, final Sheet sheet, final int i) {
+	private void writeRow(final List<? extends Result> results, final Sheet sheet, final int i) {
 		final Row date = sheet.createRow(i + 2);
-		final OdeResult odeResult = results.get(i);
+		final Result odeResult = results.get(i);
 		date.createCell(0).setCellValue(odeResult.x());
 		IntStream.range(0, odeResult.yDerivatives().length)
 				.forEach(k -> date.createCell(1 + k).setCellValue(odeResult.yDerivative(k)));

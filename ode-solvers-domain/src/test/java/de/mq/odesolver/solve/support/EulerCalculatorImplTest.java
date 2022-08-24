@@ -1,5 +1,6 @@
 package de.mq.odesolver.solve.support;
 
+import static de.mq.odesolver.support.OdeFunctionUtilFactory.newOdeFunctionUtil;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import org.junit.jupiter.api.Test;
@@ -7,7 +8,9 @@ import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.EnumSource;
 
 import de.mq.odesolver.solve.OdeResultCalculator;
-import de.mq.odesolver.solve.support.OdeFunctionUtil.Language;
+import de.mq.odesolver.support.OdeFunctionUtil;
+import de.mq.odesolver.support.OdeFunctionUtil.Language;
+
 
 class EulerCalculatorImplTest {
 
@@ -31,7 +34,7 @@ class EulerCalculatorImplTest {
 	@ParameterizedTest
 	@EnumSource(Language.class)
 	final void calculateforFirstOrderOdeString(final Language language) {
-		final OdeFunctionUtil odeFunctionUtil = new OdeFunctionUtil(language);
+		final OdeFunctionUtil odeFunctionUtil = newOdeFunctionUtil(language);
 		// Papuala Seite 234
 		final OdeResultCalculator odeResultCalculator = new EulerCalculatorImpl(odeFunctionUtil, "y[0]-x");
 		final double[] y1 = odeResultCalculator.calculate(new OdeResultImpl(new double[] { 0 }, 0), 0.05);
@@ -70,7 +73,7 @@ class EulerCalculatorImplTest {
 		// https://keisan.casio.com/exec/system/1548304004
 		// leider ist es wohl zu schwer auch die 1. Ableitung auszugeben!!!
 		// daher mit Excel kontrolliert
-		final OdeFunctionUtil odeFunctionUtil = new OdeFunctionUtil(language);
+		final OdeFunctionUtil odeFunctionUtil = newOdeFunctionUtil(language);
 		final OdeResultCalculator odeResultCalculator = new EulerCalculatorImpl(odeFunctionUtil, "-2*y[1]+3*y[0]");
 
 		final double[] y1 = odeResultCalculator.calculate(new OdeResultImpl(new double[] { 0, 4 }, 0), 0.1);

@@ -7,10 +7,10 @@ import javax.script.Invocable;
 import de.mq.odesolver.solve.OdeResultCalculator;
 import de.mq.odesolver.solve.OdeSolver;
 import de.mq.odesolver.solve.OdeSolverService;
+import de.mq.odesolver.support.OdeFunctionUtil;
 
 class OdeSolverServiceImpl implements OdeSolverService {
 
-	static final double DELTA = 1e-3;
 	private final Map<Algorithm, Class<? extends OdeResultCalculator>> solvers = Map.of(Algorithm.EulerPolygonal,
 			EulerCalculatorImpl.class, Algorithm.RungeKutta2ndOrder, RungeKutta2CalculatorImpl.class,
 			Algorithm.RungeKutta4ndOrder, RungeKutta4CalculatorImpl.class);
@@ -22,8 +22,7 @@ class OdeSolverServiceImpl implements OdeSolverService {
 	}
 
 	@Override
-	public final OdeSolver odeResolver(final Algorithm algorithm, final String function) {
-
+	public final OdeSolver odeSolver(final Algorithm algorithm, final String function) {
 		try {
 			final OdeResultCalculator odeResultCalculator = solvers.get(algorithm)
 					.getDeclaredConstructor(OdeFunctionUtil.class, String.class).newInstance(odeFunctionUtil, function);

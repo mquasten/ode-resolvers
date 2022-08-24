@@ -5,6 +5,7 @@ import static de.mq.odesolver.solve.support.OdeResultImpl.doubleArray;
 import java.util.function.Function;
 
 import de.mq.odesolver.solve.OdeResult;
+import de.mq.odesolver.support.OdeFunctionUtil;
 
 class RungeKutta4CalculatorImpl extends AbstractOdeCalculator {
 

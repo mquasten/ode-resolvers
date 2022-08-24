@@ -1,6 +1,7 @@
 package de.mq.odesolver.solve.support;
 
 import static de.mq.odesolver.solve.support.OdeResultImpl.doubleArray;
+import static de.mq.odesolver.support.OdeFunctionUtilFactory.newOdeFunctionUtil;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
@@ -16,7 +17,7 @@ import org.junit.jupiter.params.provider.EnumSource;
 
 import de.mq.odesolver.solve.OdeResult;
 import de.mq.odesolver.solve.OdeSolver;
-import de.mq.odesolver.solve.support.OdeFunctionUtil.Language;
+import de.mq.odesolver.support.OdeFunctionUtil.Language;
 
 class OdeResolverWithExamplesTest {
 
@@ -70,28 +71,29 @@ class OdeResolverWithExamplesTest {
 	private final Map<TestSolver, Map<TestProperties, Double>> properties = new HashMap<>();
 	private final Map<TestSolver, Map<Result, double[]>> expectedResults = new HashMap<>();
 
+
 	private final Map<TestSolver, Function<TestDgl, OdeSolver>> odeSolvers = Map.of(TestSolver.Euler_Lamdas,
 			testDgl -> new OdeSolverImpl(new EulerCalculatorImpl(testDgl.odeFunction())), TestSolver.Euler_Nashorn,
 			testDgl -> new OdeSolverImpl(
-					new EulerCalculatorImpl(new OdeFunctionUtil(Language.Nashorn), testDgl.functionAsString())),
+					new EulerCalculatorImpl(newOdeFunctionUtil(Language.Nashorn), testDgl.functionAsString())),
 			TestSolver.Euler_JRuby,
 			testDgl -> new OdeSolverImpl(
-					new EulerCalculatorImpl(new OdeFunctionUtil(Language.Groovy), testDgl.functionAsString())),
+					new EulerCalculatorImpl(newOdeFunctionUtil(Language.Groovy), testDgl.functionAsString())),
 			TestSolver.RungeKutta2_Lamdas,
 			testDgl -> new OdeSolverImpl(new RungeKutta2CalculatorImpl(testDgl.odeFunction())),
 			TestSolver.RungeKutta2_Nashorn,
 			testDgl -> new OdeSolverImpl(
-					new RungeKutta2CalculatorImpl(new OdeFunctionUtil(Language.Nashorn), testDgl.functionAsString())),
+					new RungeKutta2CalculatorImpl(newOdeFunctionUtil(Language.Nashorn), testDgl.functionAsString())),
 			TestSolver.RungeKutta2_JRuby,
 			testDgl -> new OdeSolverImpl(
-					new RungeKutta2CalculatorImpl(new OdeFunctionUtil(Language.Groovy), testDgl.functionAsString())),
+					new RungeKutta2CalculatorImpl(newOdeFunctionUtil(Language.Groovy), testDgl.functionAsString())),
 			TestSolver.RungeKutta4_Lamdas,
 			testDgl -> new OdeSolverImpl(new RungeKutta4CalculatorImpl(testDgl.odeFunction())),
 			TestSolver.RungeKutta4_Nashorn,
 			testDgl -> new OdeSolverImpl(
-					new RungeKutta4CalculatorImpl(new OdeFunctionUtil(Language.Nashorn), testDgl.functionAsString())),
+					new RungeKutta4CalculatorImpl(newOdeFunctionUtil(Language.Nashorn), testDgl.functionAsString())),
 			TestSolver.RungeKutta4_JRuby, testDgl -> new OdeSolverImpl(
-					new RungeKutta4CalculatorImpl(new OdeFunctionUtil(Language.Groovy), testDgl.functionAsString())));
+					new RungeKutta4CalculatorImpl(newOdeFunctionUtil(Language.Groovy), testDgl.functionAsString())));
 
 	enum TestDgl {
 		DGL01(odeArguments -> odeArguments.yDerivative(0) - odeArguments.x(), "y[0]-x"),

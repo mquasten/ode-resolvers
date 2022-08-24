@@ -17,6 +17,7 @@ import org.jfree.data.xy.XYSeriesCollection;
 import org.springframework.stereotype.Component;
 import org.springframework.web.servlet.view.AbstractView;
 
+import de.mq.odesolver.Result;
 import de.mq.odesolver.solve.OdeResult;
 
 @Component
@@ -27,7 +28,7 @@ public class ResultsGraphView extends AbstractView {
 			final HttpServletResponse response) throws Exception {
 		response.setHeader("Content-Disposition", "filename=Funktionsgraph.png");
 		@SuppressWarnings("unchecked")
-		final Collection<OdeResult> results = (Collection<OdeResult>) model.get("results");
+		final Collection<? extends Result> results = (Collection<OdeResult>) model.get("results");
 		final String ode =  (String) model.get("resultsTitle");
 
 		
@@ -44,7 +45,7 @@ public class ResultsGraphView extends AbstractView {
 
 	}
 
-	private XYDataset createDataset(final Collection<OdeResult> results, final String title) {
+	private XYDataset createDataset(final Collection<? extends Result> results, final String title) {
 		final XYSeriesCollection dataset = new XYSeriesCollection();
 		final XYSeries series = new XYSeries(title==null? " " : title);
 		if( results != null) {

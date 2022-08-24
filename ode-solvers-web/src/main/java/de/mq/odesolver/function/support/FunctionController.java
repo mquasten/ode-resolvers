@@ -1,5 +1,6 @@
 package de.mq.odesolver.function.support;
 
+import java.util.List;
 import java.util.Map;
 
 import javax.validation.Valid;
@@ -15,6 +16,9 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.ModelAndView;
 
+import de.mq.odesolver.Result;
+import de.mq.odesolver.function.FunctionService;
+import de.mq.odesolver.function.FunctionSolver;
 import de.mq.odesolver.solve.support.ResultsExcelView;
 import de.mq.odesolver.solve.support.ResultsGraphView;
 
@@ -24,9 +28,12 @@ class FunctionController {
 	private final ModelAndView functionModelAndView = new ModelAndView("function");
 	private final Converter<FunctionModel, Function> converter;
 	private final Map<String, ModelAndView> commands;
+	
+	private final FunctionService functionService; 
 
-	FunctionController(final ResultsExcelView resultsExcelView, final ResultsGraphView resultsGraphView,
+	FunctionController(final FunctionService functionService, final ResultsExcelView resultsExcelView, final ResultsGraphView resultsGraphView,
 			final Converter<FunctionModel, Function> converter) {
+		this.functionService=functionService;
 		this.converter = converter;
 		this.commands = Map.of("valueTable", new ModelAndView(resultsExcelView), "graph",
 				new ModelAndView(resultsGraphView));
@@ -71,13 +78,12 @@ class FunctionController {
 
 	private boolean calculate(final Function function, final Model model, final BindingResult bindingResult) {
 		try {
-			// final OdeSolver odeSolver = odeSolverService.odeResolver(ode.algorithm(),
-			// ode.ode());
-			// final List<OdeResult> results = odeSolver.solve(ode.y(), ode.start(),
-			// ode.stop(),ode.steps() );
+			final FunctionSolver functionSolver = functionService.functionSolver(function.function());
+			
+			final List<Result> results = functionSolver.solve(function.k(), function.start(), function.stop(), function.steps());
 
-			// model.addAttribute("results",results);
-			// model.addAttribute("resultsTitle", ode.beautifiedOde());
+			 model.addAttribute("results",results);
+			 model.addAttribute("resultsTitle", "y="+function.function());
 			return true;
 		} catch (final Exception exception) {
 			bindingResult.addError(new ObjectError("function", exception.getMessage()));
@@ -93,8 +99,7 @@ class FunctionController {
 		}
 
 		try {
-
-			// odeSolverService.validateRightSide(ode.ode() ,ode.y(), ode.start());
+            functionService.validateValue(function.function(), function.start(), function.k()) ;
 		} catch (final Exception exception) {
 			bindingResult.addError(new ObjectError("function", exception.getMessage()));
 		}

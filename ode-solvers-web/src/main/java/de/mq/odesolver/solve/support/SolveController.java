@@ -17,7 +17,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.ModelAndView;
 
-import de.mq.odesolver.solve.OdeResult;
+import de.mq.odesolver.Result;
 import de.mq.odesolver.solve.OdeSolver;
 import de.mq.odesolver.solve.OdeSolverService;
 
@@ -86,8 +86,8 @@ class  SolveController  {
 
 	private  boolean  calculate(final Ode ode, final Model model, final BindingResult bindingResult) {
 		try {
-		final OdeSolver odeSolver = odeSolverService.odeResolver(ode.algorithm(), ode.ode());
-		final List<OdeResult> results = odeSolver.solve(ode.y(), ode.start(), ode.stop(),ode.steps() );
+		final OdeSolver odeSolver = odeSolverService.odeSolver(ode.algorithm(), ode.ode());
+		final List<? extends Result> results = odeSolver.solve(ode.y(), ode.start(), ode.stop(),ode.steps() );
 		  
 		model.addAttribute("results",results);
 		model.addAttribute("resultsTitle", ode.beautifiedOde());

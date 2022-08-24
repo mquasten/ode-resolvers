@@ -2,7 +2,9 @@ package de.mq.odesolver.solve.support;
 
 import java.util.function.Function;
 
+import de.mq.odesolver.function.support.FunctionResultImpl;
 import de.mq.odesolver.solve.OdeResult;
+import de.mq.odesolver.support.OdeFunctionUtil;
 
 class EulerCalculatorImpl extends AbstractOdeCalculator {
 
@@ -21,7 +23,7 @@ class EulerCalculatorImpl extends AbstractOdeCalculator {
 
 	@Override
 	double[] calculateFirstOrderOde(final OdeResult last, final double stepSize) {
-		return OdeResultImpl.doubleArray(last.yDerivative(0) + stepSize * odeFunction.apply(last));
+		return FunctionResultImpl.doubleArray(last.yDerivative(0) + stepSize * odeFunction.apply(last));
 	}
 
 	@Override
