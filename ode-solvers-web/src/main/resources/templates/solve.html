@@ -27,11 +27,8 @@
 				<tr>
 					<td><label>Algorithmus:</label></td>
 					<td><select th:field="*{solver}">
-							<option th:value="'RungeKutta4ndOrder'"
-								th:text="'Runge-Kutta 4. Ordnung'"></option>
-							<option th:value="'RungeKutta2ndOrder'"
-								th:text="'Runge-Kutta 2. Ordnung'"></option>
-							<option th:value="'EulerPolygonal'" th:text="'Euler Polygonzug'"></option>
+							<option th:each="entry : ${algorithms}" th:value="${entry.key}"
+								th:utext="${entry.value}"></option>
 					</select></td>
 				</tr>
 
