@@ -41,8 +41,6 @@ class FunctionController {
 
 	@GetMapping("/function")
 	public ModelAndView solve(final Model model) {
-
-		System.out.println("Get Function");
 		model.addAttribute("function", new FunctionModel());
 		return functionModelAndView;
 	}
@@ -51,7 +49,6 @@ class FunctionController {
 	public ModelAndView solveSubmit(@RequestParam(name = "command") final String command,
 			@ModelAttribute("function") @Valid final FunctionModel functionModel, final BindingResult bindingResult,
 			final Model model) {
-		System.out.println("Post Function");
 		if (bindingResult.hasFieldErrors()) {
 			return functionModelAndView;
 		}
