@@ -21,17 +21,17 @@
 					<td><textarea rows="3" cols="25" th:field="*{function}"></textarea>
 					</td>
 
-					<td th:if="${#fields.hasErrors('function')}" th:errors="*{function}"
-						th:errorclass="error"></td>
+					<td th:if="${#fields.hasErrors('function')}"
+						th:errors="*{function}" th:errorclass="error"></td>
 				</tr>
-				
+
 				<tr>
 					<td><label>k Vektor:</label></td>
 					<td><input type="text" th:field="*{k}" /></td>
 					<td th:if="${#fields.hasErrors('k')}" th:errors="*{k}"
 						th:errorclass="error"></td>
 				</tr>
-				
+
 				<tr>
 					<td><label>Start:</label></td>
 					<td><input type="text" th:field="*{start}" /></td>
@@ -51,7 +51,7 @@
 					<td th:if="${#fields.hasErrors('steps')}" th:errors="*{steps}"
 						th:errorclass="error"></td>
 				</tr>
-				
+
 
 				<tr>
 					<th colspan="2">
@@ -73,7 +73,9 @@
 				</tr>
 			</table>
 		</form>
-
+		<p>
+			Differentialgleichungen&nbsp;<a href="/solve">numerisch l&ouml;sen</a>
+		</p>
 	</div>
 </body>
 </html>
