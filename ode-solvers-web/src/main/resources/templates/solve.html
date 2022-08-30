@@ -2,7 +2,7 @@
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
 <meta charset="ISO-8859-1">
-<title>gew&ouml;hnliche DGL'n</title>
+<title>gew&ouml;hnliche Differentialgleichungen</title>
 <style>
 .error {
 	color: red;
@@ -11,7 +11,7 @@
 </head>
 <body>
 	<div align="center">
-		<h1>DGL numerisch l&#246;sen</h1>
+		<h1>Anfangswertproblem numerisch l&#246;sen</h1>
 		<form action="#" th:action="@{/solve}" method="post"
 			th:object="${ode}">
 			<table>
@@ -81,14 +81,12 @@
 
 				<tr>
 					<th colspan="2">
-						<button type="submit" name="command" value="validate">Validieren</button>
-						<button type="submit" name="command" value="valueTable">Wertetabelle</button>
-						<button type="submit" name="command" value="graph">Graph</button>
+						<button type="submit">berechnen</button>
 					</th>
 				</tr>
 			</table>
 		</form>
- 		<p>spezielle L&ouml;sung&nbsp;<a href="/function">berechnen</a></p>
+ 		<p>analytische L&ouml;sung&nbsp;<a href="/function">berechnen</a></p>
 	</div>
 </body>
 </html>

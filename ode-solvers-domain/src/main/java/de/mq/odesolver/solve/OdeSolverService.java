@@ -3,7 +3,7 @@ package de.mq.odesolver.solve;
 public interface OdeSolverService {
 
 	public enum Algorithm {
-		EulerPolygonal(1), RungeKutta2ndOrder(2), RungeKutta4ndOrder(4);
+		EulerPolygonal(1), RungeKutta2ndOrder(2), RungeKutta4thOrder(4);
 
 		private final int order;
 

@@ -21,11 +21,11 @@ class OdeTest {
 	private final Ode ode = newOde2();
 
 	private Ode newOde2() {
-		return new Ode(ODE2, Algorithm.RungeKutta4ndOrder, Y0, START, STOP, STEPS );
+		return new Ode(ODE2, Algorithm.RungeKutta4thOrder, Y0, START, STOP, STEPS );
 	}
 	
 	private Ode newOde1() {
-		return new Ode("y[0]+x", Algorithm.RungeKutta4ndOrder, new double[] {0}, START, STOP, STEPS );
+		return new Ode("y[0]+x", Algorithm.RungeKutta4thOrder, new double[] {0}, START, STOP, STEPS );
 	}
 	
 	@Test
@@ -45,7 +45,7 @@ class OdeTest {
 	
 	@Test
 	void algorithm() {
-		assertEquals(Algorithm.RungeKutta4ndOrder, ode.algorithm());
+		assertEquals(Algorithm.RungeKutta4thOrder, ode.algorithm());
 	}
 
 	@Test
@@ -81,7 +81,7 @@ class OdeTest {
 	
 	@Test
 	void checkStartBeforeStopFalse() {
-		assertFalse( new Ode(ODE2, Algorithm.RungeKutta4ndOrder, Y0, START, START, STEPS ).checkStartBeforeStop());
+		assertFalse( new Ode(ODE2, Algorithm.RungeKutta4thOrder, Y0, START, START, STEPS ).checkStartBeforeStop());
 	}
 	
 	@Test
@@ -90,7 +90,7 @@ class OdeTest {
 	}
 	@Test
 	void odeEmpty() {
-		assertThrows(IllegalArgumentException.class, () -> new Ode(null, Algorithm.RungeKutta4ndOrder, Y0, START, STOP, STEPS ));
+		assertThrows(IllegalArgumentException.class, () -> new Ode(null, Algorithm.RungeKutta4thOrder, Y0, START, STOP, STEPS ));
 	}
 	
 	@Test
@@ -100,16 +100,16 @@ class OdeTest {
 	
 	@Test
 	void yNull() {
-		assertThrows(IllegalArgumentException.class, () -> new Ode(ODE2, Algorithm.RungeKutta4ndOrder, null, START, STOP, STEPS ));
+		assertThrows(IllegalArgumentException.class, () -> new Ode(ODE2, Algorithm.RungeKutta4thOrder, null, START, STOP, STEPS ));
 	}
 	
 	@Test
 	void yLength0() {
-		assertThrows(IllegalArgumentException.class, () -> new Ode(ODE2, Algorithm.RungeKutta4ndOrder, new double[] {}, START, STOP, STEPS ));
+		assertThrows(IllegalArgumentException.class, () -> new Ode(ODE2, Algorithm.RungeKutta4thOrder, new double[] {}, START, STOP, STEPS ));
 	}
 	
 	@Test
 	void steps0() {
-		assertThrows(IllegalArgumentException.class, () -> new Ode(ODE2, Algorithm.RungeKutta4ndOrder, Y0, START, STOP, 0 ));
+		assertThrows(IllegalArgumentException.class, () -> new Ode(ODE2, Algorithm.RungeKutta4thOrder, Y0, START, STOP, 0 ));
 	}
 }

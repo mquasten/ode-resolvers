@@ -13,7 +13,7 @@ class OdeSolverServiceImpl implements OdeSolverService {
 
 	private final Map<Algorithm, Class<? extends OdeResultCalculator>> solvers = Map.of(Algorithm.EulerPolygonal,
 			EulerCalculatorImpl.class, Algorithm.RungeKutta2ndOrder, RungeKutta2CalculatorImpl.class,
-			Algorithm.RungeKutta4ndOrder, RungeKutta4CalculatorImpl.class);
+			Algorithm.RungeKutta4thOrder, RungeKutta4CalculatorImpl.class);
 
 	private final OdeFunctionUtil odeFunctionUtil;
 

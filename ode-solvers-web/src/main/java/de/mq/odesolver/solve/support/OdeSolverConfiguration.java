@@ -10,11 +10,12 @@ import de.mq.odesolver.support.OdeFunctionUtil;
 
 
 @Configuration
-class OdeSolverConfiguration {
+public class OdeSolverConfiguration {
 
 	@Bean
-	OdeSolverService odeSolverService (@Qualifier("odeFunctionUtilRightSide") final OdeFunctionUtil odeFunctionUtil) {
+	public OdeSolverService odeSolverService (@Qualifier("odeFunctionUtilRightSide") final OdeFunctionUtil odeFunctionUtil) {
 		return new OdeSolverServiceImpl(odeFunctionUtil);
 	}
+
 	
 }

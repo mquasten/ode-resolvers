@@ -1,10 +1,9 @@
 package de.mq.odesolver.function.support;
 
 import java.util.List;
-import java.util.Map;
-
 import javax.validation.Valid;
 
+import org.springframework.beans.factory.annotation.Lookup;
 import org.springframework.core.convert.converter.Converter;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -13,21 +12,22 @@ import org.springframework.validation.ObjectError;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.servlet.ModelAndView;
 
 import de.mq.odesolver.Result;
 import de.mq.odesolver.function.FunctionService;
 import de.mq.odesolver.function.FunctionSolver;
-import de.mq.odesolver.solve.support.ResultsExcelView;
-import de.mq.odesolver.solve.support.ResultsGraphView;
+import de.mq.odesolver.result.support.ResultModel;
+import de.mq.odesolver.result.support.ResultsExcelView;
+import de.mq.odesolver.result.support.ResultsGraphView;
+import de.mq.odesolver.support.HistoryModel;
 
 @Controller
+abstract
 class FunctionController {
 
-	private final ModelAndView functionModelAndView = new ModelAndView("function");
+	private final String functionModelAndView = "function";
 	private final Converter<FunctionModel, Function> converter;
-	private final Map<String, ModelAndView> commands;
+
 	
 	private final FunctionService functionService; 
 
@@ -35,19 +35,16 @@ class FunctionController {
 			final Converter<FunctionModel, Function> converter) {
 		this.functionService=functionService;
 		this.converter = converter;
-		this.commands = Map.of("valueTable", new ModelAndView(resultsExcelView), "graph",
-				new ModelAndView(resultsGraphView));
 	}
 
 	@GetMapping("/function")
-	public ModelAndView solve(final Model model) {
-		model.addAttribute("function", new FunctionModel());
+	public String solve(final Model model) {
+		model.addAttribute("function",historyModel().getFunctionModel());
 		return functionModelAndView;
 	}
 
 	@PostMapping(value = "/function")
-	public ModelAndView solveSubmit(@RequestParam(name = "command") final String command,
-			@ModelAttribute("function") @Valid final FunctionModel functionModel, final BindingResult bindingResult,
+	public String solveSubmit(@ModelAttribute("function") @Valid final FunctionModel functionModel, final BindingResult bindingResult,
 			final Model model) {
 		if (bindingResult.hasFieldErrors()) {
 			return functionModelAndView;
@@ -59,9 +56,8 @@ class FunctionController {
 			return functionModelAndView;
 		}
 
-		if (!commands.containsKey(command)) {
-			return functionModelAndView;
-		}
+		historyModel().setFunctionModel(functionModel);
+		
 
 		if (!calculate(function, model, bindingResult)) {
 			return functionModelAndView;
@@ -69,7 +65,7 @@ class FunctionController {
 		
 		
 
-		return commands.get(command);
+		return "redirect:result";
 
 	}
 
@@ -79,8 +75,7 @@ class FunctionController {
 			
 			final List<Result> results = functionSolver.solve(function.k(), function.start(), function.stop(), function.steps());
 
-			 model.addAttribute("results",results);
-			 model.addAttribute("resultsTitle", "y="+function.function());
+			 historyModel().setResult(new ResultModel(results, "y="+function.function(),  function.k()));
 			return true;
 		} catch (final Exception exception) {
 			bindingResult.addError(new ObjectError("function", exception.getMessage()));
@@ -103,5 +98,8 @@ class FunctionController {
 
 		return !bindingResult.hasGlobalErrors();
 	}
+	
+	@Lookup
+	abstract HistoryModel historyModel( );
 
 }

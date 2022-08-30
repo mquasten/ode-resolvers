@@ -1,4 +1,4 @@
-package de.mq.odesolver.solve.support;
+package de.mq.odesolver.result.support;
 
 import java.util.List;
 import java.util.Map;
