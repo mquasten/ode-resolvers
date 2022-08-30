@@ -43,7 +43,7 @@ class FunctionController {
 		return functionModelAndView;
 	}
 
-	@PostMapping(value = "/function")
+	@PostMapping(value = "/function", params = "submit")
 	public String solveSubmit(@ModelAttribute("function") @Valid final FunctionModel functionModel, final BindingResult bindingResult,
 			final Model model) {
 		if (bindingResult.hasFieldErrors()) {
@@ -68,6 +68,14 @@ class FunctionController {
 		return "redirect:result";
 
 	}
+	
+	@PostMapping(value = "/function", params = "reset")
+	public String solveSubmit(final Model model) {
+		historyModel().setFunctionModel(new FunctionModel());
+		return "redirect:"+functionModelAndView;
+	}
+	
+	
 
 	private boolean calculate(final Function function, final Model model, final BindingResult bindingResult) {
 		try {

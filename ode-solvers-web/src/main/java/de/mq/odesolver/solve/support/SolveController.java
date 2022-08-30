@@ -59,7 +59,7 @@ class  SolveController  {
 	
 	// Die Reihenfolge der Parameter ist wichtig, sonst funktioniert Beanvalidation
 	// nicht (Errorpage wird angezeigt) !!!
-	@PostMapping(value = "/solve")
+	@PostMapping(value = "/solve" ,  params = "submit")
 	public String solveSubmit(
 			@ModelAttribute("ode") @Valid final OdeModel odeModel, final BindingResult bindingResult, final Model model) {
 	
@@ -86,6 +86,13 @@ class  SolveController  {
 		return "redirect:result";
 		
 		
+	}
+	
+	@PostMapping(value = "/solve" ,  params = "reset")
+	public String solveReset(final Model model) {
+		model.addAttribute("algorithms", algorithms);
+		historyModel().setOdeModel(new OdeModel());
+		return "redirect:"+solveModelAndView;
 	}
 
 
