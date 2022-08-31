@@ -26,7 +26,7 @@ import de.mq.odesolver.result.support.ResultModel;
 import de.mq.odesolver.solve.OdeSolver;
 import de.mq.odesolver.solve.OdeSolverService;
 import de.mq.odesolver.solve.OdeSolverService.Algorithm;
-import de.mq.odesolver.support.HistoryModel;
+import de.mq.odesolver.support.OdeSessionModel;
 
 @Controller
 abstract
@@ -51,7 +51,7 @@ class  SolveController  {
 	@GetMapping("/solve")
 	public String solve(final Model model) {
 		model.addAttribute("algorithms", algorithms);
-		model.addAttribute("ode", historyModel().getOdeModel());
+		model.addAttribute("ode", odeSessionModel().getOdeModel());
 		
 		return solveModelAndView;
 	}
@@ -76,7 +76,7 @@ class  SolveController  {
 			return solveModelAndView;
 		}
 		
-		historyModel().setOdeModel(odeModel);
+		odeSessionModel().setOdeModel(odeModel);
 
 		if(! calculate(ode, model, bindingResult)) {
 			return solveModelAndView;
@@ -91,7 +91,7 @@ class  SolveController  {
 	@PostMapping(value = "/solve" ,  params = "reset")
 	public String solveReset(final Model model) {
 		model.addAttribute("algorithms", algorithms);
-		historyModel().setOdeModel(new OdeModel());
+		odeSessionModel().setOdeModel(new OdeModel());
 		return "redirect:"+solveModelAndView;
 	}
 
@@ -103,8 +103,8 @@ class  SolveController  {
 		final OdeSolver odeSolver = odeSolverService.odeSolver(ode.algorithm(), ode.ode());
 		final List<? extends Result> results = odeSolver.solve(ode.y(), ode.start(), ode.stop(),ode.steps() );
 		  
-		final HistoryModel historyModel =   historyModel();
-		historyModel.setResult(new ResultModel(results, ode.beautifiedOde()));
+		final OdeSessionModel odeSessionModel =   odeSessionModel();
+		odeSessionModel.setResult(new ResultModel(results, ode.beautifiedOde()));
 	
 		  return true;
 		} catch(final Exception exception) {
@@ -137,6 +137,6 @@ class  SolveController  {
 	}
 
 	@Lookup
-	abstract HistoryModel historyModel( );
+	abstract OdeSessionModel odeSessionModel( );
 	
 }

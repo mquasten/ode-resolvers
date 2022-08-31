@@ -7,7 +7,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.servlet.ModelAndView;
 
-import de.mq.odesolver.support.HistoryModel;
+import de.mq.odesolver.support.OdeSessionModel;
 
 @Controller
 abstract class ResultController {
@@ -22,7 +22,7 @@ abstract class ResultController {
 	
 	@GetMapping("/result")
 	public String solve(final Model model) {
-		final ResultModel result = historyModel().getResult();
+		final ResultModel result = odeSessionModel().getResult();
 		model.addAttribute("result", result);
 		model.addAttribute(model);
 		return "result";
@@ -30,25 +30,25 @@ abstract class ResultController {
 	
 	@PostMapping(value = "/result", params = "back")
 	public String backSubmit() {
-		return String.format("redirect:%s", historyModel().getResult().getBack());
+		return String.format("redirect:%s", odeSessionModel().getResult().getBack());
 	}
 	
 	@PostMapping(value = "/result", params = "valueTable")
 	public ModelAndView excelSubmit(final Model model) {
-		model.addAttribute("results" , historyModel().getResult().getResults());
-		model.addAttribute("resultsTitle" ,historyModel().getResult().getTitle());
+		model.addAttribute("results" , odeSessionModel().getResult().getResults());
+		model.addAttribute("resultsTitle" ,odeSessionModel().getResult().getTitle());
 		return new ModelAndView( resultsExcelView);
 		
 	}
 	
 	@PostMapping(value = "/result", params = "graph")
 	public ModelAndView graphSubmit(final Model model) {
-		model.addAttribute("results" , historyModel().getResult().getResults());
-		model.addAttribute("resultsTitle" ,historyModel().getResult().getTitle());
+		model.addAttribute("results" , odeSessionModel().getResult().getResults());
+		model.addAttribute("resultsTitle" ,odeSessionModel().getResult().getTitle());
 		return new ModelAndView( resultsGraphView);
 	}
 	
 	@Lookup
-	abstract HistoryModel historyModel( );
+	abstract OdeSessionModel odeSessionModel( );
 
 }

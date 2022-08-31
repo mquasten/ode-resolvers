@@ -22,9 +22,9 @@ class OdeFunctionUtilConfiguration {
 	
 	@Bean
 	@Scope(scopeName="session")
-	public HistoryModel historyModel() {
+	public OdeSessionModel odeSessionModel() {
 	
-		return new HistoryModel();
+		return new OdeSessionModel();
 		
 	}
 

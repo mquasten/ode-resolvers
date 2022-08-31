@@ -19,7 +19,7 @@ import de.mq.odesolver.function.FunctionSolver;
 import de.mq.odesolver.result.support.ResultModel;
 import de.mq.odesolver.result.support.ResultsExcelView;
 import de.mq.odesolver.result.support.ResultsGraphView;
-import de.mq.odesolver.support.HistoryModel;
+import de.mq.odesolver.support.OdeSessionModel;
 
 @Controller
 abstract
@@ -39,7 +39,7 @@ class FunctionController {
 
 	@GetMapping("/function")
 	public String solve(final Model model) {
-		model.addAttribute("function",historyModel().getFunctionModel());
+		model.addAttribute("function",odeSessionModel().getFunctionModel());
 		return functionModelAndView;
 	}
 
@@ -56,7 +56,7 @@ class FunctionController {
 			return functionModelAndView;
 		}
 
-		historyModel().setFunctionModel(functionModel);
+		odeSessionModel().setFunctionModel(functionModel);
 		
 
 		if (!calculate(function, model, bindingResult)) {
@@ -71,7 +71,7 @@ class FunctionController {
 	
 	@PostMapping(value = "/function", params = "reset")
 	public String solveSubmit(final Model model) {
-		historyModel().setFunctionModel(new FunctionModel());
+		odeSessionModel().setFunctionModel(new FunctionModel());
 		return "redirect:"+functionModelAndView;
 	}
 	
@@ -83,7 +83,7 @@ class FunctionController {
 			
 			final List<Result> results = functionSolver.solve(function.k(), function.start(), function.stop(), function.steps());
 
-			 historyModel().setResult(new ResultModel(results, "y="+function.function(),  function.k()));
+			 odeSessionModel().setResult(new ResultModel(results, "y="+function.function(),  function.k()));
 			return true;
 		} catch (final Exception exception) {
 			bindingResult.addError(new ObjectError("function", exception.getMessage()));
@@ -108,6 +108,6 @@ class FunctionController {
 	}
 	
 	@Lookup
-	abstract HistoryModel historyModel( );
+	abstract OdeSessionModel odeSessionModel( );
 
 }

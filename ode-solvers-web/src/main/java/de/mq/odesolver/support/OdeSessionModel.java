@@ -4,7 +4,7 @@ import de.mq.odesolver.function.support.FunctionModel;
 import de.mq.odesolver.result.support.ResultModel;
 import de.mq.odesolver.solve.support.OdeModel;
 
-public class HistoryModel {
+public class OdeSessionModel {
 	
 	private  OdeModel odeModel = new OdeModel(); 
 	
