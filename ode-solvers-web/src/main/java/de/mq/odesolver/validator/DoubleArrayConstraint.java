@@ -14,7 +14,7 @@ import javax.validation.Payload;
 @Target( { ElementType.METHOD, ElementType.FIELD })
 @Retention(RetentionPolicy.RUNTIME)
 public @interface DoubleArrayConstraint {
-    String message() default "kein reeller Vektor";
+    String message() default "{real-vector.message}";
     Class<?>[] groups() default {};
     Class<? extends Payload>[] payload() default {};
 }

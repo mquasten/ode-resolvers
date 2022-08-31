@@ -2,7 +2,7 @@
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
 <meta charset="ISO-8859-1">
-<title>gew&ouml;hnliche Differentialgleichungen</title>
+<title th:text="#{title}"></title>
 <style>
 .error {
 	color: red;
@@ -11,12 +11,12 @@
 </head>
 <body>
 	<div align="center">
-		<h1>Anfangswertproblem numerisch l&#246;sen</h1>
+		<h1 th:text="#{solve.headline}"></h1>
 		<form action="#" th:action="@{/solve}" method="post"
 			th:object="${ode}">
 			<table>
 				<tr>
-					<td><label>Grad:</label></td>
+					<td><label th:text="#{solve.order}"></label></td>
 					<td><select th:field="*{order}">
 							<option th:value="'1'" th:text="'1. Ordnung'"></option>
 							<option th:value="'2'" th:text="'2. Ordnung'"></option>
@@ -25,7 +25,7 @@
 				</tr>
 
 				<tr>
-					<td><label>Algorithmus:</label></td>
+					<td><label th:text="#{solve.algorithm}"></label></td>
 					<td><select th:field="*{solver}">
 							<option th:each="entry : ${algorithms}" th:value="${entry.key}"
 								th:utext="${entry.value}"></option>
@@ -33,7 +33,7 @@
 				</tr>
 
 				<tr>
-					<td><label>rechte Seite:</label></td>
+					<td><label  th:text="#{solve.ode}"></label></td>
 					<td><textarea id="ode" rows="3" cols="25" th:field="*{ode}"></textarea>
 					</td>
 
@@ -42,34 +42,34 @@
 				</tr>
 
 				<tr>
-					<td><label>Anfangswerte:</label></td>
+					<td><label  th:text="#{solve.initial-values}"></label></td>
 					<td><input type="text" th:field="*{y}" /></td>
 					<td th:if="${#fields.hasErrors('y')}" th:errors="*{y}"
 						th:errorclass="error"></td>
 				</tr>
 
 				<tr>
-					<td><label>Start:</label></td>
+					<td><label th:text="#{solve.start}"></label></td>
 					<td><input type="text" th:field="*{start}" /></td>
 					<td th:if="${#fields.hasErrors('start')}" th:errors="*{start}"
 						th:errorclass="error"></td>
 				</tr>
 				<tr>
-					<td><label>Stop:</label></td>
+					<td><label th:text="#{solve.stop}"></label></td>
 					<td><input type="text" th:field="*{stop}" /></td>
 					<td th:if="${#fields.hasErrors('stop')}" th:errors="*{stop}"
 						th:errorclass="error"></td>
 				</tr>
 
 				<tr>
-					<td><label>Schritte:</label></td>
+					<td><label th:text="#{solve.steps}"></label></td>
 					<td><input type="text" th:field="*{steps}" /></td>
 					<td th:if="${#fields.hasErrors('steps')}" th:errors="*{steps}"
 						th:errorclass="error"></td>
 				</tr>
 
 				<tr>
-					<th colspan="2">
+					<th colspan="3">
 						<div th:if="${#fields.hasErrors('global')}">
 							<p th:each="err : ${#fields.errors('global')}" th:text="${err}"
 								class="error" />
@@ -80,16 +80,15 @@
 				</tr>
 
 				<tr>
-					<th colspan="2">
-						<button type="submit" name="reset">zur&uuml;cksetzen</button>
-						<button type="submit" name="submit">berechnen</button>
+					<th colspan="3">
+						<button type="submit" name="reset" th:text="#{solve.reset}"></button>
+						<button type="submit" name="submit" th:text="#{solve.submit}"></button>
 					</th>
 				</tr>
 			</table>
 		</form>
-		<p>
-			analytische L&ouml;sung&nbsp;<a href="/function">berechnen</a>
-		</p>
+		<p><a th:text="#{analytical-solution}" href="/function"></a></p>
+
 	</div>
 </body>
 </html>

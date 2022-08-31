@@ -14,7 +14,7 @@ import javax.validation.Payload;
 @Target( { ElementType.METHOD, ElementType.FIELD })
 @Retention(RetentionPolicy.RUNTIME)
 public @interface DoubleConstraint {
-    String message() default "keine reelle Zahl";
+    String message() default "{real-number.message}";
     Class<?>[] groups() default {};
     Class<? extends Payload>[] payload() default {};
 }

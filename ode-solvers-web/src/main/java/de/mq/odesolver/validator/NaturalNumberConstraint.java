@@ -14,7 +14,7 @@ import javax.validation.Payload;
 @Target( { ElementType.METHOD, ElementType.FIELD })
 @Retention(RetentionPolicy.RUNTIME)
 public @interface NaturalNumberConstraint {
-    String message() default "keine Zahl > 0";
+    String message() default "{natural-number.message}";
     Class<?>[] groups() default {};
     Class<? extends Payload>[] payload() default {};
 }
