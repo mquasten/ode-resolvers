@@ -112,6 +112,12 @@ public class ResultModel {
 		return results;
 	}
 
+	public int getSize() {
+		if (results==null) {
+			return 0;
+		}
+		return results.size();
+	}
 
 	public final Collection<Entry<String,double[]>> getRanges() {
 		
