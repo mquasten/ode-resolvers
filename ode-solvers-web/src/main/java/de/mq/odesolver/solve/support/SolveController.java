@@ -40,13 +40,11 @@ abstract class SolveController {
 
 	private final MessageSource messageSource;
 
-	private final Collection<Entry<String, String>> algorithms = Arrays.asList(Algorithm.values()).stream()
-			.sorted((a1, a2) -> a2.order() - a1.order())
+	private final Collection<Entry<String, String>> algorithms = Arrays.asList(Algorithm.values()).stream().sorted((a1, a2) -> a2.order() - a1.order())
 			.map(a -> new SimpleImmutableEntry<String, String>(a.name(), a.name())).collect(Collectors.toList());
 
 	@Autowired
-	SolveController(final OdeSolverService odeSolverService, final Converter<OdeModel, Ode> odeConverter,
-			final MessageSource messageSource) {
+	SolveController(final OdeSolverService odeSolverService, final Converter<OdeModel, Ode> odeConverter, final MessageSource messageSource) {
 		this.odeSolverService = odeSolverService;
 		this.odeConverter = odeConverter;
 		this.messageSource = messageSource;
@@ -63,8 +61,7 @@ abstract class SolveController {
 	// Die Reihenfolge der Parameter ist wichtig, sonst funktioniert Beanvalidation
 	// nicht (Errorpage wird angezeigt) !!!
 	@PostMapping(value = "/solve", params = "submit")
-	String solveSubmit(@ModelAttribute("ode") @Valid final OdeModel odeModel, final BindingResult bindingResult,
-			final Model model, final Locale locale) {
+	String solveSubmit(@ModelAttribute("ode") @Valid final OdeModel odeModel, final BindingResult bindingResult, final Model model, final Locale locale) {
 
 		model.addAttribute("algorithms", algorithms);
 
@@ -114,13 +111,11 @@ abstract class SolveController {
 	private boolean validate(final Ode ode, final int order, final BindingResult bindingResult, final Locale locale) {
 
 		if (!ode.checkOrder(order)) {
-			bindingResult.addError(new ObjectError("ode", messageSource
-					.getMessage("function.wrong-number-initial-vales", null, "wrong-number-initial-vales", locale)));
+			bindingResult.addError(new ObjectError("ode", messageSource.getMessage("function.wrong-number-initial-vales", null, "wrong-number-initial-vales", locale)));
 		}
 
 		if (!ode.checkStartBeforeStop()) {
-			bindingResult.addError(new ObjectError("ode",
-					messageSource.getMessage("start-less-than-stop", null, "start-less-than-stop", locale)));
+			bindingResult.addError(new ObjectError("ode", messageSource.getMessage("start-less-than-stop", null, "start-less-than-stop", locale)));
 		}
 
 		try {

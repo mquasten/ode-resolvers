@@ -25,20 +25,16 @@ import de.mq.odesolver.solve.OdeResult;
 public class ResultsGraphView extends AbstractView {
 
 	@Override
-	protected void renderMergedOutputModel(final Map<String, Object> model, final HttpServletRequest request,
-			final HttpServletResponse response) throws Exception {
+	protected void renderMergedOutputModel(final Map<String, Object> model, final HttpServletRequest request, final HttpServletResponse response) throws Exception {
 		response.setHeader("Content-Disposition", "filename=Funktionsgraph.png");
 		@SuppressWarnings("unchecked")
 		final List<? extends Result> results = (List<OdeResult>) model.get("results");
-		final String ode =  (String) model.get("resultsTitle");
-
-		
+		final String ode = (String) model.get("resultsTitle");
 
 		final XYDataset dataset = createDataset(results, ode);
 
 		// Create chart
-		final JFreeChart chart = ChartFactory.createXYLineChart(ode, "x", "y", dataset,
-				PlotOrientation.VERTICAL, true, true, false);
+		final JFreeChart chart = ChartFactory.createXYLineChart(ode, "x", "y", dataset, PlotOrientation.VERTICAL, true, true, false);
 
 		final ServletOutputStream os = response.getOutputStream();
 
@@ -48,28 +44,26 @@ public class ResultsGraphView extends AbstractView {
 
 	private XYDataset createDataset(final List<? extends Result> results, final String title) {
 		final XYSeriesCollection dataset = new XYSeriesCollection();
-		
-		if( results == null) {
-		  return dataset;
-		   
+
+		if (results == null) {
+			return dataset;
+
 		}
-		
-		
-		if( results.size()<1) {
+
+		if (results.size() < 1) {
 			return dataset;
 		}
-		
+
 		IntStream.range(0, results.get(0).yDerivatives().length).forEach(i -> {
 			final StringBuffer text = new StringBuffer("y");
 			IntStream.rangeClosed(1, i).forEach(k -> text.append("'"));
-			
+
 			final XYSeries series = new XYSeries(text);
-			 results.forEach(result -> series.add(result.x(), result.yDerivative(i)));
-			 dataset.addSeries(series);
-			
+			results.forEach(result -> series.add(result.x(), result.yDerivative(i)));
+			dataset.addSeries(series);
+
 		});
-		
-		
+
 		return dataset;
 	}
 

@@ -25,8 +25,7 @@ abstract class ResultController {
 	private final ResultsGraphView resultsGraphView;
 	private final MessageSource messageSource;
 
-	ResultController(final MessageSource messageSource, final ResultsExcelView resultsExcelView,
-			final ResultsGraphView resultsGraphView) {
+	ResultController(final MessageSource messageSource, final ResultsExcelView resultsExcelView, final ResultsGraphView resultsGraphView) {
 		this.resultsExcelView = resultsExcelView;
 		this.resultsGraphView = resultsGraphView;
 		this.messageSource = messageSource;
@@ -45,18 +44,15 @@ abstract class ResultController {
 	}
 
 	@PostMapping(value = "/result", params = "valueTable")
-	ModelAndView excelSubmit(@ModelAttribute("result") final ResultModel resultModel, final BindingResult bindingResult,
-			final Model model, final Locale locale) {
+	ModelAndView excelSubmit(@ModelAttribute("result") final ResultModel resultModel, final BindingResult bindingResult, final Model model, final Locale locale) {
 		return successSubmit(resultsExcelView, bindingResult, model, locale);
 
 	}
 
-	private ModelAndView successSubmit(final View successView, final BindingResult bindingResult, final Model model,
-			final Locale locale) {
+	private ModelAndView successSubmit(final View successView, final BindingResult bindingResult, final Model model, final Locale locale) {
 		final ResultModel result = odeSessionModel().getResult();
 		if (CollectionUtils.isEmpty(result.getResults())) {
-			bindingResult.addError(
-					new ObjectError("result", messageSource.getMessage("result.empty", null, "empty", locale)));
+			bindingResult.addError(new ObjectError("result", messageSource.getMessage("result.empty", null, "empty", locale)));
 			return new ModelAndView(RESULT_VIEW);
 		} else {
 			model.addAttribute("results", result.getResults());
@@ -66,8 +62,7 @@ abstract class ResultController {
 	}
 
 	@PostMapping(value = "/result", params = "graph")
-	ModelAndView graphSubmit(@ModelAttribute("result") final ResultModel resultModel, final BindingResult bindingResult,
-			final Model model, final Locale locale) {
+	ModelAndView graphSubmit(@ModelAttribute("result") final ResultModel resultModel, final BindingResult bindingResult, final Model model, final Locale locale) {
 		return successSubmit(resultsGraphView, bindingResult, model, locale);
 	}
 

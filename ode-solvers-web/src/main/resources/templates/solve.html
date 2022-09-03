@@ -33,7 +33,7 @@
 				</tr>
 
 				<tr>
-					<td><label  th:text="#{solve.ode}"></label></td>
+					<td><label th:text="#{solve.ode}"></label></td>
 					<td><textarea id="ode" rows="3" cols="25" th:field="*{ode}"></textarea>
 					</td>
 
@@ -42,7 +42,7 @@
 				</tr>
 
 				<tr>
-					<td><label  th:text="#{solve.initial-values}"></label></td>
+					<td><label th:text="#{solve.initial-values}"></label></td>
 					<td><input type="text" th:field="*{y}" /></td>
 					<td th:if="${#fields.hasErrors('y')}" th:errors="*{y}"
 						th:errorclass="error"></td>
@@ -87,8 +87,12 @@
 				</tr>
 			</table>
 		</form>
-		<p><a th:text="#{analytical-solution}" href="/function"></a></p>
-
+		<p>
+			<a th:text="#{analytical-solution}" href="/function"></a>
+		</p>
+		<p>
+			<a th:text="#{settings}" href="/settings"></a>
+		</p>
 	</div>
 </body>
 </html>

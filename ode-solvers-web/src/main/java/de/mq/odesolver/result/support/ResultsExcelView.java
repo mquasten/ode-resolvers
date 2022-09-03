@@ -24,12 +24,11 @@ public class ResultsExcelView extends AbstractXlsxView {
 	private static final int MAX_CELL_HEADLINE = 10;
 
 	@Override
-	protected void buildExcelDocument(final Map<String, Object> model, final Workbook workbook,
-			final HttpServletRequest request, final HttpServletResponse response) throws Exception {
+	protected void buildExcelDocument(final Map<String, Object> model, final Workbook workbook, final HttpServletRequest request, final HttpServletResponse response) throws Exception {
 
 		@SuppressWarnings("unchecked")
 		final List<Result> results = (List<Result>) model.get("results");
-		final String title =(String) model.get("resultsTitle");
+		final String title = (String) model.get("resultsTitle");
 
 		response.setHeader("Content-Disposition", "attachment; filename=Wertetabelle.xls");
 		final Sheet sheet = workbook.createSheet("Wertetabelle");
@@ -39,8 +38,8 @@ public class ResultsExcelView extends AbstractXlsxView {
 		final Cell headlineCell = headlineRow.createCell(0);
 		headlineCell.setCellValue(title);
 		headlineRow.createCell(10).setBlank();
-		
-		sheet.addMergedRegion(new CellRangeAddress(0,0,0,MAX_CELL_HEADLINE));
+
+		sheet.addMergedRegion(new CellRangeAddress(0, 0, 0, MAX_CELL_HEADLINE));
 
 		final CellStyle cellStyle = boldCellStyle(workbook);
 
@@ -49,8 +48,8 @@ public class ResultsExcelView extends AbstractXlsxView {
 		final Row header = sheet.createRow(1);
 		header.createCell(0).setCellValue("x");
 		header.createCell(1).setCellValue("y(x)");
-		
-		if( results == null) {
+
+		if (results == null) {
 			return;
 		}
 		if (results.size() == 0) {
@@ -79,8 +78,7 @@ public class ResultsExcelView extends AbstractXlsxView {
 		final Row date = sheet.createRow(i + 2);
 		final Result odeResult = results.get(i);
 		date.createCell(0).setCellValue(odeResult.x());
-		IntStream.range(0, odeResult.yDerivatives().length)
-				.forEach(k -> date.createCell(1 + k).setCellValue(odeResult.yDerivative(k)));
+		IntStream.range(0, odeResult.yDerivatives().length).forEach(k -> date.createCell(1 + k).setCellValue(odeResult.yDerivative(k)));
 	}
 
 }
