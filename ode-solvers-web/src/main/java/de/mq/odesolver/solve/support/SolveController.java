@@ -53,7 +53,7 @@ abstract class SolveController {
 	}
 
 	@GetMapping("/solve")
-	public String solve(final Model model) {
+	String solve(final Model model) {
 		model.addAttribute("algorithms", algorithms);
 		model.addAttribute("ode", odeSessionModel().getOdeModel());
 
@@ -63,7 +63,7 @@ abstract class SolveController {
 	// Die Reihenfolge der Parameter ist wichtig, sonst funktioniert Beanvalidation
 	// nicht (Errorpage wird angezeigt) !!!
 	@PostMapping(value = "/solve", params = "submit")
-	public String solveSubmit(@ModelAttribute("ode") @Valid final OdeModel odeModel, final BindingResult bindingResult,
+	String solveSubmit(@ModelAttribute("ode") @Valid final OdeModel odeModel, final BindingResult bindingResult,
 			final Model model, final Locale locale) {
 
 		model.addAttribute("algorithms", algorithms);
@@ -89,7 +89,7 @@ abstract class SolveController {
 	}
 
 	@PostMapping(value = "/solve", params = "reset")
-	public String solveReset(final Model model) {
+	String solveReset(final Model model) {
 		model.addAttribute("algorithms", algorithms);
 		odeSessionModel().setOdeModel(new OdeModel());
 		return "redirect:" + solveModelAndView;

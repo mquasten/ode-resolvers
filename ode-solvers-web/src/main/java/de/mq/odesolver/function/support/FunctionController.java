@@ -42,13 +42,13 @@ abstract class FunctionController {
 	}
 
 	@GetMapping("/function")
-	public String solve(final Model model) {
+	String solve(final Model model) {
 		model.addAttribute("function", odeSessionModel().getFunctionModel());
 		return functionModelAndView;
 	}
 
 	@PostMapping(value = "/function", params = "submit")
-	public String solveSubmit(@ModelAttribute("function") @Valid final FunctionModel functionModel,
+	String solveSubmit(@ModelAttribute("function") @Valid final FunctionModel functionModel,
 			final BindingResult bindingResult, final Model model, final Locale locale) {
 		if (bindingResult.hasFieldErrors()) {
 			return functionModelAndView;
@@ -71,7 +71,7 @@ abstract class FunctionController {
 	}
 
 	@PostMapping(value = "/function", params = "reset")
-	public String solveSubmit(final Model model) {
+	String solveSubmit(final Model model) {
 		odeSessionModel().setFunctionModel(new FunctionModel());
 		return "redirect:" + functionModelAndView;
 	}
