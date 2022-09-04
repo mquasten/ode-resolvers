@@ -10,6 +10,7 @@ import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.ValueSource;
 
 import de.mq.odesolver.solve.OdeSolverService.Algorithm;
+import de.mq.odesolver.support.OdeFunctionUtil.Language;
 
 class OdeTest {
 	
@@ -18,14 +19,15 @@ class OdeTest {
 	private static final int START = 0;
 	private static final double[] Y0 = new double[] {0,1};
 	private static final String ODE2 = "y[1]/y[0]+x";
+	
 	private final Ode ode = newOde2();
 
 	private Ode newOde2() {
-		return new Ode(ODE2, Algorithm.RungeKutta4thOrder, Y0, START, STOP, STEPS );
+		return new Ode(Language.Nashorn, ODE2, Algorithm.RungeKutta4thOrder, Y0, START, STOP, STEPS );
 	}
 	
 	private Ode newOde1() {
-		return new Ode("y[0]+x", Algorithm.RungeKutta4thOrder, new double[] {0}, START, STOP, STEPS );
+		return new Ode(Language.Nashorn, "y[0]+x", Algorithm.RungeKutta4thOrder, new double[] {0}, START, STOP, STEPS );
 	}
 	
 	@Test
@@ -81,35 +83,41 @@ class OdeTest {
 	
 	@Test
 	void checkStartBeforeStopFalse() {
-		assertFalse( new Ode(ODE2, Algorithm.RungeKutta4thOrder, Y0, START, START, STEPS ).checkStartBeforeStop());
+		assertFalse( new Ode(Language.Nashorn, ODE2, Algorithm.RungeKutta4thOrder, Y0, START, START, STEPS ).checkStartBeforeStop());
 	}
 	
 	@Test
 	void steps() {
 		assertEquals(STEPS, ode.steps());
 	}
+	
+	@Test
+	void languageEmpty() {
+		assertThrows(IllegalArgumentException.class, () -> new Ode(null ,ODE2, Algorithm.RungeKutta4thOrder, Y0, START, STOP, STEPS ));
+	}
+	
 	@Test
 	void odeEmpty() {
-		assertThrows(IllegalArgumentException.class, () -> new Ode(null, Algorithm.RungeKutta4thOrder, Y0, START, STOP, STEPS ));
+		assertThrows(IllegalArgumentException.class, () -> new Ode(Language.Nashorn,null, Algorithm.RungeKutta4thOrder, Y0, START, STOP, STEPS ));
 	}
 	
 	@Test
 	void AlgorithmNull() {
-		assertThrows(IllegalArgumentException.class, () -> new Ode(ODE2, null, Y0, START, STOP, STEPS ));
+		assertThrows(IllegalArgumentException.class, () -> new Ode(Language.Nashorn, ODE2, null, Y0, START, STOP, STEPS ));
 	}
 	
 	@Test
 	void yNull() {
-		assertThrows(IllegalArgumentException.class, () -> new Ode(ODE2, Algorithm.RungeKutta4thOrder, null, START, STOP, STEPS ));
+		assertThrows(IllegalArgumentException.class, () -> new Ode(Language.Nashorn, ODE2, Algorithm.RungeKutta4thOrder, null, START, STOP, STEPS ));
 	}
 	
 	@Test
 	void yLength0() {
-		assertThrows(IllegalArgumentException.class, () -> new Ode(ODE2, Algorithm.RungeKutta4thOrder, new double[] {}, START, STOP, STEPS ));
+		assertThrows(IllegalArgumentException.class, () -> new Ode(Language.Nashorn,ODE2, Algorithm.RungeKutta4thOrder, new double[] {}, START, STOP, STEPS ));
 	}
 	
 	@Test
 	void steps0() {
-		assertThrows(IllegalArgumentException.class, () -> new Ode(ODE2, Algorithm.RungeKutta4thOrder, Y0, START, STOP, 0 ));
+		assertThrows(IllegalArgumentException.class, () -> new Ode(Language.Nashorn,ODE2, Algorithm.RungeKutta4thOrder, Y0, START, STOP, 0 ));
 	}
 }

@@ -3,6 +3,7 @@ package de.mq.odesolver.solve.support;
 import org.springframework.util.Assert;
 
 import de.mq.odesolver.solve.OdeSolverService.Algorithm;
+import de.mq.odesolver.support.OdeFunctionUtil.Language;
 
 /**
  * Input Values from solve valid and with correct types
@@ -14,6 +15,8 @@ class Ode {
 
 	private final String REGEX_Y_DERIVATIVE = "y\\[\\s*%s\\s*\\]";
 
+	private final Language language;
+	
 	private final String ode;
 
 	private final Algorithm algorithm;
@@ -26,13 +29,14 @@ class Ode {
 
 	private final int steps;
 
-	Ode(final String ode, final Algorithm algorithm, final double[] y, final double start, final double stop,
-			final int steps) {
+	Ode(final Language languge, String ode, final Algorithm algorithm, final double[] y, final double start, final double stop, final int steps) {
+		Assert.notNull(languge, "Language is mandatory.");
 		Assert.hasText(ode, "Ode is madatory.");
 		Assert.notNull(algorithm, "Algorithm is madatory.");
 		Assert.notNull(y, "Y is mandatory");
 		Assert.isTrue(y.length > 0, "At least one y element required");
 		Assert.isTrue(steps > 0, "Steps must be > 0");
+		this.language=languge;
 		this.ode = ode;
 		this.algorithm = algorithm;
 		this.y = y;
@@ -45,7 +49,7 @@ class Ode {
 		Assert.isTrue(order > 0, "Order must be > 0");
 		return y.length == order;
 	}
-	
+
 	final boolean checkStartBeforeStop() {
 		return start < stop;
 	}
@@ -76,9 +80,12 @@ class Ode {
 
 	final String beautifiedOde() {
 		final String prefix = y.length == 1 ? "y'=" : "y''=";
-		return prefix + ode.replaceAll(String.format(REGEX_Y_DERIVATIVE, 0), "y")
-				.replaceAll(String.format(REGEX_Y_DERIVATIVE, 1), "y'");
+		return prefix + ode.replaceAll(String.format(REGEX_Y_DERIVATIVE, 0), "y").replaceAll(String.format(REGEX_Y_DERIVATIVE, 1), "y'");
 
+	}
+	
+	final Language language() {
+		return language;
 	}
 
 }

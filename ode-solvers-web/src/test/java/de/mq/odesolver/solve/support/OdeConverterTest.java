@@ -6,13 +6,21 @@ import java.util.stream.IntStream;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.EnumSource;
+import org.mockito.Mockito;
 import org.springframework.core.convert.support.DefaultConversionService;
 
 import de.mq.odesolver.solve.OdeSolverService.Algorithm;
+import de.mq.odesolver.support.OdeSessionModel;
+import de.mq.odesolver.support.OdeSessionModelRepository;
+import de.mq.odesolver.support.OdeFunctionUtil.Language;
 
 class OdeConverterTest {
-	private OdeConverter odeConverter = new OdeConverter(new DefaultConversionService());
-
+	
+	private final OdeSessionModelRepository odeSessionModelRepository = Mockito.mock(OdeSessionModelRepository.class);
+	private OdeConverter odeConverter = new OdeConverter(new DefaultConversionService(),odeSessionModelRepository);
+	private final OdeSessionModel odeSessionModel = new OdeSessionModel();
 	private final OdeModel odeModel = new OdeModel();
 
 	private final double START = 1;
@@ -22,6 +30,7 @@ class OdeConverterTest {
 
 	@BeforeEach
 	void setup() {
+		Mockito.when(odeSessionModelRepository.odeSessionModel()).thenReturn(odeSessionModel);
 		odeModel.setOde("y[1]   /  y[0]   + x ");
 		odeModel.setSolver(Algorithm.EulerPolygonal.name());
 		odeModel.setY("11,12;13 14");
@@ -40,7 +49,17 @@ class OdeConverterTest {
 		assertEquals(START, ode.start());
 		assertEquals(STOP, ode.stop());
 		assertEquals(STEPS, ode.steps());
+		assertEquals(Language.Groovy, ode.language());
 
+	}
+	
+	@ParameterizedTest()
+	@EnumSource
+	void convertEmpty(final Language language) {
+		odeSessionModel.getSettings().setScriptLanguage(language.name());
+		Mockito.when(odeSessionModelRepository.odeSessionModel()).thenReturn(odeSessionModel);
+		final var ode = odeConverter.convert(odeModel);
+		assertEquals(language, ode.language());
 	}
 
 }

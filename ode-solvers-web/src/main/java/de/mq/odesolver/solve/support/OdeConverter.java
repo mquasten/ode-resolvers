@@ -8,16 +8,20 @@ import org.springframework.stereotype.Component;
 import org.springframework.util.StringUtils;
 
 import de.mq.odesolver.solve.OdeSolverService.Algorithm;
+import de.mq.odesolver.support.OdeSessionModelRepository;
+import de.mq.odesolver.support.OdeFunctionUtil.Language;
 import de.mq.odesolver.validator.DoubleArrayValidator;
 
 @Component
 class OdeConverter implements Converter<OdeModel, Ode>{
 	
 	private final ConversionService conversionService;
+	private final OdeSessionModelRepository odeSessionModelRepository;
 
 	@Autowired
-	OdeConverter(final ConversionService conversionService) {
+	OdeConverter(final ConversionService conversionService, final OdeSessionModelRepository odeSessionModelRepository) {
 		this.conversionService=conversionService;
+		this.odeSessionModelRepository=odeSessionModelRepository;
 	}
 	
 
@@ -29,7 +33,8 @@ class OdeConverter implements Converter<OdeModel, Ode>{
 		final double start = conversionService.convert(odeModel.getStart(), double.class);
 		final double stop = conversionService.convert(odeModel.getStop(), double.class);
 		final int steps = conversionService.convert(odeModel.getSteps(), int.class);
-		return new Ode(ode, algorithm, y , start, stop, steps );
+		final var scriptLanguage = conversionService.convert(odeSessionModelRepository.odeSessionModel().getSettings().getScriptLanguage(), Language.class);
+		return new Ode(scriptLanguage, ode, algorithm, y , start, stop, steps );
 
 	}		
 

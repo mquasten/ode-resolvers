@@ -19,7 +19,7 @@ import de.mq.odesolver.solve.OdeResult;
 import de.mq.odesolver.solve.OdeSolver;
 import de.mq.odesolver.support.OdeFunctionUtil.Language;
 
-class OdeResolverWithExamplesTest {
+class OdeSolverWithExamplesTest {
 
 	private final Map<TestProperties, Double> rungeKutta4Properties = Map.ofEntries(
 			Map.entry(TestProperties.MaxTolExamplePapulaFirstOrder, 1e-6),

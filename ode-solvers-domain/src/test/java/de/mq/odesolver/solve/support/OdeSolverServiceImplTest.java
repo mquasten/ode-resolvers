@@ -1,6 +1,5 @@
 package de.mq.odesolver.solve.support;
 
-import static de.mq.odesolver.support.OdeFunctionUtilFactory.newOdeFunctionUtil;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
 import java.util.Arrays;
@@ -21,31 +20,32 @@ class OdeSolverServiceImplTest {
 
 	@ParameterizedTest
 	@EnumSource
-	void odeResolver(final Language language) {
-		final OdeSolverService odeResolverService = new OdeSolverServiceImpl(newOdeFunctionUtil(language));
-		Arrays.asList(Algorithm.values()).forEach(algorithm -> odeResolverService.odeSolver(algorithm, ODE_STRING));
+	void odeSolver(final Language language) {
+		final OdeSolverService odeResolverService = new OdeSolverServiceImpl();
+		Arrays.asList(Algorithm.values()).forEach(algorithm -> odeResolverService.odeSolver(language, algorithm, ODE_STRING));
 	}
 
 	@ParameterizedTest
 	@EnumSource
 	void odeResolverException(final Language language) {
-		final OdeSolverService odeResolverService = new OdeSolverServiceImpl(newOdeFunctionUtil(language));
+		final OdeSolverService odeResolverService = new OdeSolverServiceImpl();
 		assertThrows(IllegalStateException.class,
-				() -> odeResolverService.odeSolver(Algorithm.EulerPolygonal, ODE_STING_COMPILE_ERROR));
+				() -> odeResolverService.odeSolver(language, Algorithm.EulerPolygonal, ODE_STING_COMPILE_ERROR));
 	}
 
 	@ParameterizedTest
 	@EnumSource
 	void validate(final Language language) {
-		final OdeSolverService odeResolverService = new OdeSolverServiceImpl(newOdeFunctionUtil(language));
-		odeResolverService.validateRightSide(ODE_STRING, Y, 0);
+		final OdeSolverService odeResolverService = new OdeSolverServiceImpl();
+		odeResolverService.validateRightSide(language,ODE_STRING, Y, 0);
 	}
 
 	@ParameterizedTest
 	@EnumSource
 	void validateInvalid(final Language language) {
-		final OdeSolverService odeResolverService = new OdeSolverServiceImpl(newOdeFunctionUtil(language));
-		assertThrows(IllegalArgumentException.class, () -> odeResolverService.validateRightSide("y[0]/x", Y, 0));
+		final OdeSolverService odeResolverService = new OdeSolverServiceImpl();
+		assertThrows(IllegalArgumentException.class, () -> odeResolverService.validateRightSide(language, "y[0]/x", Y, 0));
 	}
+	
 
 }

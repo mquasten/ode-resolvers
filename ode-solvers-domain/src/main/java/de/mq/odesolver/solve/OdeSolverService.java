@@ -1,5 +1,7 @@
 package de.mq.odesolver.solve;
 
+import de.mq.odesolver.support.OdeFunctionUtil.Language;
+
 public interface OdeSolverService {
 
 	public enum Algorithm {
@@ -17,8 +19,8 @@ public interface OdeSolverService {
 
 	}
 
-	OdeSolver odeSolver(final Algorithm algorithm, final String function);
+	OdeSolver odeSolver(final Language language, final Algorithm algorithm, final String function);
 
-	double validateRightSide(final String function, final double y0[], final double x0);
+	double validateRightSide(final Language language,final String function, final double y0[], final double x0);
 
 }

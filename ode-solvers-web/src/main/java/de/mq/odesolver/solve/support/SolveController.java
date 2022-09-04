@@ -11,7 +11,6 @@ import java.util.stream.Collectors;
 
 import javax.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Lookup;
 import org.springframework.context.MessageSource;
 import org.springframework.core.convert.converter.Converter;
 import org.springframework.stereotype.Controller;
@@ -28,11 +27,14 @@ import de.mq.odesolver.solve.OdeSolver;
 import de.mq.odesolver.solve.OdeSolverService;
 import de.mq.odesolver.solve.OdeSolverService.Algorithm;
 import de.mq.odesolver.support.OdeSessionModel;
+import de.mq.odesolver.support.OdeSessionModelRepository;
 
 @Controller
-abstract class SolveController {
+class SolveController {
 
 	private final OdeSolverService odeSolverService;
+
+	private final OdeSessionModelRepository odeSessionModelRepository;
 
 	private final Converter<OdeModel, Ode> odeConverter;
 
@@ -44,8 +46,10 @@ abstract class SolveController {
 			.map(a -> new SimpleImmutableEntry<String, String>(a.name(), a.name())).collect(Collectors.toList());
 
 	@Autowired
-	SolveController(final OdeSolverService odeSolverService, final Converter<OdeModel, Ode> odeConverter, final MessageSource messageSource) {
+	SolveController(final OdeSolverService odeSolverService, final OdeSessionModelRepository odeSessionModelRepository, final Converter<OdeModel, Ode> odeConverter,
+			final MessageSource messageSource) {
 		this.odeSolverService = odeSolverService;
+		this.odeSessionModelRepository = odeSessionModelRepository;
 		this.odeConverter = odeConverter;
 		this.messageSource = messageSource;
 	}
@@ -53,14 +57,14 @@ abstract class SolveController {
 	@GetMapping("/solve")
 	String solve(final Model model) {
 		initModel(model);
-		model.addAttribute("ode", odeSessionModel().getOdeModel());
+		model.addAttribute("ode", odeSessionModelRepository.odeSessionModel().getOdeModel());
 
 		return solveModelAndView;
 	}
 
 	private void initModel(final Model model) {
 		model.addAttribute("algorithms", algorithms);
-		model.addAttribute("scriptLanguage", odeSessionModel().getSettings().getScriptLanguage());
+		model.addAttribute("scriptLanguage", odeSessionModelRepository.odeSessionModel().getSettings().getScriptLanguage());
 	}
 
 	// Die Reihenfolge der Parameter ist wichtig, sonst funktioniert Beanvalidation
@@ -80,7 +84,7 @@ abstract class SolveController {
 			return solveModelAndView;
 		}
 
-		odeSessionModel().setOdeModel(odeModel);
+		odeSessionModelRepository.odeSessionModel().setOdeModel(odeModel);
 
 		if (!calculate(ode, model, bindingResult)) {
 			return solveModelAndView;
@@ -93,16 +97,16 @@ abstract class SolveController {
 	@PostMapping(value = "/solve", params = "reset")
 	String solveReset(final Model model) {
 		initModel(model);
-		odeSessionModel().setOdeModel(new OdeModel());
+		odeSessionModelRepository.odeSessionModel().setOdeModel(new OdeModel());
 		return "redirect:" + solveModelAndView;
 	}
 
 	private boolean calculate(final Ode ode, final Model model, final BindingResult bindingResult) {
 		try {
-			final OdeSolver odeSolver = odeSolverService.odeSolver(ode.algorithm(), ode.ode());
+			final OdeSolver odeSolver = odeSolverService.odeSolver(ode.language(), ode.algorithm(), ode.ode());
 			final List<? extends Result> results = odeSolver.solve(ode.y(), ode.start(), ode.stop(), ode.steps());
 
-			final OdeSessionModel odeSessionModel = odeSessionModel();
+			final OdeSessionModel odeSessionModel = odeSessionModelRepository.odeSessionModel();
 			odeSessionModel.setResult(new ResultModel(results, ode.beautifiedOde()));
 
 			return true;
@@ -125,15 +129,12 @@ abstract class SolveController {
 
 		try {
 
-			odeSolverService.validateRightSide(ode.ode(), ode.y(), ode.start());
+			odeSolverService.validateRightSide(ode.language(), ode.ode(), ode.y(), ode.start());
 		} catch (final Exception exception) {
 			bindingResult.addError(new ObjectError("ode", exception.getMessage()));
 		}
 
 		return !bindingResult.hasGlobalErrors();
 	}
-
-	@Lookup
-	abstract OdeSessionModel odeSessionModel();
 
 }

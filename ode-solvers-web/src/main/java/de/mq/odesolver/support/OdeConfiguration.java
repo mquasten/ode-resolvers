@@ -13,20 +13,8 @@ import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 import org.springframework.web.servlet.i18n.LocaleChangeInterceptor;
 import org.springframework.web.servlet.i18n.SessionLocaleResolver;
 
-import de.mq.odesolver.support.OdeFunctionUtil.Language;
-
 @Configuration
 class OdeConfiguration implements WebMvcConfigurer {
-
-	@Bean
-	OdeFunctionUtil odeFunctionUtilRightSide() {
-		return new OdeFunctionUtilImpl(Language.Groovy);
-	}
-
-	@Bean
-	OdeFunctionUtil odeFunctionUtilParameterVector() {
-		return new OdeFunctionUtilImpl(Language.Groovy, "k");
-	}
 
 	@Bean
 	@Scope(scopeName = "session")

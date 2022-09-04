@@ -5,7 +5,7 @@ import java.util.Locale;
 
 import javax.validation.Valid;
 
-import org.springframework.beans.factory.annotation.Lookup;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.MessageSource;
 import org.springframework.core.convert.converter.Converter;
 import org.springframework.stereotype.Controller;
@@ -22,33 +22,36 @@ import de.mq.odesolver.function.FunctionSolver;
 import de.mq.odesolver.result.support.ResultModel;
 import de.mq.odesolver.result.support.ResultsExcelView;
 import de.mq.odesolver.result.support.ResultsGraphView;
-import de.mq.odesolver.support.OdeSessionModel;
+import de.mq.odesolver.support.OdeSessionModelRepository;
 
 @Controller
-abstract class FunctionController {
+class FunctionController {
 
 	private final String functionModelAndView = "function";
 	private final Converter<FunctionModel, Function> converter;
 	private final MessageSource messageSource;
 
 	private final FunctionService functionService;
+	private final OdeSessionModelRepository odeSessionModelRepository;
 
-	FunctionController(final FunctionService functionService, final ResultsExcelView resultsExcelView, final ResultsGraphView resultsGraphView, final Converter<FunctionModel, Function> converter,
+	@Autowired
+	FunctionController(final FunctionService functionService, final OdeSessionModelRepository odeSessionModelRepository,final ResultsExcelView resultsExcelView, final ResultsGraphView resultsGraphView, final Converter<FunctionModel, Function> converter,
 			final MessageSource messageSource) {
 		this.functionService = functionService;
+		this.odeSessionModelRepository=odeSessionModelRepository;
 		this.converter = converter;
 		this.messageSource = messageSource;
 	}
 
 	@GetMapping("/function")
 	String solve(final Model model) {
-		model.addAttribute("function", odeSessionModel().getFunctionModel());
+		model.addAttribute("function", odeSessionModelRepository.odeSessionModel().getFunctionModel());
 		initModel(model);
 		return functionModelAndView;
 	}
 
 	private void initModel(final Model model) {
-		model.addAttribute("scriptLanguage", odeSessionModel().getSettings().getScriptLanguage());
+		model.addAttribute("scriptLanguage", odeSessionModelRepository.odeSessionModel().getSettings().getScriptLanguage());
 	}
 
 	@PostMapping(value = "/function", params = "submit")
@@ -64,7 +67,7 @@ abstract class FunctionController {
 			return functionModelAndView;
 		}
 
-		odeSessionModel().setFunctionModel(functionModel);
+		odeSessionModelRepository.odeSessionModel().setFunctionModel(functionModel);
 
 		if (!calculate(function, model, bindingResult)) {
 			return functionModelAndView;
@@ -76,18 +79,20 @@ abstract class FunctionController {
 
 	@PostMapping(value = "/function", params = "reset")
 	String solveSubmit(final Model model) {
-		odeSessionModel().setFunctionModel(new FunctionModel());
+		odeSessionModelRepository.odeSessionModel().setFunctionModel(new FunctionModel());
 		initModel(model);
 		return "redirect:" + functionModelAndView;
 	}
 
 	private boolean calculate(final Function function, final Model model, final BindingResult bindingResult) {
+
 		try {
-			final FunctionSolver functionSolver = functionService.functionSolver(function.function());
+
+			final FunctionSolver functionSolver = functionService.functionSolver(function.language(), function.function());
 
 			final List<Result> results = functionSolver.solve(function.k(), function.start(), function.stop(), function.steps());
 
-			odeSessionModel().setResult(new ResultModel(results, "y=" + function.function(), function.k()));
+			odeSessionModelRepository.odeSessionModel().setResult(new ResultModel(results, "y=" + function.function(), function.k()));
 			return true;
 		} catch (final Exception exception) {
 			bindingResult.addError(new ObjectError("function", exception.getMessage()));
@@ -103,7 +108,7 @@ abstract class FunctionController {
 		}
 
 		try {
-			functionService.validateValue(function.function(), function.start(), function.k());
+			functionService.validateValue(function.language(), function.function(), function.start(), function.k());
 		} catch (final Exception exception) {
 			bindingResult.addError(new ObjectError("function", exception.getMessage()));
 		}
@@ -111,7 +116,6 @@ abstract class FunctionController {
 		return !bindingResult.hasGlobalErrors();
 	}
 
-	@Lookup
-	abstract OdeSessionModel odeSessionModel();
+	
 
 }
