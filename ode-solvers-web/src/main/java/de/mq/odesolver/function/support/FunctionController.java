@@ -33,8 +33,7 @@ abstract class FunctionController {
 
 	private final FunctionService functionService;
 
-	FunctionController(final FunctionService functionService, final ResultsExcelView resultsExcelView,
-			final ResultsGraphView resultsGraphView, final Converter<FunctionModel, Function> converter,
+	FunctionController(final FunctionService functionService, final ResultsExcelView resultsExcelView, final ResultsGraphView resultsGraphView, final Converter<FunctionModel, Function> converter,
 			final MessageSource messageSource) {
 		this.functionService = functionService;
 		this.converter = converter;
@@ -44,12 +43,17 @@ abstract class FunctionController {
 	@GetMapping("/function")
 	String solve(final Model model) {
 		model.addAttribute("function", odeSessionModel().getFunctionModel());
+		initModel(model);
 		return functionModelAndView;
 	}
 
+	private void initModel(final Model model) {
+		model.addAttribute("scriptLanguage", odeSessionModel().getSettings().getScriptLanguage());
+	}
+
 	@PostMapping(value = "/function", params = "submit")
-	String solveSubmit(@ModelAttribute("function") @Valid final FunctionModel functionModel,
-			final BindingResult bindingResult, final Model model, final Locale locale) {
+	String solveSubmit(@ModelAttribute("function") @Valid final FunctionModel functionModel, final BindingResult bindingResult, final Model model, final Locale locale) {
+		initModel(model);
 		if (bindingResult.hasFieldErrors()) {
 			return functionModelAndView;
 		}
@@ -73,6 +77,7 @@ abstract class FunctionController {
 	@PostMapping(value = "/function", params = "reset")
 	String solveSubmit(final Model model) {
 		odeSessionModel().setFunctionModel(new FunctionModel());
+		initModel(model);
 		return "redirect:" + functionModelAndView;
 	}
 
@@ -80,8 +85,7 @@ abstract class FunctionController {
 		try {
 			final FunctionSolver functionSolver = functionService.functionSolver(function.function());
 
-			final List<Result> results = functionSolver.solve(function.k(), function.start(), function.stop(),
-					function.steps());
+			final List<Result> results = functionSolver.solve(function.k(), function.start(), function.stop(), function.steps());
 
 			odeSessionModel().setResult(new ResultModel(results, "y=" + function.function(), function.k()));
 			return true;
@@ -95,8 +99,7 @@ abstract class FunctionController {
 	private boolean validate(final Function function, final BindingResult bindingResult, final Locale locale) {
 
 		if (!function.checkStartBeforeStop()) {
-			bindingResult.addError(new ObjectError("function",
-					messageSource.getMessage("start-less-than-stop", null, "start-less-than-stop", locale)));
+			bindingResult.addError(new ObjectError("function", messageSource.getMessage("start-less-than-stop", null, "start-less-than-stop", locale)));
 		}
 
 		try {

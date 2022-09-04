@@ -17,7 +17,7 @@
 			<table>
 
 				<tr>
-					<td><label th:text="#{function.function}"></label></td>
+					<td><label th:text="#{function.function}"></label><br>(<label th:text="${scriptLanguage}"></label>)</td>
 					<td><textarea rows="3" cols="25" th:field="*{function}"></textarea>
 					</td>
 
