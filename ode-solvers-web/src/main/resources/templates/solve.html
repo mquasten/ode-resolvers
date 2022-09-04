@@ -18,8 +18,8 @@
 				<tr>
 					<td><label th:text="#{solve.order}"></label></td>
 					<td><select th:field="*{order}">
-							<option th:value="'1'" th:text="'1. Ordnung'"></option>
-							<option th:value="'2'" th:text="'2. Ordnung'"></option>
+							<option th:value="'1'" th:text="'1'"></option>
+							<option th:value="'2'" th:text="'2'"></option>
 
 					</select></td>
 				</tr>
@@ -33,7 +33,7 @@
 				</tr>
 
 				<tr>
-					<td><label th:text="#{solve.ode}"></label></td>
+					<td><label th:text="#{solve.ode}"></label><br>(<label th:text="${scriptLanguage}"></label>)</td>
 					<td><textarea id="ode" rows="3" cols="25" th:field="*{ode}"></textarea>
 					</td>
 

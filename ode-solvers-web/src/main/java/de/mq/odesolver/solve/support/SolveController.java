@@ -52,10 +52,15 @@ abstract class SolveController {
 
 	@GetMapping("/solve")
 	String solve(final Model model) {
-		model.addAttribute("algorithms", algorithms);
+		initModel(model);
 		model.addAttribute("ode", odeSessionModel().getOdeModel());
 
 		return solveModelAndView;
+	}
+
+	private void initModel(final Model model) {
+		model.addAttribute("algorithms", algorithms);
+		model.addAttribute("scriptLanguage", odeSessionModel().getSettings().getScriptLanguage());
 	}
 
 	// Die Reihenfolge der Parameter ist wichtig, sonst funktioniert Beanvalidation
@@ -63,7 +68,7 @@ abstract class SolveController {
 	@PostMapping(value = "/solve", params = "submit")
 	String solveSubmit(@ModelAttribute("ode") @Valid final OdeModel odeModel, final BindingResult bindingResult, final Model model, final Locale locale) {
 
-		model.addAttribute("algorithms", algorithms);
+		initModel(model);
 
 		if (bindingResult.hasFieldErrors()) {
 			return solveModelAndView;
@@ -87,7 +92,7 @@ abstract class SolveController {
 
 	@PostMapping(value = "/solve", params = "reset")
 	String solveReset(final Model model) {
-		model.addAttribute("algorithms", algorithms);
+		initModel(model);
 		odeSessionModel().setOdeModel(new OdeModel());
 		return "redirect:" + solveModelAndView;
 	}

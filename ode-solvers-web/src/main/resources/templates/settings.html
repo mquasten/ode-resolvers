@@ -19,9 +19,9 @@
 				<tr>
 					<td><label th:text="#{settings.language}"></label></td>
 					<td><select th:field="*{language}">
-							<option th:each="locale : ${locales}"
-								th:value="${locale.language}"
-								th:utext="${locale.displayLanguage}"></option>
+							<option th:each="entry : ${locales}"
+								th:value="${entry.key}"
+								th:utext="${entry.value}"></option>
 					</select></td>
 				</tr>
 				<tr>
