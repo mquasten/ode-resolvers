@@ -13,6 +13,7 @@ public class FunctionModel {
 	private String function;
 
 	@DoubleArrayConstraint
+	@NotBlank
 	private String k;
 
 	@DoubleConstraint

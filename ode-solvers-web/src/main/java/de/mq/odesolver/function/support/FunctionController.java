@@ -19,6 +19,7 @@ import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
 
 import de.mq.odesolver.Result;
+import de.mq.odesolver.function.Function;
 import de.mq.odesolver.function.FunctionService;
 import de.mq.odesolver.function.FunctionSolver;
 import de.mq.odesolver.result.support.ResultModel;

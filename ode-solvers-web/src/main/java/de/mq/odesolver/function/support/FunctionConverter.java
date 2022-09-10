@@ -6,6 +6,7 @@ import org.springframework.core.convert.converter.Converter;
 import org.springframework.stereotype.Component;
 import org.springframework.util.StringUtils;
 
+import de.mq.odesolver.function.Function;
 import de.mq.odesolver.support.OdeFunctionUtil.Language;
 import de.mq.odesolver.support.OdeSessionModelRepository;
 import de.mq.odesolver.validator.DoubleArrayValidator;
@@ -33,7 +34,7 @@ class FunctionConverter implements Converter<FunctionModel, Function> {
 		final var k = StringUtils.hasText(functionModel.getK()) ? conversionService.convert(functionModel.getK().replaceAll(DoubleArrayValidator.REGEX_SPLIT_DOUBLE_VECTOR, ","), double[].class)
 				: EMPTY_ARRAY;
 
-		return new Function(scriptLanguage, function, start, stop, steps, k);
+		return new FunctionImpl(scriptLanguage, function, start, stop, steps, k);
 	}
 
 }

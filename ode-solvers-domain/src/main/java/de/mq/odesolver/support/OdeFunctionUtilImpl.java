@@ -53,14 +53,14 @@ class OdeFunctionUtilImpl implements OdeFunctionUtil {
 
 	private void notNullGuard(double x, final Number result) {
 		if( result == null) {
-			throw new IllegalStateException(String.format("Function returns null for x=%e, may be wrong size y[]", x));
+			throw new IllegalStateException(String.format("Function returns null for x=%e, may be wrong vector size.", x));
 		}
 	}
 
 	private void resultGuard(final Double x, final double result) {
 		if (Double.isNaN(result)) {
 			throw new IllegalStateException(
-					String.format("Function returns NaN for x=%e, may be wrong size y[]", x));
+					String.format("Function returns NaN for x=%e, may be wrong vector size.", x));
 		}
 		if (Double.isInfinite(result)) {
 			throw new IllegalArgumentException(String.format("Function returns Infinite for x=%e", x));

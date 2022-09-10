@@ -16,6 +16,7 @@ import org.springframework.core.convert.support.DefaultConversionService;
 
 import org.springframework.util.StringUtils;
 
+import de.mq.odesolver.function.Function;
 import de.mq.odesolver.support.OdeFunctionUtil.Language;
 import de.mq.odesolver.support.OdeSessionModel;
 import de.mq.odesolver.support.OdeSessionModelRepository;
