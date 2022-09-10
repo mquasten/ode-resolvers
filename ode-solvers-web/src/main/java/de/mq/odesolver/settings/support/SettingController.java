@@ -32,7 +32,6 @@ class SettingController {
 	@GetMapping("/settings")
 	String settings(final Model model, final Locale locale) {
 		final SettingsModel settings = odeSessionModelRepository.odeSessionModel().getSettings();
-
 		settings.setLanguage(locale.getLanguage());
 		model.addAttribute("settings", settings);
 		addModellAttributes(model, locale);
@@ -49,7 +48,6 @@ class SettingController {
 	String settingsSubmit(@ModelAttribute("settings") final SettingsModel settingsModel, final BindingResult bindingResult, final Model model, final Locale locale) {
 		addModellAttributes(model, locale);
 		final SettingsModel settingsModelSession = odeSessionModelRepository.odeSessionModel().getSettings();
-		// settingsModelSession.setLanguage(settingsModel.getLanguage());
 		settingsModelSession.setScriptLanguage(settingsModel.getScriptLanguage());
 		return String.format("redirect:%s?locale=%s", SETTINGS_VIEW, settingsModel.getLanguage());
 	}

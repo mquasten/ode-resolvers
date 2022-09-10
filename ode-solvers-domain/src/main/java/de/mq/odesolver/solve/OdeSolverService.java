@@ -1,5 +1,7 @@
 package de.mq.odesolver.solve;
 
+import java.util.List;
+
 import de.mq.odesolver.support.OdeFunctionUtil.Language;
 
 public interface OdeSolverService {
@@ -21,6 +23,10 @@ public interface OdeSolverService {
 
 	OdeSolver odeSolver(final Language language, final Algorithm algorithm, final String function);
 
-	double validateRightSide(final Language language,final String function, final double y0[], final double x0);
+	List<OdeResult> solve(final Ode ode);
+
+	double validateRightSide(final Language language, final String function, final double y0[], final double x0);
+
+	double validateRightSide(final Ode ode);
 
 }

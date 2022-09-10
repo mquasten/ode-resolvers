@@ -44,7 +44,7 @@ class OdeFunctionUtilImpl implements OdeFunctionUtil {
 			resultGuard(x, result.doubleValue());
 			return result.doubleValue();
 		} catch (final NoSuchMethodException | ScriptException e) {
-			throw new IllegalStateException( e.getCause());
+			throw new IllegalStateException(e);
 		} catch (final ClassCastException castException) {
 			throw new IllegalStateException("Function do not return a Number.");
 		}

@@ -7,6 +7,7 @@ import org.springframework.core.convert.converter.Converter;
 import org.springframework.stereotype.Component;
 import org.springframework.util.StringUtils;
 
+import de.mq.odesolver.solve.Ode;
 import de.mq.odesolver.solve.OdeSolverService.Algorithm;
 import de.mq.odesolver.support.OdeSessionModelRepository;
 import de.mq.odesolver.support.OdeFunctionUtil.Language;
@@ -34,7 +35,7 @@ class OdeConverter implements Converter<OdeModel, Ode>{
 		final double stop = conversionService.convert(odeModel.getStop(), double.class);
 		final int steps = conversionService.convert(odeModel.getSteps(), int.class);
 		final var scriptLanguage = conversionService.convert(odeSessionModelRepository.odeSessionModel().getSettings().getScriptLanguage(), Language.class);
-		return new Ode(scriptLanguage, ode, algorithm, y , start, stop, steps );
+		return new OdeImpl(scriptLanguage, ode, algorithm, y , start, stop, steps );
 
 	}		
 

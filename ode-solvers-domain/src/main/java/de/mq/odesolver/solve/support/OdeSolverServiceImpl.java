@@ -1,10 +1,13 @@
 package de.mq.odesolver.solve.support;
 
 import java.lang.reflect.Constructor;
+import java.util.List;
 import java.util.Map;
 
 import javax.script.Invocable;
 
+import de.mq.odesolver.solve.Ode;
+import de.mq.odesolver.solve.OdeResult;
 import de.mq.odesolver.solve.OdeResultCalculator;
 import de.mq.odesolver.solve.OdeSolver;
 import de.mq.odesolver.solve.OdeSolverService;
@@ -27,9 +30,15 @@ class OdeSolverServiceImpl implements OdeSolverService {
 
 	}
 
+	@Override
+	public List<OdeResult> solve(final Ode ode) {
+		final OdeSolver odeSolver = odeSolver(ode.language(), ode.algorithm(), ode.ode());
+		return odeSolver.solve(ode.y(), ode.start(), ode.stop(), ode.steps());
+	}
+
 	private RuntimeException exception(final Exception exception) {
 		if (exception instanceof RuntimeException) {
-			 return  (RuntimeException) exception;
+			return (RuntimeException) exception;
 		}
 		return new IllegalStateException(exception.getCause());
 	}
@@ -53,6 +62,11 @@ class OdeSolverServiceImpl implements OdeSolverService {
 			throw exception(exception);
 		}
 
+	}
+
+	@Override
+	public double validateRightSide(final Ode ode) {
+		return validateRightSide(ode.language(), ode.ode(), ode.y(), ode.start());
 	}
 
 }

@@ -11,6 +11,7 @@ import org.junit.jupiter.params.provider.EnumSource;
 import org.mockito.Mockito;
 import org.springframework.core.convert.support.DefaultConversionService;
 
+import de.mq.odesolver.solve.Ode;
 import de.mq.odesolver.solve.OdeSolverService.Algorithm;
 import de.mq.odesolver.support.OdeSessionModel;
 import de.mq.odesolver.support.OdeSessionModelRepository;

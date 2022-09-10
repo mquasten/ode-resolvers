@@ -1,5 +1,7 @@
 package de.mq.odesolver.function.support;
 
+import static org.apache.commons.lang3.StringUtils.defaultIfBlank;
+
 import java.util.List;
 import java.util.Locale;
 
@@ -35,10 +37,10 @@ class FunctionController {
 	private final OdeSessionModelRepository odeSessionModelRepository;
 
 	@Autowired
-	FunctionController(final FunctionService functionService, final OdeSessionModelRepository odeSessionModelRepository,final ResultsExcelView resultsExcelView, final ResultsGraphView resultsGraphView, final Converter<FunctionModel, Function> converter,
-			final MessageSource messageSource) {
+	FunctionController(final FunctionService functionService, final OdeSessionModelRepository odeSessionModelRepository, final ResultsExcelView resultsExcelView,
+			final ResultsGraphView resultsGraphView, final Converter<FunctionModel, Function> converter, final MessageSource messageSource) {
 		this.functionService = functionService;
-		this.odeSessionModelRepository=odeSessionModelRepository;
+		this.odeSessionModelRepository = odeSessionModelRepository;
 		this.converter = converter;
 		this.messageSource = messageSource;
 	}
@@ -69,7 +71,7 @@ class FunctionController {
 
 		odeSessionModelRepository.odeSessionModel().setFunctionModel(functionModel);
 
-		if (!calculate(function, model, bindingResult)) {
+		if (!calculate(function, model, bindingResult, locale)) {
 			return functionModelAndView;
 		}
 
@@ -84,7 +86,7 @@ class FunctionController {
 		return "redirect:" + functionModelAndView;
 	}
 
-	private boolean calculate(final Function function, final Model model, final BindingResult bindingResult) {
+	private boolean calculate(final Function function, final Model model, final BindingResult bindingResult, final Locale locale) {
 
 		try {
 
@@ -95,7 +97,7 @@ class FunctionController {
 			odeSessionModelRepository.odeSessionModel().setResult(new ResultModel(results, "y=" + function.function(), function.k()));
 			return true;
 		} catch (final Exception exception) {
-			bindingResult.addError(new ObjectError("function", exception.getMessage()));
+			exception2Bindingresult(exception, bindingResult, locale);
 			return false;
 		}
 
@@ -110,12 +112,14 @@ class FunctionController {
 		try {
 			functionService.validateValue(function.language(), function.function(), function.start(), function.k());
 		} catch (final Exception exception) {
-			bindingResult.addError(new ObjectError("function", exception.getMessage()));
+			exception2Bindingresult(exception, bindingResult, locale);
 		}
 
 		return !bindingResult.hasGlobalErrors();
 	}
 
-	
+	private void exception2Bindingresult(final Exception exception, final BindingResult bindingResult, final Locale locale) {
+		bindingResult.addError(new ObjectError("ode", defaultIfBlank(exception.getMessage(), messageSource.getMessage("error-execute-function", null, "error-execute-function", locale))));
+	}
 
 }

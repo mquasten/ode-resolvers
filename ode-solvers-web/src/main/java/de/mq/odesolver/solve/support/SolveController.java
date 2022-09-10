@@ -1,6 +1,8 @@
 
 package de.mq.odesolver.solve.support;
 
+import static org.apache.commons.lang3.StringUtils.defaultIfBlank;
+
 import java.util.AbstractMap.SimpleImmutableEntry;
 import java.util.Arrays;
 import java.util.Collection;
@@ -15,6 +17,7 @@ import org.springframework.context.MessageSource;
 import org.springframework.core.convert.converter.Converter;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.ObjectError;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -23,7 +26,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 
 import de.mq.odesolver.Result;
 import de.mq.odesolver.result.support.ResultModel;
-import de.mq.odesolver.solve.OdeSolver;
+import de.mq.odesolver.solve.Ode;
 import de.mq.odesolver.solve.OdeSolverService;
 import de.mq.odesolver.solve.OdeSolverService.Algorithm;
 import de.mq.odesolver.support.OdeSessionModel;
@@ -86,7 +89,7 @@ class SolveController {
 
 		odeSessionModelRepository.odeSessionModel().setOdeModel(odeModel);
 
-		if (!calculate(ode, model, bindingResult)) {
+		if (!calculate(ode, model, bindingResult, locale)) {
 			return solveModelAndView;
 		}
 
@@ -101,17 +104,14 @@ class SolveController {
 		return "redirect:" + solveModelAndView;
 	}
 
-	private boolean calculate(final Ode ode, final Model model, final BindingResult bindingResult) {
+	private boolean calculate(final Ode ode, final Model model, final BindingResult bindingResult, final Locale locale) {
 		try {
-			final OdeSolver odeSolver = odeSolverService.odeSolver(ode.language(), ode.algorithm(), ode.ode());
-			final List<? extends Result> results = odeSolver.solve(ode.y(), ode.start(), ode.stop(), ode.steps());
-
+			final List<? extends Result> results = odeSolverService.solve(ode);
 			final OdeSessionModel odeSessionModel = odeSessionModelRepository.odeSessionModel();
 			odeSessionModel.setResult(new ResultModel(results, ode.beautifiedOde()));
-
 			return true;
 		} catch (final Exception exception) {
-			bindingResult.addError(new ObjectError("ode", exception.getMessage()));
+			exception2Bindingresult(exception, bindingResult, locale);
 			return false;
 		}
 
@@ -128,13 +128,16 @@ class SolveController {
 		}
 
 		try {
-
-			odeSolverService.validateRightSide(ode.language(), ode.ode(), ode.y(), ode.start());
+			odeSolverService.validateRightSide(ode);
 		} catch (final Exception exception) {
-			bindingResult.addError(new ObjectError("ode", exception.getMessage()));
+			exception2Bindingresult(exception, bindingResult, locale);
 		}
 
 		return !bindingResult.hasGlobalErrors();
+	}
+
+	private void exception2Bindingresult(final Exception exception, final BindingResult bindingResult, final Locale locale) {
+		bindingResult.addError(new ObjectError("ode", defaultIfBlank(exception.getMessage(), messageSource.getMessage("error-execute-function", null, "error-execute-function", locale))));
 	}
 
 }
