@@ -75,16 +75,6 @@ class FunctionImplTest {
 	}
 
 	@Test
-	void kNull() {
-		assertThrows(NullPointerException.class, () -> new FunctionImpl(Language.Nashorn, FUNCTION, START, STOP, STEPS, null));
-	}
-
-	@Test
-	void kLength0() {
-		assertThrows(IllegalArgumentException.class, () -> new FunctionImpl(Language.Nashorn, FUNCTION, START, STOP, STEPS, new double[] {}));
-	}
-
-	@Test
 	void steps0() {
 		assertThrows(IllegalArgumentException.class, () -> new FunctionImpl(Language.Nashorn, FUNCTION, START, STOP, 0, K));
 	}

@@ -11,6 +11,7 @@ import de.mq.odesolver.solve.OdeResult;
 import de.mq.odesolver.solve.OdeResultCalculator;
 import de.mq.odesolver.solve.OdeSolver;
 import de.mq.odesolver.solve.OdeSolverService;
+import de.mq.odesolver.support.ExceptionUtil;
 import de.mq.odesolver.support.OdeFunctionUtil;
 import de.mq.odesolver.support.OdeFunctionUtil.Language;
 
@@ -25,7 +26,7 @@ class OdeSolverServiceImpl implements OdeSolverService {
 			final OdeResultCalculator odeResultCalculator = solvers.get(algorithm).getDeclaredConstructor(OdeFunctionUtil.class, String.class).newInstance(newOdeFunctionUtil(language), function);
 			return new OdeSolverImpl(odeResultCalculator);
 		} catch (final Exception exception) {
-			throw exception(exception);
+			throw ExceptionUtil.translateToRuntimeException(exception);
 		}
 
 	}
@@ -34,13 +35,6 @@ class OdeSolverServiceImpl implements OdeSolverService {
 	public List<OdeResult> solve(final Ode ode) {
 		final OdeSolver odeSolver = odeSolver(ode.language(), ode.algorithm(), ode.ode());
 		return odeSolver.solve(ode.y(), ode.start(), ode.stop(), ode.steps());
-	}
-
-	private RuntimeException exception(final Exception exception) {
-		if (exception instanceof RuntimeException) {
-			return (RuntimeException) exception;
-		}
-		return new IllegalStateException(exception.getCause());
 	}
 
 	private OdeFunctionUtil newOdeFunctionUtil(final Language language) throws Exception {
@@ -59,7 +53,7 @@ class OdeSolverServiceImpl implements OdeSolverService {
 			final Invocable invocable = odeFunctionUtil.prepareFunction(function);
 			return odeFunctionUtil.invokeFunction(invocable, y0, x0);
 		} catch (final Exception exception) {
-			throw exception(exception);
+			throw ExceptionUtil.translateToRuntimeException(exception);
 		}
 
 	}

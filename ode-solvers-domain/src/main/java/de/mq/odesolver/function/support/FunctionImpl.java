@@ -19,8 +19,6 @@ class FunctionImpl implements Function {
 		notNull(language, "Language is mandatory.");
 		notBlank(function, "Function is madatory.");
 		isTrue(steps > 0, "Steps must be > 0.");
-		notNull(k, "K is mandatory.");
-		isTrue(k.length > 0, "At least one k element required.");
 		this.language = language;
 		this.function = function;
 		this.k = k;

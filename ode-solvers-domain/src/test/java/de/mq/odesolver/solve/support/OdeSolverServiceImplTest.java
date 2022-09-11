@@ -4,7 +4,9 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
 import java.util.Arrays;
+import java.util.Map;
 
+import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.EnumSource;
 
@@ -27,7 +29,6 @@ class OdeSolverServiceImplTest {
 	@ParameterizedTest
 	@EnumSource
 	void odeSolver(final Language language) {
-
 		Arrays.asList(Algorithm.values()).forEach(algorithm -> odeSolverService.odeSolver(language, algorithm, ODE_STRING));
 	}
 
@@ -65,6 +66,12 @@ class OdeSolverServiceImplTest {
 	void solve(final Language language) {
 		final Ode ode = newOde(language);
 		assertEquals(1 + ode.steps(), odeSolverService.solve(ode).size());
+	}
+	
+	@Test
+	void algorithms() {
+		final var orders= Map.of(Algorithm.EulerPolygonal, 1, Algorithm.RungeKutta2ndOrder, 2, Algorithm.RungeKutta4thOrder, 4);
+		Arrays.asList(Algorithm.values()).forEach(algorithm -> assertEquals(orders.get(algorithm), algorithm.order()));
 	}
 
 }

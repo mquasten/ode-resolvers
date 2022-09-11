@@ -21,7 +21,6 @@ import org.springframework.web.bind.annotation.PostMapping;
 import de.mq.odesolver.Result;
 import de.mq.odesolver.function.Function;
 import de.mq.odesolver.function.FunctionService;
-import de.mq.odesolver.function.FunctionSolver;
 import de.mq.odesolver.result.support.ResultModel;
 import de.mq.odesolver.result.support.ResultsExcelView;
 import de.mq.odesolver.result.support.ResultsGraphView;
@@ -90,11 +89,7 @@ class FunctionController {
 	private boolean calculate(final Function function, final Model model, final BindingResult bindingResult, final Locale locale) {
 
 		try {
-
-			final FunctionSolver functionSolver = functionService.functionSolver(function.language(), function.function());
-
-			final List<Result> results = functionSolver.solve(function.k(), function.start(), function.stop(), function.steps());
-
+			final List<Result> results = functionService.solve(function);
 			odeSessionModelRepository.odeSessionModel().setResult(new ResultModel(results, "y=" + function.function(), function.k()));
 			return true;
 		} catch (final Exception exception) {
@@ -111,7 +106,7 @@ class FunctionController {
 		}
 
 		try {
-			functionService.validateValue(function.language(), function.function(), function.start(), function.k());
+			functionService.validate(function);
 		} catch (final Exception exception) {
 			exception2Bindingresult(exception, bindingResult, locale);
 		}
