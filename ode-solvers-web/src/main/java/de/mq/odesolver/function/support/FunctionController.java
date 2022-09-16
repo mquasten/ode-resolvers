@@ -115,7 +115,7 @@ class FunctionController {
 	}
 
 	private void exception2Bindingresult(final Exception exception, final BindingResult bindingResult, final Locale locale) {
-		bindingResult.addError(new ObjectError("ode", defaultIfBlank(exception.getMessage(), messageSource.getMessage("error-execute-function", null, "error-execute-function", locale))));
+		bindingResult.addError(new ObjectError("function", defaultIfBlank(exception.getMessage(), messageSource.getMessage("error-execute-function", null, "error-execute-function", locale))));
 	}
 
 }

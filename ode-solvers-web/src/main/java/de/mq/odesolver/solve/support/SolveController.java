@@ -35,13 +35,26 @@ import de.mq.odesolver.support.OdeSessionModelRepository;
 @Controller
 class SolveController {
 
+	static final String I18N_START_LESS_THAN_STOP = "start-less-than-stop";
+
+	static final String I18N_WRONG_NUMBER_INITIAL_VALUES = "solve.wrong-number-initial-values";
+
+	static final String REDIRECT_RESULT_VIEW = "redirect:result";
+
+	static final String ATTRIBUTE_ALGORITHMS = "algorithms";
+
+	static final String ATTRIBUTE_SCRIPT_LANGUAGE = "scriptLanguage";
+
+	static final String ATTRIBUTE_ODE = "ode";
+	
+	static final String SOLVE_VIEW = "solve";
+
 	private final OdeSolverService odeSolverService;
 
 	private final OdeSessionModelRepository odeSessionModelRepository;
 
 	private final Converter<OdeModel, Ode> odeConverter;
 
-	private final String solveModelAndView = "solve";
 
 	private final MessageSource messageSource;
 
@@ -60,40 +73,40 @@ class SolveController {
 	@GetMapping("/solve")
 	String solve(final Model model) {
 		initModel(model);
-		model.addAttribute("ode", odeSessionModelRepository.odeSessionModel().getOdeModel());
+		model.addAttribute(ATTRIBUTE_ODE, odeSessionModelRepository.odeSessionModel().getOdeModel());
 
-		return solveModelAndView;
+		return SOLVE_VIEW;
 	}
 
 	private void initModel(final Model model) {
-		model.addAttribute("algorithms", algorithms);
-		model.addAttribute("scriptLanguage", odeSessionModelRepository.odeSessionModel().getSettings().getScriptLanguage());
+		model.addAttribute(ATTRIBUTE_ALGORITHMS, algorithms);
+		model.addAttribute(ATTRIBUTE_SCRIPT_LANGUAGE, odeSessionModelRepository.odeSessionModel().getSettings().getScriptLanguage());
 	}
 
 	// Die Reihenfolge der Parameter ist wichtig, sonst funktioniert Beanvalidation
 	// nicht (Errorpage wird angezeigt) !!!
 	@PostMapping(value = "/solve", params = "submit")
-	String solveSubmit(@ModelAttribute("ode") @Valid final OdeModel odeModel, final BindingResult bindingResult, final Model model, final Locale locale) {
+	String solveSubmit(@ModelAttribute(ATTRIBUTE_ODE) @Valid final OdeModel odeModel, final BindingResult bindingResult, final Model model, final Locale locale) {
 
 		initModel(model);
 
 		if (bindingResult.hasFieldErrors()) {
-			return solveModelAndView;
+			return SOLVE_VIEW;
 		}
 
 		final Ode ode = odeConverter.convert(odeModel);
 
 		if (!validate(ode, odeModel.getOrder(), bindingResult, locale)) {
-			return solveModelAndView;
+			return SOLVE_VIEW;
 		}
 
 		odeSessionModelRepository.odeSessionModel().setOdeModel(odeModel);
 
 		if (!calculate(ode, model, bindingResult, locale)) {
-			return solveModelAndView;
+			return SOLVE_VIEW;
 		}
 
-		return "redirect:result";
+		return REDIRECT_RESULT_VIEW;
 
 	}
 
@@ -101,7 +114,7 @@ class SolveController {
 	String solveReset(final Model model) {
 		initModel(model);
 		odeSessionModelRepository.odeSessionModel().setOdeModel(new OdeModel());
-		return "redirect:" + solveModelAndView;
+		return "redirect:" + SOLVE_VIEW;
 	}
 
 	private boolean calculate(final Ode ode, final Model model, final BindingResult bindingResult, final Locale locale) {
@@ -120,11 +133,11 @@ class SolveController {
 	private boolean validate(final Ode ode, final int order, final BindingResult bindingResult, final Locale locale) {
 
 		if (!ode.checkOrder(order)) {
-			bindingResult.addError(new ObjectError("ode", messageSource.getMessage("function.wrong-number-initial-vales", null, "wrong-number-initial-vales", locale)));
+			bindingResult.addError(new ObjectError(ATTRIBUTE_ODE, messageSource.getMessage(I18N_WRONG_NUMBER_INITIAL_VALUES, null, I18N_WRONG_NUMBER_INITIAL_VALUES, locale)));
 		}
 
 		if (!ode.checkStartBeforeStop()) {
-			bindingResult.addError(new ObjectError("ode", messageSource.getMessage("start-less-than-stop", null, "start-less-than-stop", locale)));
+			bindingResult.addError(new ObjectError(ATTRIBUTE_ODE, messageSource.getMessage(I18N_START_LESS_THAN_STOP, null, I18N_START_LESS_THAN_STOP, locale)));
 		}
 
 		try {
@@ -137,7 +150,7 @@ class SolveController {
 	}
 
 	private void exception2Bindingresult(final Exception exception, final BindingResult bindingResult, final Locale locale) {
-		bindingResult.addError(new ObjectError("ode", defaultIfBlank(exception.getMessage(), messageSource.getMessage("error-execute-function", null, "error-execute-function", locale))));
+		bindingResult.addError(new ObjectError(ATTRIBUTE_ODE, defaultIfBlank(exception.getMessage(), messageSource.getMessage("error-execute-function", null, "error-execute-function", locale))));
 	}
 
 }
