@@ -1,4 +1,4 @@
-package de.mq.odesolver.support.validator;
+package de.mq.odesolver.support;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -13,9 +13,6 @@ import org.springframework.context.MessageSource;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.ObjectError;
-
-import de.mq.odesolver.support.OdeSessionModel;
-import de.mq.odesolver.support.OdeSessionModelRepository;
 
 public class BasicMockitoControllerTest {
 

@@ -19,7 +19,7 @@ import de.mq.odesolver.solve.Ode;
 import de.mq.odesolver.solve.OdeResult;
 import de.mq.odesolver.solve.OdeSolverService;
 import de.mq.odesolver.solve.OdeSolverService.Algorithm;
-import de.mq.odesolver.support.validator.BasicMockitoControllerTest;
+import de.mq.odesolver.support.BasicMockitoControllerTest;
 
 class SolveControllerTest extends BasicMockitoControllerTest {
 
