@@ -46,7 +46,7 @@ class SolveController {
 	static final String ATTRIBUTE_SCRIPT_LANGUAGE = "scriptLanguage";
 
 	static final String ATTRIBUTE_ODE = "ode";
-	
+
 	static final String SOLVE_VIEW = "solve";
 
 	private final OdeSolverService odeSolverService;
@@ -54,7 +54,6 @@ class SolveController {
 	private final OdeSessionModelRepository odeSessionModelRepository;
 
 	private final Converter<OdeModel, Ode> odeConverter;
-
 
 	private final MessageSource messageSource;
 
@@ -70,7 +69,7 @@ class SolveController {
 		this.messageSource = messageSource;
 	}
 
-	@GetMapping("/solve")
+	@GetMapping("/" + SOLVE_VIEW)
 	String solve(final Model model) {
 		initModel(model);
 		model.addAttribute(ATTRIBUTE_ODE, odeSessionModelRepository.odeSessionModel().getOdeModel());
@@ -85,7 +84,7 @@ class SolveController {
 
 	// Die Reihenfolge der Parameter ist wichtig, sonst funktioniert Beanvalidation
 	// nicht (Errorpage wird angezeigt) !!!
-	@PostMapping(value = "/solve", params = "submit")
+	@PostMapping(value = "/" + SOLVE_VIEW, params = "submit")
 	String solveSubmit(@ModelAttribute(ATTRIBUTE_ODE) @Valid final OdeModel odeModel, final BindingResult bindingResult, final Model model, final Locale locale) {
 
 		initModel(model);
@@ -110,7 +109,7 @@ class SolveController {
 
 	}
 
-	@PostMapping(value = "/solve", params = "reset")
+	@PostMapping(value = "/" + SOLVE_VIEW, params = "reset")
 	String solveReset(final Model model) {
 		initModel(model);
 		odeSessionModelRepository.odeSessionModel().setOdeModel(new OdeModel());

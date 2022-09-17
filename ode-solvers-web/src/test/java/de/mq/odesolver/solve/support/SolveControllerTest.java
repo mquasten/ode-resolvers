@@ -1,66 +1,45 @@
 package de.mq.odesolver.solve.support;
 
 import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertNull;
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotEquals;
+
 import java.util.Arrays;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Locale;
-import java.util.Map;
 import java.util.Map.Entry;
 
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.mockito.ArgumentCaptor;
 import org.mockito.Mockito;
-import org.springframework.context.MessageSource;
 import org.springframework.core.convert.converter.Converter;
-import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
-import org.springframework.validation.ObjectError;
 
 import de.mq.odesolver.result.support.ResultModel;
 import de.mq.odesolver.solve.Ode;
 import de.mq.odesolver.solve.OdeResult;
 import de.mq.odesolver.solve.OdeSolverService;
 import de.mq.odesolver.solve.OdeSolverService.Algorithm;
-import de.mq.odesolver.support.OdeSessionModel;
-import de.mq.odesolver.support.OdeSessionModelRepository;
+import de.mq.odesolver.support.validator.BasicMockitoControllerTest;
 
-class SolveControllerTest {
+class SolveControllerTest extends BasicMockitoControllerTest {
 
 	private final OdeSolverService odeSolverService = Mockito.mock(OdeSolverService.class);
-	private final OdeSessionModelRepository odeSessionModelRepository = Mockito.mock(OdeSessionModelRepository.class);
-	private final MessageSource messageSource = Mockito.mock(MessageSource.class);
-
+	
 	@SuppressWarnings("unchecked")
 	private final Converter<OdeModel,Ode> converter = Mockito.mock(Converter.class);
-	private final SolveController solveController = new SolveController(odeSolverService, odeSessionModelRepository, converter, messageSource);
+	private final SolveController solveController = new SolveController(odeSolverService, odeSessionModelRepository(), converter, messageSource());
 
-	private final Model model = Mockito.mock(Model.class);
-
-	private final Map<String, Object> attributes = new HashMap<>();
-
-	private final OdeSessionModel odeSessionModel = new OdeSessionModel();
-
-	@BeforeEach
-	void setup() {
-		Mockito.when(odeSessionModelRepository.odeSessionModel()).thenReturn(odeSessionModel);
-		Mockito.doAnswer(a -> a.getArguments()[0]).when(messageSource).getMessage(Mockito.any(), Mockito.any(), Mockito.any(), Mockito.any());
-		Mockito.doAnswer(a -> attributes.put(a.getArgument(0, String.class), a.getArgument(1))).when(model).addAttribute(Mockito.anyString(), Mockito.any());
-
-	}
 
 	@Test
 	void solve() {
-		assertNotNull(odeSessionModel.getOdeModel());
-		assertNotNull(odeSessionModel.getSettings());
-		assertNotNull(odeSessionModel.getSettings().getScriptLanguage());
+		assertNotNull(odeSessionModel().getOdeModel());
+		assertNotNull(odeSessionModel().getSettings());
+		assertNotNull(odeSessionModel().getSettings().getScriptLanguage());
 
-		assertEquals(SolveController.SOLVE_VIEW, solveController.solve(model));
+		assertEquals(SolveController.SOLVE_VIEW, solveController.solve(model()));
 
-		assertEquals(3, attributes.size());
-		assertEquals(odeSessionModel.getOdeModel(), attributes.get(SolveController.ATTRIBUTE_ODE));
+		assertEquals(3, attributes().size());
+		assertEquals(odeSessionModel().getOdeModel(), attributes().get(SolveController.ATTRIBUTE_ODE));
 		assertInitModelAttributes();
 	}
 	
@@ -78,23 +57,21 @@ class SolveControllerTest {
 		Mockito.when(ode.checkStartBeforeStop()).thenReturn(true);
 		Mockito.when(odeSolverService.solve(ode)).thenReturn(results);
 		
-		assertEquals(SolveController.REDIRECT_RESULT_VIEW, solveController.solveSubmit(odeModel,  bindingResult, model, Locale.GERMAN));
-		
+		assertEquals(SolveController.REDIRECT_RESULT_VIEW, solveController.solveSubmit(odeModel,  bindingResult, model(), locale()));
 		
 		Mockito.verify(odeSolverService).validateRightSide(ode);
 		Mockito.verify(odeSolverService).solve(ode);
 		
-		
-		assertEquals(results,odeSessionModel.getResult().getResults());
-		assertEquals(ode.beautifiedOde(), odeSessionModel.getResult().getTitle());
-		assertEquals(SolveController.SOLVE_VIEW, odeSessionModel.getResult().getBack());
+		assertEquals(results,odeSessionModel().getResult().getResults());
+		assertEquals(ode.beautifiedOde(), odeSessionModel().getResult().getTitle());
+		assertEquals(SolveController.SOLVE_VIEW, odeSessionModel().getResult().getBack());
 		assertInitModelAttributes();
 	}
 
 	private void assertInitModelAttributes() {
-		assertEquals(odeSessionModel.getSettings().getScriptLanguage(), attributes.get(SolveController.ATTRIBUTE_SCRIPT_LANGUAGE));
+		assertEquals(odeSessionModel().getSettings().getScriptLanguage(), attributes().get(SolveController.ATTRIBUTE_SCRIPT_LANGUAGE));
 		@SuppressWarnings("unchecked")
-		final List<Entry<String, String>> algorithms = (List<Entry<String, String>>) attributes.get(SolveController.ATTRIBUTE_ALGORITHMS);
+		final List<Entry<String, String>> algorithms = (List<Entry<String, String>>) attributes().get(SolveController.ATTRIBUTE_ALGORITHMS);
 		assertEquals(3, algorithms.size());
 		assertEquals(Algorithm.RungeKutta4thOrder.name(), algorithms.get(0).getKey());
 		assertEquals(Algorithm.RungeKutta4thOrder.name(), algorithms.get(0).getValue());
@@ -108,10 +85,9 @@ class SolveControllerTest {
 	@Test
 	void solveSubmitFieldErrors() {
 		final var odeModel = Mockito.mock(OdeModel.class);
-		final BindingResult  bindingResult = Mockito.mock(BindingResult.class);
-		Mockito.when(bindingResult.hasFieldErrors()).thenReturn(true);
+		Mockito.when(bindingResult().hasFieldErrors()).thenReturn(true);
 		
-		assertEquals(SolveController.SOLVE_VIEW, solveController.solveSubmit(odeModel,  bindingResult, model, Locale.GERMAN));
+		assertEquals(SolveController.SOLVE_VIEW, solveController.solveSubmit(odeModel,  bindingResult(), model(), locale()));
 		
 		assertInitModelAttributes();
 	}
@@ -119,20 +95,17 @@ class SolveControllerTest {
 	@Test
 	void solveSubmitWrongOrderAndStartNotBeforeStop() {
 		final var odeModel = Mockito.mock(OdeModel.class);
-		final BindingResult  bindingResult = Mockito.mock(BindingResult.class);
 		final Ode ode = Mockito.mock(Ode.class);
 		Mockito.when(converter.convert(odeModel)).thenReturn(ode);
-		Mockito.when(bindingResult.hasGlobalErrors()).thenReturn(true);
-		assertEquals(SolveController.SOLVE_VIEW, solveController.solveSubmit(odeModel,  bindingResult, model, Locale.GERMAN));
 		
-		final var errorCaptor = ArgumentCaptor.forClass(ObjectError.class);
+		assertEquals(SolveController.SOLVE_VIEW, solveController.solveSubmit(odeModel,  bindingResult(), model(), locale()));
 		
-		Mockito.verify(bindingResult, Mockito.times(2)).addError(errorCaptor.capture());
-		final var wrongOrder = errorCaptor.getAllValues().get(0);
+		assertEquals(2, globalErrors().size());
+		final var wrongOrder = globalErrors().get(0);
 		assertEquals(SolveController.ATTRIBUTE_ODE, wrongOrder.getObjectName());
 		assertEquals(SolveController.I18N_WRONG_NUMBER_INITIAL_VALUES, wrongOrder.getDefaultMessage());
-		
-		final var startNotBeforeStop = errorCaptor.getAllValues().get(1);
+	
+		final var startNotBeforeStop = globalErrors().get(1);
 		assertEquals(SolveController.ATTRIBUTE_ODE, startNotBeforeStop.getObjectName());
 		assertEquals(SolveController.I18N_START_LESS_THAN_STOP, startNotBeforeStop.getDefaultMessage());
 		
@@ -141,12 +114,11 @@ class SolveControllerTest {
 	
 	@Test
 	void solveSubmitCalculationForInitialValesFailed() {
-	
 		final var  resultModel = Mockito.mock(ResultModel.class);
-		odeSessionModel.setResult(resultModel);
+		odeSessionModel().setResult(resultModel);
 		final var odeModel = Mockito.mock(OdeModel.class);
 		Mockito.when(odeModel.getOrder()).thenReturn(1);
-		final BindingResult  bindingResult = Mockito.mock(BindingResult.class);
+		
 		final Ode ode = Mockito.mock(Ode.class);
 		Mockito.when(ode.checkOrder(odeModel.getOrder())).thenReturn(true);
 		Mockito.when(ode.beautifiedOde()).thenReturn("y'=y+x");
@@ -154,18 +126,55 @@ class SolveControllerTest {
 		Mockito.when(ode.checkStartBeforeStop()).thenReturn(true);
 		final var exception = new IllegalArgumentException("errormessage");
 		Mockito.doThrow(exception).when(odeSolverService).validateRightSide(ode);
-		Mockito.when(bindingResult.hasGlobalErrors()).thenReturn(true);
 		
-		assertEquals(SolveController.SOLVE_VIEW, solveController.solveSubmit(odeModel,  bindingResult, model, Locale.GERMAN));
+		assertEquals(SolveController.SOLVE_VIEW, solveController.solveSubmit(odeModel,  bindingResult(), model(), locale()));
 		
-		assertEquals(resultModel, odeSessionModel.getResult());
+		assertEquals(resultModel, odeSessionModel().getResult());
 		assertInitModelAttributes();
 		
 		Mockito.verify(odeSolverService, Mockito.never()).solve(ode);
-		final var errorCaptor = ArgumentCaptor.forClass(ObjectError.class);
-		Mockito.verify(bindingResult).addError(errorCaptor.capture());
-		assertEquals(SolveController.ATTRIBUTE_ODE, errorCaptor.getValue().getObjectName());
-		assertEquals(exception.getMessage(), errorCaptor.getValue().getDefaultMessage());
+		
+		assertEquals(1, globalErrors().size());
+		assertEquals(SolveController.ATTRIBUTE_ODE, globalErrors().get(0).getObjectName());
+		assertEquals(exception.getMessage(), globalErrors().get(0).getDefaultMessage());
+	}
+	
+	
+	@Test
+	void solveSubmitCalculateFailed() {	
+		final var  resultModel = Mockito.mock(ResultModel.class);
+		odeSessionModel().setResult(resultModel);
+		final var odeModel = Mockito.mock(OdeModel.class);
+		Mockito.when(odeModel.getOrder()).thenReturn(1);
+		final Ode ode = Mockito.mock(Ode.class);
+		Mockito.when(ode.checkOrder(odeModel.getOrder())).thenReturn(true);
+		Mockito.when(ode.beautifiedOde()).thenReturn("y'=y+x");
+		Mockito.when(converter.convert(odeModel)).thenReturn(ode);
+		Mockito.when(ode.checkStartBeforeStop()).thenReturn(true);
+		final var exception = new IllegalArgumentException("errormessage");
+		Mockito.doThrow(exception).when(odeSolverService).solve(ode);
+		
+		assertEquals(SolveController.SOLVE_VIEW, solveController.solveSubmit(odeModel,  bindingResult(), model(), locale()));
+		
+		Mockito.verify(odeSolverService).validateRightSide(ode);
+		assertEquals(resultModel, odeSessionModel().getResult());
+		assertInitModelAttributes();
+		
+		assertEquals(SolveController.ATTRIBUTE_ODE, globalErrors().get(0).getObjectName());
+		assertEquals(exception.getMessage(),  globalErrors().get(0).getDefaultMessage());
+	}
+	
+	@Test
+	void solveReset() {
+		final OdeModel odeModel = Mockito.mock(OdeModel.class);
+		Mockito.when(odeModel.getOde()).thenReturn("y[0]+x");
+		
+		solveController.solveReset(model());
+		
+		assertInitModelAttributes();
+		
+		assertNull(odeSessionModel().getOdeModel().getOde());
+		assertNotEquals(odeModel, odeSessionModel().getOdeModel());
 	}
 
 }
