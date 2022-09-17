@@ -15,6 +15,8 @@ import de.mq.odesolver.function.support.FunctionResultImpl;
 
 public class ResultModel {
 
+	static final String BACK_FUNCTION = "function";
+	static final String BACK_SOLVE = "solve";
 	private final String back;
 	private final String title;
 	private final Collection<Result> results = new ArrayList<>();
@@ -31,7 +33,7 @@ public class ResultModel {
 	public ResultModel(final List<? extends Result> results, final String title) {
 		this.title = title;
 		this.results.addAll(results);
-		this.back = "solve";
+		this.back = BACK_SOLVE;
 		calculateRanges(results);
 		calculateInitialValues(results);
 	}
@@ -39,7 +41,7 @@ public class ResultModel {
 	public ResultModel(final List<? extends Result> results, final String title, final double[] kVector) {
 		this.title = title;
 		this.results.addAll(results);
-		this.back = "function";
+		this.back = BACK_FUNCTION;
 		calculateRanges(results);
 		calculateInitialValues(kVector);
 	}

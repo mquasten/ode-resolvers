@@ -19,6 +19,7 @@ import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.ObjectError;
 
+import de.mq.odesolver.result.support.ResultModel;
 import de.mq.odesolver.solve.Ode;
 import de.mq.odesolver.solve.OdeResult;
 import de.mq.odesolver.solve.OdeSolverService;
@@ -136,6 +137,35 @@ class SolveControllerTest {
 		assertEquals(SolveController.I18N_START_LESS_THAN_STOP, startNotBeforeStop.getDefaultMessage());
 		
 		assertInitModelAttributes();
+	}
+	
+	@Test
+	void solveSubmitCalculationForInitialValesFailed() {
+	
+		final var  resultModel = Mockito.mock(ResultModel.class);
+		odeSessionModel.setResult(resultModel);
+		final var odeModel = Mockito.mock(OdeModel.class);
+		Mockito.when(odeModel.getOrder()).thenReturn(1);
+		final BindingResult  bindingResult = Mockito.mock(BindingResult.class);
+		final Ode ode = Mockito.mock(Ode.class);
+		Mockito.when(ode.checkOrder(odeModel.getOrder())).thenReturn(true);
+		Mockito.when(ode.beautifiedOde()).thenReturn("y'=y+x");
+		Mockito.when(converter.convert(odeModel)).thenReturn(ode);
+		Mockito.when(ode.checkStartBeforeStop()).thenReturn(true);
+		final var exception = new IllegalArgumentException("errormessage");
+		Mockito.doThrow(exception).when(odeSolverService).validateRightSide(ode);
+		Mockito.when(bindingResult.hasGlobalErrors()).thenReturn(true);
+		
+		assertEquals(SolveController.SOLVE_VIEW, solveController.solveSubmit(odeModel,  bindingResult, model, Locale.GERMAN));
+		
+		assertEquals(resultModel, odeSessionModel.getResult());
+		assertInitModelAttributes();
+		
+		Mockito.verify(odeSolverService, Mockito.never()).solve(ode);
+		final var errorCaptor = ArgumentCaptor.forClass(ObjectError.class);
+		Mockito.verify(bindingResult).addError(errorCaptor.capture());
+		assertEquals(SolveController.ATTRIBUTE_ODE, errorCaptor.getValue().getObjectName());
+		assertEquals(exception.getMessage(), errorCaptor.getValue().getDefaultMessage());
 	}
 
 }
