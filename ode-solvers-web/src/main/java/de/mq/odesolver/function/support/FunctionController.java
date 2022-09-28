@@ -22,14 +22,17 @@ import de.mq.odesolver.Result;
 import de.mq.odesolver.function.Function;
 import de.mq.odesolver.function.FunctionService;
 import de.mq.odesolver.result.support.ResultModel;
-import de.mq.odesolver.result.support.ResultsExcelView;
-import de.mq.odesolver.result.support.ResultsGraphView;
 import de.mq.odesolver.support.OdeSessionModelRepository;
 
 @Controller
 class FunctionController {
+	
+	static final String REDIRECT_RESULT_VIEW = "redirect:result";
+	static final String FUNCTION_VIEW = "function";
+	static final String ATTRIBUTE_FUNCTION = "function";
+	static final String ATTRIBUTE_SCRIPT_LANGUAGE = "scriptLanguage";
 
-	private final String functionModelAndView = "function";
+	//private final String functionModelAndView = "function";
 	private final Converter<FunctionModel, Function> converter;
 	private final MessageSource messageSource;
 
@@ -37,53 +40,52 @@ class FunctionController {
 	private final OdeSessionModelRepository odeSessionModelRepository;
 
 	@Autowired
-	FunctionController(final FunctionService functionService, final OdeSessionModelRepository odeSessionModelRepository, final ResultsExcelView resultsExcelView,
-			final ResultsGraphView resultsGraphView, final Converter<FunctionModel, Function> converter, final MessageSource messageSource) {
+	FunctionController(final FunctionService functionService, final OdeSessionModelRepository odeSessionModelRepository, final Converter<FunctionModel, Function> converter, final MessageSource messageSource) {
 		this.functionService = functionService;
 		this.odeSessionModelRepository = odeSessionModelRepository;
 		this.converter = converter;
 		this.messageSource = messageSource;
 	}
 
-	@GetMapping("/function")
+	@GetMapping("/"+FUNCTION_VIEW)
 	String solve(final Model model) {
-		model.addAttribute("function", odeSessionModelRepository.odeSessionModel().getFunctionModel());
+		model.addAttribute(ATTRIBUTE_FUNCTION, odeSessionModelRepository.odeSessionModel().getFunctionModel());
 		initModel(model);
-		return functionModelAndView;
+		return FUNCTION_VIEW;
 	}
 
 	private void initModel(final Model model) {
-		model.addAttribute("scriptLanguage", odeSessionModelRepository.odeSessionModel().getSettings().getScriptLanguage());
+		model.addAttribute(ATTRIBUTE_SCRIPT_LANGUAGE, odeSessionModelRepository.odeSessionModel().getSettings().getScriptLanguage());
 	}
 
-	@PostMapping(value = "/function", params = "submit")
-	String solveSubmit(@ModelAttribute("function") @Valid final FunctionModel functionModel, final BindingResult bindingResult, final Model model, final Locale locale) {
+	@PostMapping(value = "/" +FUNCTION_VIEW, params = "submit")
+	String solveSubmit(@ModelAttribute(ATTRIBUTE_FUNCTION) @Valid final FunctionModel functionModel, final BindingResult bindingResult, final Model model, final Locale locale) {
 		initModel(model);
 		if (bindingResult.hasFieldErrors()) {
-			return functionModelAndView;
+			return FUNCTION_VIEW;
 		}
 
 		final Function function = converter.convert(functionModel);
 
 		if (!validate(function, bindingResult, locale)) {
-			return functionModelAndView;
+			return FUNCTION_VIEW;
 		}
 
 		odeSessionModelRepository.odeSessionModel().setFunctionModel(functionModel);
 
 		if (!calculate(function, model, bindingResult, locale)) {
-			return functionModelAndView;
+			return FUNCTION_VIEW;
 		}
 
-		return "redirect:result";
+		return REDIRECT_RESULT_VIEW;
 
 	}
 
-	@PostMapping(value = "/function", params = "reset")
+	@PostMapping(value = "/"+FUNCTION_VIEW, params = "reset")
 	String solveSubmit(final Model model) {
 		odeSessionModelRepository.odeSessionModel().setFunctionModel(new FunctionModel());
 		initModel(model);
-		return "redirect:" + functionModelAndView;
+		return "redirect:" + FUNCTION_VIEW;
 	}
 
 	private boolean calculate(final Function function, final Model model, final BindingResult bindingResult, final Locale locale) {

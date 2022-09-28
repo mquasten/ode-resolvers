@@ -21,8 +21,8 @@ public class FunctionModel {
 	@DoubleConstraint
 	@NotBlank
 	private String stop;
-	@NaturalNumberConstraint
 	
+	@NaturalNumberConstraint
 	@Max(1048573)
 	private String steps;
 
