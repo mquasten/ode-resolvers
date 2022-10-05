@@ -27,6 +27,7 @@ import de.mq.odesolver.support.OdeSessionModelRepository;
 @Controller
 class FunctionController {
 	
+	static final String I18N_START_LESS_THAN_STOP = "start-less-than-stop";
 	static final String REDIRECT_RESULT_VIEW = "redirect:result";
 	static final String FUNCTION_VIEW = "function";
 	static final String ATTRIBUTE_FUNCTION = "function";
@@ -48,7 +49,7 @@ class FunctionController {
 	}
 
 	@GetMapping("/"+FUNCTION_VIEW)
-	String solve(final Model model) {
+	String function(final Model model) {
 		model.addAttribute(ATTRIBUTE_FUNCTION, odeSessionModelRepository.odeSessionModel().getFunctionModel());
 		initModel(model);
 		return FUNCTION_VIEW;
@@ -59,7 +60,7 @@ class FunctionController {
 	}
 
 	@PostMapping(value = "/" +FUNCTION_VIEW, params = "submit")
-	String solveSubmit(@ModelAttribute(ATTRIBUTE_FUNCTION) @Valid final FunctionModel functionModel, final BindingResult bindingResult, final Model model, final Locale locale) {
+	String functionSubmit(@ModelAttribute(ATTRIBUTE_FUNCTION) @Valid final FunctionModel functionModel, final BindingResult bindingResult, final Model model, final Locale locale) {
 		initModel(model);
 		if (bindingResult.hasFieldErrors()) {
 			return FUNCTION_VIEW;
@@ -82,7 +83,7 @@ class FunctionController {
 	}
 
 	@PostMapping(value = "/"+FUNCTION_VIEW, params = "reset")
-	String solveSubmit(final Model model) {
+	String functionReset(final Model model) {
 		odeSessionModelRepository.odeSessionModel().setFunctionModel(new FunctionModel());
 		initModel(model);
 		return "redirect:" + FUNCTION_VIEW;
@@ -104,7 +105,7 @@ class FunctionController {
 	private boolean validate(final Function function, final BindingResult bindingResult, final Locale locale) {
 
 		if (!function.checkStartBeforeStop()) {
-			bindingResult.addError(new ObjectError("function", messageSource.getMessage("start-less-than-stop", null, "start-less-than-stop", locale)));
+			bindingResult.addError(new ObjectError("function", messageSource.getMessage(I18N_START_LESS_THAN_STOP, null, I18N_START_LESS_THAN_STOP, locale)));
 		}
 
 		try {

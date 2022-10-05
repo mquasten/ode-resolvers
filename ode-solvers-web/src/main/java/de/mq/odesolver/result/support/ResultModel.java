@@ -116,7 +116,7 @@ public class ResultModel {
 		return title;
 	}
 
-	public Collection<? extends Result> getResults() {
+	public Collection<Result> getResults() {
 		return results;
 	}
 

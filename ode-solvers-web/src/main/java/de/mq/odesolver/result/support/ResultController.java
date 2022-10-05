@@ -20,7 +20,12 @@ import de.mq.odesolver.support.OdeSessionModelRepository;
 @Controller
 class ResultController {
 
-	private static final String RESULT_VIEW = "result";
+	static final String I18N_RESULT_EMPTY = "result.empty";
+	static final String ATTRIBUTE_RESULTS_TITLE = "resultsTitle";
+	static final String ATTRIBUTE_RESULTS_LIST = "results";
+	static final String REDIRECT_VIEW_PATTERN = "redirect:%s";
+	static final String ATTRIBUTE_RESULT = "result";
+	static final String RESULT_VIEW = ATTRIBUTE_RESULT;
 	private final OdeSessionModelRepository odeSessionModelRepository;
 	private final ResultsExcelView resultsExcelView;
 	private final ResultsGraphView resultsGraphView;
@@ -34,20 +39,20 @@ class ResultController {
 		this.messageSource = messageSource;
 	}
 
-	@GetMapping("/result")
-	String solve(final Model model) {
+	@GetMapping("/" + RESULT_VIEW)
+	String result(final Model model) {
 		final ResultModel result = odeSessionModelRepository.odeSessionModel().getResult();
-		model.addAttribute("result", result);
+		model.addAttribute(ATTRIBUTE_RESULT, result);
 		return RESULT_VIEW;
 	}
 
-	@PostMapping(value = "/result", params = "back")
+	@PostMapping(value = "/" + RESULT_VIEW, params = "back")
 	String backSubmit() {
-		return String.format("redirect:%s", odeSessionModelRepository.odeSessionModel().getResult().getBack());
+		return String.format(REDIRECT_VIEW_PATTERN, odeSessionModelRepository.odeSessionModel().getResult().getBack());
 	}
 
-	@PostMapping(value = "/result", params = "valueTable")
-	ModelAndView excelSubmit(@ModelAttribute("result") final ResultModel resultModel, final BindingResult bindingResult, final Model model, final Locale locale) {
+	@PostMapping(value = "/"+ RESULT_VIEW, params = "valueTable")
+	ModelAndView excelSubmit(@ModelAttribute(ATTRIBUTE_RESULT) final ResultModel resultModel, final BindingResult bindingResult, final Model model, final Locale locale) {
 		return successSubmit(resultsExcelView, bindingResult, model, locale);
 
 	}
@@ -55,17 +60,17 @@ class ResultController {
 	private ModelAndView successSubmit(final View successView, final BindingResult bindingResult, final Model model, final Locale locale) {
 		final ResultModel result = odeSessionModelRepository.odeSessionModel().getResult();
 		if (CollectionUtils.isEmpty(result.getResults())) {
-			bindingResult.addError(new ObjectError("result", messageSource.getMessage("result.empty", null, "empty", locale)));
+			bindingResult.addError(new ObjectError(ATTRIBUTE_RESULT, messageSource.getMessage(I18N_RESULT_EMPTY, null, "empty", locale)));
 			return new ModelAndView(RESULT_VIEW);
 		} else {
-			model.addAttribute("results", result.getResults());
-			model.addAttribute("resultsTitle", result.getTitle());
+			model.addAttribute(ATTRIBUTE_RESULTS_LIST, result.getResults());
+			model.addAttribute(ATTRIBUTE_RESULTS_TITLE, result.getTitle());
 			return new ModelAndView(successView);
 		}
 	}
 
-	@PostMapping(value = "/result", params = "graph")
-	ModelAndView graphSubmit(@ModelAttribute("result") final ResultModel resultModel, final BindingResult bindingResult, final Model model, final Locale locale) {
+	@PostMapping(value = "/" + RESULT_VIEW, params = "graph")
+	ModelAndView graphSubmit(@ModelAttribute(ATTRIBUTE_RESULT) final ResultModel resultModel, final BindingResult bindingResult, final Model model, final Locale locale) {
 		return successSubmit(resultsGraphView, bindingResult, model, locale);
 	}
 
