@@ -27,8 +27,8 @@ class ResultModelTest {
 
 	private static final double K1 = 6d;
 	private static final double K2 = -10d / 3d;
-	final Function<Double, Double> function = x -> 1 / 2d * Math.pow(x, 4) + K1 * x * x + K2 * Math.pow(x, 3);
-	final Function<Double, Double> derivative = x -> 2 * Math.pow(x, 3) + 2d * K1 * x + 3 * K2 * Math.pow(x, 2);
+	private final Function<Double, Double> function = x -> 1 / 2d * Math.pow(x, 4) + K1 * x * x + K2 * Math.pow(x, 3);
+	private final Function<Double, Double> derivative = x -> 2 * Math.pow(x, 3) + 2d * K1 * x + 3 * K2 * Math.pow(x, 2);
 
 	private final double h = (X_STOP - X_START) / MAX_VALUES;
 

@@ -21,17 +21,25 @@ import de.mq.odesolver.Result;
 @Component()
 public class ResultsExcelView extends AbstractXlsxView {
 
+	static final String COLUMN_HEADER_DERIVATIVE = "y'(x)";
+	static final String COLUMN_HEADER_Y = "y(x)";
+	static final String COLUMN_HEADER_X = "x";
+	static final String RESULTS_TITLE = "resultsTitle";
+	static final String SHEET_NAME = "Wertetabelle";
+	static final String CONTENT_DISPOSITION_HEADER_VALUE = "attachment; filename=Wertetabelle.xls";
+	static final String CONTENT_DISPOSITION_HEADER = "Content-Disposition";
+	static final String RESULTS_MODEL = "results";
 	private static final int MAX_CELL_HEADLINE = 10;
 
 	@Override
 	protected void buildExcelDocument(final Map<String, Object> model, final Workbook workbook, final HttpServletRequest request, final HttpServletResponse response) throws Exception {
 
 		@SuppressWarnings("unchecked")
-		final List<Result> results = (List<Result>) model.get("results");
-		final String title = (String) model.get("resultsTitle");
+		final List<Result> results = (List<Result>) model.get(RESULTS_MODEL);
+		final String title = (String) model.get(RESULTS_TITLE);
 
-		response.setHeader("Content-Disposition", "attachment; filename=Wertetabelle.xls");
-		final Sheet sheet = workbook.createSheet("Wertetabelle");
+		response.setHeader(CONTENT_DISPOSITION_HEADER, CONTENT_DISPOSITION_HEADER_VALUE);
+		final Sheet sheet = workbook.createSheet(SHEET_NAME);
 		sheet.setFitToPage(true);
 
 		final Row headlineRow = sheet.createRow(0);
@@ -46,8 +54,8 @@ public class ResultsExcelView extends AbstractXlsxView {
 		headlineCell.setCellStyle(cellStyle);
 
 		final Row header = sheet.createRow(1);
-		header.createCell(0).setCellValue("x");
-		header.createCell(1).setCellValue("y(x)");
+		header.createCell(0).setCellValue(COLUMN_HEADER_X);
+		header.createCell(1).setCellValue(COLUMN_HEADER_Y);
 
 		if (results == null) {
 			return;
@@ -57,12 +65,12 @@ public class ResultsExcelView extends AbstractXlsxView {
 		}
 
 		if (results.get(0).yDerivatives().length > 1) {
-			header.createCell(2).setCellValue("y'(x)");
+			header.createCell(2).setCellValue(COLUMN_HEADER_DERIVATIVE);
 		}
 
 		IntStream.range(0, results.size()).forEach(i -> writeRow(results, sheet, i));
 
-		model.remove("results");
+		model.remove(RESULTS_MODEL);
 
 	}
 
