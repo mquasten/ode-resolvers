@@ -14,6 +14,8 @@
 	<description>Numerische Loesung einer gewoehnlichen DGL</description>
 	<properties>
 		<java.version>19</java.version>
+		<poi-version>5.2.2</poi-version>
+		<jfreechart-version>1.0.13</jfreechart-version>
 	</properties>
 	<dependencies>
 		<dependency>
@@ -50,28 +52,25 @@
 		<dependency>
 			<groupId>org.apache.poi</groupId>
 			<artifactId>poi</artifactId>
-			<version>5.2.2</version>
+			<version>${poi-version}</version>
 		</dependency>
 		<dependency>
 			<groupId>org.apache.poi</groupId>
 			<artifactId>poi-ooxml</artifactId>
-			<version>5.2.2</version>
+			<version>${poi-version}</version>
 		</dependency>
 
 		<dependency>
 			<groupId>jfree</groupId>
 			<artifactId>jfreechart</artifactId>
-			<version>1.0.13</version>
+			<version>${jfreechart-version}</version>
 		</dependency>
 
-
-		<!-- https://mvnrepository.com/artifact/org.mockito/mockito-inline -->
-<dependency>
-    <groupId>org.mockito</groupId>
-    <artifactId>mockito-inline</artifactId>
-  
-    <scope>test</scope>
-    </dependency>
+		<dependency>
+			<groupId>org.mockito</groupId>
+			<artifactId>mockito-inline</artifactId>
+			<scope>test</scope>
+		</dependency>
 
 	</dependencies>
 
