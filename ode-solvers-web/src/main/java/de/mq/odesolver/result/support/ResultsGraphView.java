@@ -23,23 +23,34 @@ import de.mq.odesolver.solve.OdeResult;
 
 @Component
 public class ResultsGraphView extends AbstractView {
+	static final int HEIGHT = 1080;
+	static final int WIDTH = 1080;
+	static final String RESULTS_MODEL = "results";
+	static final String RESULTS_TITLE = "resultsTitle";
+	static final String CONTENT_DISPOSITION_HEADER_VALUE = "filename=Funktionsgraph.png";
+	static final String CONTENT_DISPOSITION_HEADER = "Content-Disposition";
+	static final String COLUMN_HEADER_X = "x";
+	static final String COLUMN_HEADER_Y = "y";
 
 	@Override
 	protected void renderMergedOutputModel(final Map<String, Object> model, final HttpServletRequest request, final HttpServletResponse response) throws Exception {
-		response.setHeader("Content-Disposition", "filename=Funktionsgraph.png");
-		@SuppressWarnings("unchecked")
-		final List<? extends Result> results = (List<OdeResult>) model.get("results");
-		final String ode = (String) model.get("resultsTitle");
-
-		final XYDataset dataset = createDataset(results, ode);
-
-		// Create chart
-		final JFreeChart chart = ChartFactory.createXYLineChart(ode, "x", "y", dataset, PlotOrientation.VERTICAL, true, true, false);
+		final JFreeChart chart = createChart(model, response);
 
 		final ServletOutputStream os = response.getOutputStream();
 
-		ChartUtilities.writeChartAsPNG(os, chart, 1080, 1080);
+		ChartUtilities.writeChartAsPNG(os, chart, WIDTH, HEIGHT);
+	}
 
+	final JFreeChart createChart(final Map<String, Object> model, final HttpServletResponse response) {
+		response.setHeader(CONTENT_DISPOSITION_HEADER,CONTENT_DISPOSITION_HEADER_VALUE);
+		@SuppressWarnings("unchecked")
+		final List<? extends Result> results = (List<OdeResult>) model.get(RESULTS_MODEL);
+		final String ode = (String) model.get(RESULTS_TITLE);
+
+		final XYDataset dataset = createDataset(results, ode);
+
+		final JFreeChart chart = ChartFactory.createXYLineChart(ode, COLUMN_HEADER_X, COLUMN_HEADER_Y, dataset, PlotOrientation.VERTICAL, true, true, false);
+		return chart;
 	}
 
 	private XYDataset createDataset(final List<? extends Result> results, final String title) {
@@ -55,7 +66,7 @@ public class ResultsGraphView extends AbstractView {
 		}
 
 		IntStream.range(0, results.get(0).yDerivatives().length).forEach(i -> {
-			final StringBuffer text = new StringBuffer("y");
+			final StringBuffer text = new StringBuffer(COLUMN_HEADER_Y);
 			IntStream.rangeClosed(1, i).forEach(k -> text.append("'"));
 
 			final XYSeries series = new XYSeries(text);

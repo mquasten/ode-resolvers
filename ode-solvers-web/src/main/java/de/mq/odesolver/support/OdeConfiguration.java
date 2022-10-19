@@ -16,6 +16,10 @@ import org.springframework.web.servlet.i18n.SessionLocaleResolver;
 @Configuration
 class OdeConfiguration implements WebMvcConfigurer {
 
+	static final String LOCALE_PARAMETER_NANE = "locale";
+	static final String ENCODING = "UTF-8";
+	static final String I18N_MESSAGE_PATH = "i18n/messages";
+
 	@Bean
 	@Scope(scopeName = "session")
 	OdeSessionModel odeSessionModel() {
@@ -26,12 +30,9 @@ class OdeConfiguration implements WebMvcConfigurer {
 
 	@Bean(name = "messageSource")
 	MessageSource messageSource() {
-
-		ResourceBundleMessageSource messageSource = new ResourceBundleMessageSource();
-		messageSource.setBasename("i18n/messages");
-		// messageSource.setFallbackToSystemLocale(false);
-		// messageSource.setCacheSeconds(0);
-		messageSource.setDefaultEncoding("UTF-8");
+		final var messageSource = new ResourceBundleMessageSource();
+		messageSource.setBasename(I18N_MESSAGE_PATH);
+		messageSource.setDefaultEncoding(ENCODING);
 		messageSource.setDefaultLocale(Locale.GERMAN);
 
 		return messageSource;
@@ -40,13 +41,13 @@ class OdeConfiguration implements WebMvcConfigurer {
 	@Override
 	public void addInterceptors(final InterceptorRegistry registry) {
 		final LocaleChangeInterceptor interceptor = new LocaleChangeInterceptor();
-		interceptor.setParamName("locale");
+		interceptor.setParamName(LOCALE_PARAMETER_NANE);
 		registry.addInterceptor(interceptor);
 	}
 
 	@Bean
 	LocaleResolver localeResolver() {
-		final SessionLocaleResolver localeResolver = new SessionLocaleResolver();
+		final var localeResolver = new SessionLocaleResolver();
 		localeResolver.setDefaultLocale(Locale.GERMAN);
 		return localeResolver;
 	}
