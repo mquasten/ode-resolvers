@@ -11,9 +11,6 @@ import java.util.function.Function;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 import java.util.stream.Stream;
-
-import javax.servlet.http.HttpServletResponse;
-
 import org.jfree.chart.ChartUtilities;
 import org.jfree.chart.JFreeChart;
 
@@ -26,6 +23,7 @@ import org.springframework.mock.web.MockHttpServletResponse;
 
 import de.mq.odesolver.Result;
 import de.mq.odesolver.solve.OdeResult;
+import jakarta.servlet.http.HttpServletResponse;
 
 class ResultsGraphViewTest {
 

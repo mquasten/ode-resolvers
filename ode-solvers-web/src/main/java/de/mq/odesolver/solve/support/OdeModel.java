@@ -1,12 +1,11 @@
 package de.mq.odesolver.solve.support;
 
-import javax.validation.Valid;
-import javax.validation.constraints.Max;
-import javax.validation.constraints.NotBlank;
-
 import de.mq.odesolver.validator.DoubleArrayConstraint;
 import de.mq.odesolver.validator.DoubleConstraint;
 import de.mq.odesolver.validator.NaturalNumberConstraint;
+import jakarta.validation.Valid;
+import jakarta.validation.constraints.Max;
+import jakarta.validation.constraints.NotBlank;
 
 @Valid
 public class OdeModel {

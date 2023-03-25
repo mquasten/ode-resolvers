@@ -3,13 +3,13 @@ package de.mq.odesolver.validator;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-import javax.validation.ConstraintValidator;
-
 import org.junit.jupiter.api.Test;
+
+import jakarta.validation.ConstraintValidator;
 
 class DoubleArrayValidatorTest {
 
-	ConstraintValidator<DoubleArrayConstraint, String> validator = new DoubleArrayValidator();
+	private final ConstraintValidator<DoubleArrayConstraint, String> validator = new DoubleArrayValidator();
 
 	@Test
 	final void empty() {

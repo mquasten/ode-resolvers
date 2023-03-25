@@ -4,10 +4,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.IntStream;
 
-import javax.servlet.ServletOutputStream;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-
 import org.jfree.chart.ChartFactory;
 import org.jfree.chart.ChartUtilities;
 import org.jfree.chart.JFreeChart;
@@ -20,6 +16,9 @@ import org.springframework.web.servlet.view.AbstractView;
 
 import de.mq.odesolver.Result;
 import de.mq.odesolver.solve.OdeResult;
+import jakarta.servlet.ServletOutputStream;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
 
 @Component
 public class ResultsGraphView extends AbstractView {

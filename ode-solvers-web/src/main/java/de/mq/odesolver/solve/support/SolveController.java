@@ -11,7 +11,6 @@ import java.util.Locale;
 import java.util.Map.Entry;
 import java.util.stream.Collectors;
 
-import javax.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.MessageSource;
 import org.springframework.core.convert.converter.Converter;
@@ -31,6 +30,7 @@ import de.mq.odesolver.solve.OdeSolverService;
 import de.mq.odesolver.solve.OdeSolverService.Algorithm;
 import de.mq.odesolver.support.OdeSessionModel;
 import de.mq.odesolver.support.OdeSessionModelRepository;
+import jakarta.validation.Valid;
 
 @Controller
 class SolveController {

@@ -11,8 +11,6 @@ import java.util.function.Function;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
-import javax.servlet.http.HttpServletResponse;
-
 import org.apache.poi.hssf.usermodel.HSSFWorkbook;
 import org.apache.poi.ss.usermodel.Sheet;
 import org.apache.poi.ss.usermodel.Workbook;
@@ -23,6 +21,7 @@ import org.springframework.util.StringUtils;
 
 import de.mq.odesolver.Result;
 import de.mq.odesolver.solve.OdeResult;
+import jakarta.servlet.http.HttpServletResponse;
 
 class ResultsExcelViewTest {
 

@@ -1,9 +1,11 @@
 package de.mq.odesolver.validator;
 
-import javax.validation.ConstraintValidator;
-import javax.validation.ConstraintValidatorContext;
+
 
 import org.springframework.util.StringUtils;
+
+import jakarta.validation.ConstraintValidator;
+import jakarta.validation.ConstraintValidatorContext;
 
 public class DoubleArrayValidator implements ConstraintValidator<DoubleArrayConstraint, String> {
 
@@ -27,7 +29,7 @@ public class DoubleArrayValidator implements ConstraintValidator<DoubleArrayCons
 				return false;
 			}
 
-			if (!doubleValidator.isValid(StringUtils.trimWhitespace(values[i]), cxt)) {
+			if (!doubleValidator.isValid(values[i].strip(), cxt)) {
 				return false;
 			}
 		}

@@ -5,8 +5,6 @@ import static org.apache.commons.lang3.StringUtils.defaultIfBlank;
 import java.util.List;
 import java.util.Locale;
 
-import javax.validation.Valid;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.MessageSource;
 import org.springframework.core.convert.converter.Converter;
@@ -23,6 +21,7 @@ import de.mq.odesolver.function.Function;
 import de.mq.odesolver.function.FunctionService;
 import de.mq.odesolver.result.support.ResultModel;
 import de.mq.odesolver.support.OdeSessionModelRepository;
+import jakarta.validation.Valid;
 
 @Controller
 class FunctionController {

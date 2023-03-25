@@ -1,18 +1,17 @@
 package de.mq.odesolver.function.support;
 
-import javax.validation.constraints.Max;
-import javax.validation.constraints.NotBlank;
-
 import de.mq.odesolver.validator.DoubleArrayConstraint;
 import de.mq.odesolver.validator.DoubleConstraint;
 import de.mq.odesolver.validator.NaturalNumberConstraint;
+import jakarta.validation.constraints.Max;
+import jakarta.validation.constraints.NotBlank;
 
 public class FunctionModel {
 
 	@NotBlank
 	private String function;
 
-	@DoubleArrayConstraint
+	@DoubleArrayConstraint()
 	private String k;
 
 	@DoubleConstraint
